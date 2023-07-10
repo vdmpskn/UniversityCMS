@@ -36,11 +36,22 @@ CREATE TABLE users
     password   VARCHAR(255) NOT NULL,
     role       VARCHAR(20)  NOT NULL,
     faculty_id INTEGER      NOT NULL,
-    group_id   INTEGER,
-    course_id INTEGER,
-    FOREIGN KEY (course_id) REFERENCES course (course_id),
-    FOREIGN KEY (faculty_id) REFERENCES faculty (faculty_id),
+    FOREIGN KEY (faculty_id) REFERENCES faculty (faculty_id)
+);
+
+CREATE TABLE students
+(
+    user_id  INTEGER PRIMARY KEY,
+    group_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (group_id) REFERENCES student_group (group_id)
+);
+
+CREATE TABLE professors
+(
+    user_id      INTEGER PRIMARY KEY,
+    professor_id SERIAL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
 CREATE TABLE schedule

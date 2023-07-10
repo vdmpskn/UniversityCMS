@@ -12,10 +12,29 @@ INSERT INTO course (name, description,  faculty_id) VALUES ('Chemistry','Teory o
 INSERT INTO course (name, description,  faculty_id) VALUES ('Literature','Teory of Physics', 2);
 
 INSERT INTO users (username, password, role, faculty_id) VALUES ('admin', 'adminpass98', 'admin',1);
-INSERT INTO users (username, password, role, faculty_id, group_id, course_id) VALUES ('vdm.pskn', 'password123', 'student', 1, 1,1);
-INSERT INTO users (username, password, role, faculty_id, group_id, course_id) VALUES ('jane.smith', 'pass987', 'student', 1, 2, 2);
+INSERT INTO users (username, password, role, faculty_id) VALUES ('vdm.pskn', 'password123', 'student', 1);
+INSERT INTO users (username, password, role, faculty_id) VALUES ('jane.smith', 'pass987', 'student', 1);
 INSERT INTO users (username, password, role, faculty_id) VALUES ('professormath', 'secret456', 'professor', 1);
 INSERT INTO users (username, password, role, faculty_id) VALUES ('professorsupercool', 'confidential', 'professor', 2);
+
+INSERT INTO students (user_id, group_id)
+SELECT user_id,
+       CASE
+           WHEN user_id = 2 THEN 1
+           WHEN user_id = 3 THEN 2
+           ELSE NULL
+           END AS group_id
+FROM users
+WHERE role = 'student';
+
+
+
+
+INSERT INTO professors (user_id)
+SELECT user_id
+FROM users
+WHERE role = 'professor';
+
 
 INSERT INTO schedule (course_id, group_id, start_time, end_time, date) VALUES (1, 1, '2023-07-07 09:00:00', '2023-07-07 11:00:00', '2023-07-07');
 INSERT INTO schedule (course_id, group_id, start_time, end_time, date) VALUES (2, 1, '2023-07-08 10:00:00', '2023-07-08 12:00:00', '2023-07-08');
