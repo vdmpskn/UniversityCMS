@@ -15,7 +15,6 @@ public class AdminConsoleMenuTmp {
     private final UserService userService;
     private final Scanner scanner;
 
-
     public AdminConsoleMenuTmp(UniversityManagementService universityManagementService, UserService userService) {
         this.universityManagementService = universityManagementService;
         this.userService = userService;
@@ -25,19 +24,19 @@ public class AdminConsoleMenuTmp {
     public void start() {
         boolean exit = false;
         while (!exit) {
-            System.out.println("1. Вывести все университеты");
-            System.out.println("2. Вывести все факультеты");
-            System.out.println("3. Вывести все группы");
-            System.out.println("4. Добавить новый университет");
-            System.out.println("5. Добавить новый факультет");
-            System.out.println("6. Добавить новую группу");
-            System.out.println("7. Удалить университет");
-            System.out.println("8. Удалить факультет");
-            System.out.println("9. Удалить группу");
-            System.out.println("10. Добавить администратора");
-            System.out.println("0. Выход");
+            System.out.println("1. Display all universities");
+            System.out.println("2. Display all faculties");
+            System.out.println("3. Display all student groups");
+            System.out.println("4. Add a new university");
+            System.out.println("5. Add a new faculty");
+            System.out.println("6. Add a new student group");
+            System.out.println("7. Delete a university");
+            System.out.println("8. Delete a faculty");
+            System.out.println("9. Delete a student group");
+            System.out.println("10. Add an administrator");
+            System.out.println("0. Exit");
 
-            System.out.print("Введите номер операции: ");
+            System.out.print("Enter the operation number: ");
             int choice = scanner.nextInt();
 
             switch (choice) {
@@ -52,7 +51,7 @@ public class AdminConsoleMenuTmp {
                 case 9 -> deleteStudentGroup();
                 case 10 -> addAdmin();
                 case 0 -> exit = true;
-                default -> System.out.println("Неверный номер операции!");
+                default -> System.out.println("Wrong operation number!");
             }
 
             System.out.println();
@@ -60,37 +59,37 @@ public class AdminConsoleMenuTmp {
     }
 
     private void printAllUniversities() {
-        System.out.println("Список университетов:");
+        System.out.println("List of universities:");
         universityManagementService.getAllUniversities().forEach(university -> System.out.println(university.getUniversityId() + " - " + university.getUniversityName()));
     }
 
     private void printAllFaculties() {
-        System.out.println("Список факультетов:");
-        universityManagementService.getAllFaculties().forEach(faculty -> System.out.println(faculty.getFacultyId() + " - " +faculty.getFacultyName()));
+        System.out.println("List of faculties:");
+        universityManagementService.getAllFaculties().forEach(faculty -> System.out.println(faculty.getFacultyId() + " - " + faculty.getFacultyName()));
     }
 
     private void printAllStudentGroups() {
-        System.out.println("Список групп:");
+        System.out.println("List of student groups:");
         universityManagementService.getAllStudentGroups().forEach(studentGroup -> System.out.println(studentGroup.getGroupId() + " - " + studentGroup.getGroupName()));
     }
 
     private void addUniversity() {
         scanner.nextLine();
-        System.out.print("Введите название университета: ");
+        System.out.print("Enter the name of the university: ");
         String name = scanner.nextLine();
 
         University university = new University();
         university.setUniversityName(name);
 
         universityManagementService.saveUniversity(university);
-        System.out.println("Университет успешно добавлен!");
+        System.out.println("University successfully added!");
     }
 
     private void addFaculty() {
         scanner.nextLine();
-        System.out.print("Введите название факультета: ");
+        System.out.print("Enter the name of the faculty: ");
         String name = scanner.nextLine();
-        System.out.print("Введите ID университета: ");
+        System.out.print("Enter the university ID: ");
         int universityId = scanner.nextInt();
 
         Faculty faculty = new Faculty();
@@ -98,14 +97,14 @@ public class AdminConsoleMenuTmp {
         faculty.setUniversityId(universityId);
 
         universityManagementService.saveFaculty(faculty);
-        System.out.println("Факультет успешно добавлен!");
+        System.out.println("Faculty successfully added!");
     }
 
     private void addStudentGroup() {
         scanner.nextLine();
-        System.out.print("Введите название группы: ");
+        System.out.print("Enter the name of the student group: ");
         String name = scanner.nextLine();
-        System.out.print("Введите ID факультета: ");
+        System.out.print("Enter the faculty ID: ");
         int facultyId = scanner.nextInt();
 
         StudentGroup studentGroup = new StudentGroup();
@@ -113,37 +112,37 @@ public class AdminConsoleMenuTmp {
         studentGroup.setFacultyId(facultyId);
 
         universityManagementService.saveStudentGroup(studentGroup);
-        System.out.println("Группа успешно добавлена!");
+        System.out.println("Student group successfully added!");
     }
 
     private void deleteUniversity() {
-        System.out.print("Введите ID университета: ");
+        System.out.print("Enter the university ID: ");
         Long id = scanner.nextLong();
         universityManagementService.deleteUniversity(id);
-        System.out.println("Университет успешно удален!");
+        System.out.println("University successfully deleted!");
     }
 
     private void deleteFaculty() {
-        System.out.print("Введите ID факультета: ");
+        System.out.print("Enter the faculty ID: ");
         Long id = scanner.nextLong();
         universityManagementService.deleteFaculty(id);
-        System.out.println("Факультет успешно удален!");
+        System.out.println("Faculty successfully deleted!");
     }
 
     private void deleteStudentGroup() {
-        System.out.print("Введите ID группы: ");
+        System.out.print("Enter the student group ID: ");
         Long id = scanner.nextLong();
         universityManagementService.deleteStudentGroup(id);
-        System.out.println("Группа успешно удалена!");
+        System.out.println("Student group successfully deleted!");
     }
 
     private void addAdmin() {
         scanner.nextLine();
-        System.out.print("Введите имя админа: ");
+        System.out.print("Enter the admin name: ");
         String name = scanner.nextLine();
-        System.out.println("Введите пароль админа");
+        System.out.print("Enter the admin password: ");
         String pass = scanner.nextLine();
-        System.out.print("Введите факультет админа: ");
+        System.out.print("Enter the admin faculty ID: ");
         int faculty = scanner.nextInt();
 
         User user = new User();
@@ -153,7 +152,6 @@ public class AdminConsoleMenuTmp {
         user.setFacultyId(faculty);
         userService.saveAdmin(user);
 
-        System.out.println("Пользователь успешно добавлен!");
+        System.out.println("User successfully added!");
     }
 }
-

@@ -42,7 +42,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
         if ("student".equals(user.getRole())) {
             Scanner scanner = new Scanner(System.in);
-            System.out.print("Введите номер группы студента: ");
+            System.out.print("Enter student group number: ");
             int groupId = scanner.nextInt();
 
             Student student = new Student();

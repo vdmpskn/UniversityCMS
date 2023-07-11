@@ -20,14 +20,14 @@ public class ConsoleMenuTmp {
     public void start() {
         boolean exit = false;
         while (!exit) {
-            System.out.println("1. Вывести всех пользователей");
-            System.out.println("2. Найти пользователя по ID");
-            System.out.println("3. Добавить нового студента");
-            System.out.println("4. Добавить нового профессора");
-            System.out.println("5. Удалить пользователя");
-            System.out.println("0. Выход");
+            System.out.println("1. Display all users");
+            System.out.println("2. Find user by ID");
+            System.out.println("3. Add a new student");
+            System.out.println("4. Add a new professor");
+            System.out.println("5. Delete a user");
+            System.out.println("0. Exit");
 
-            System.out.print("Введите номер операции: ");
+            System.out.print("Enter the operation number: ");
             int choice = scanner.nextInt();
 
             switch (choice) {
@@ -37,7 +37,7 @@ public class ConsoleMenuTmp {
                 case 4 -> addProfessor();
                 case 5 -> deleteUser();
                 case 0 -> exit = true;
-                default -> System.out.println("Неверный номер операции!");
+                default -> System.out.println("Invalid operation number!");
             }
 
             System.out.println();
@@ -45,29 +45,29 @@ public class ConsoleMenuTmp {
     }
 
     private void printAllUsers() {
-        System.out.println("Список пользователей:");
+        System.out.println("List of users:");
         userService.getAllUsers().forEach(user -> System.out.println(user.getUsername() + " - " + user.getRole()));
     }
 
     private void findUserById() {
-        System.out.print("Введите ID пользователя: ");
+        System.out.print("Enter the user ID: ");
         Long id = scanner.nextLong();
         User user = userService.getUserById(id);
         if (user != null) {
-            System.out.println("Пользователь найден:");
+            System.out.println("User found:");
             System.out.println(user.getUsername() + " - " + user.getRole());
         } else {
-            System.out.println("Пользователь не найден!");
+            System.out.println("User not found!");
         }
     }
 
     private void addStudent() {
         scanner.nextLine();
-        System.out.print("Введите имя студента: ");
+        System.out.print("Enter the student name: ");
         String name = scanner.nextLine();
-        System.out.println("Введите пароль студента");
+        System.out.println("Enter the student password: ");
         String pass = scanner.nextLine();
-        System.out.print("Введите факультет студента: ");
+        System.out.print("Enter the student faculty: ");
         int faculty = scanner.nextInt();
 
 
@@ -78,16 +78,16 @@ public class ConsoleMenuTmp {
         user.setFacultyId(faculty);
 
         userService.saveStudent(user);
-        System.out.println("Пользователь успешно добавлен!");
+        System.out.println("User successfully added!");
     }
 
-    private void addProfessor(){
+    private void addProfessor() {
         scanner.nextLine();
-        System.out.print("Введите имя преподователя: ");
+        System.out.print("Enter the professor name: ");
         String name = scanner.nextLine();
-        System.out.println("Введите пароль преподователя");
+        System.out.println("Enter the professor password: ");
         String pass = scanner.nextLine();
-        System.out.print("Введите факультет преподователя: ");
+        System.out.print("Enter the professor faculty: ");
         int faculty = scanner.nextInt();
 
 
@@ -98,16 +98,14 @@ public class ConsoleMenuTmp {
         user.setFacultyId(faculty);
 
         userService.saveProfessor(user);
-        System.out.println("Преподователь успешно добавлен!");
-
+        System.out.println("Professor successfully added!");
     }
 
 
     private void deleteUser() {
-        System.out.print("Введите ID пользователя: ");
+        System.out.print("Enter the user ID: ");
         Long id = scanner.nextLong();
         userService.deleteUser(id);
-        System.out.println("Пользователь успешно удален!");
+        System.out.println("User successfully deleted!");
     }
 }
-

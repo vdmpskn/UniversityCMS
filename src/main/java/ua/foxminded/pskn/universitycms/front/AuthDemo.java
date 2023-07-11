@@ -22,12 +22,12 @@ public class AuthDemo {
     }
 
     public void start() {
-        System.out.print("Введите имя пользователя: ");
+        System.out.print("Enter username: ");
         String username = scanner.nextLine();
 
         User user = userService.getUserByUsername(username);
         if (user != null) {
-            System.out.println("Добро пожаловать, " + user.getUsername() + "!");
+            System.out.println("Welcome, " + user.getUsername() + "!");
 
             if ("admin".equals(user.getRole())) {
                 adminConsoleMenu.start();
@@ -35,8 +35,7 @@ public class AuthDemo {
                 consoleMenu.start();
             }
         } else {
-            System.out.println("Пользователь не найден!");
+            System.out.println("User not found!");
         }
     }
 }
-
