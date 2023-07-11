@@ -27,9 +27,6 @@ SELECT user_id,
 FROM users
 WHERE role = 'student';
 
-
-
-
 INSERT INTO professors (user_id)
 SELECT user_id
 FROM users
