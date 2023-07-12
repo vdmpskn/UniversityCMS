@@ -33,6 +33,6 @@ FROM users
 WHERE role = 'professor';
 
 
-INSERT INTO schedule (course_id, group_id, start_time, end_time, date) VALUES (1, 1, '2023-07-07 09:00:00', '2023-07-07 11:00:00', '2023-07-07');
-INSERT INTO schedule (course_id, group_id, start_time, end_time, date) VALUES (2, 1, '2023-07-08 10:00:00', '2023-07-08 12:00:00', '2023-07-08');
-INSERT INTO schedule (course_id, group_id, start_time, end_time, date) VALUES (3, 1, '2023-07-07 14:00:00', '2023-07-07 16:00:00', '2023-07-07');
+INSERT INTO schedule (course_id, group_id, professor_id,start_time, end_time, date) VALUES (1, 1,1, '2023-07-07 09:00:00', '2023-07-07 11:00:00', '2023-07-07');
+INSERT INTO schedule (course_id, group_id,professor_id, start_time, end_time, date) VALUES (2, 1, 2, '2023-07-08 10:00:00', '2023-07-08 12:00:00', '2023-07-08');
+INSERT INTO schedule (course_id, group_id,professor_id, start_time, end_time, date) VALUES (3, 1, 1, '2023-07-07 14:00:00', '2023-07-07 16:00:00', '2023-07-07');

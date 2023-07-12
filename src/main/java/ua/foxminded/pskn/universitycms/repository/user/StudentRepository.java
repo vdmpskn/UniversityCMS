@@ -6,4 +6,5 @@ import ua.foxminded.pskn.universitycms.model.user.Student;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
+    Student getStudentByUserId(Long userId);
 }

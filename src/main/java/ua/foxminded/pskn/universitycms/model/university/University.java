@@ -1,7 +1,9 @@
 package ua.foxminded.pskn.universitycms.model.university;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "university")
 public class University {
@@ -12,20 +14,4 @@ public class University {
 
     @Column(name = "name")
     private String universityName;
-
-    public Long getUniversityId() {
-        return universityId;
-    }
-
-    public void setUniversityId(Long universityId) {
-        this.universityId = universityId;
-    }
-
-    public String getUniversityName() {
-        return universityName;
-    }
-
-    public void setUniversityName(String universityName) {
-        this.universityName = universityName;
-    }
 }

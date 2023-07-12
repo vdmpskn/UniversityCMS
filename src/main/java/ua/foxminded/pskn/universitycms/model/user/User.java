@@ -1,7 +1,9 @@
 package ua.foxminded.pskn.universitycms.model.user;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "users")
 public class User {
@@ -16,44 +18,4 @@ public class User {
     private String role;
 
     private int facultyId;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long user_id) {
-        this.userId = user_id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public int getFacultyId() {
-        return facultyId;
-    }
-
-    public void setFacultyId(int faculty_id) {
-        this.facultyId = faculty_id;
-    }
 }

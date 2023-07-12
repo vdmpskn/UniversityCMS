@@ -1,26 +1,17 @@
 package ua.foxminded.pskn.universitycms.model.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "professors")
 public class Professor {
-    @Id
+
     private Long userId;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "professor_id")
     private int professorId;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public int getProfessorId() {
-        return professorId;
-    }
 }

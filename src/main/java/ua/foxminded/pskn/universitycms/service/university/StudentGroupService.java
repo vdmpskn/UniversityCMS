@@ -1,0 +1,32 @@
+package ua.foxminded.pskn.universitycms.service.university;
+
+import org.springframework.stereotype.Service;
+import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
+import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
+
+import java.util.List;
+
+@Service
+public class StudentGroupService {
+    private final StudentGroupRepository studentGroupRepository;
+
+    public StudentGroupService(StudentGroupRepository studentGroupRepository) {
+        this.studentGroupRepository = studentGroupRepository;
+    }
+
+    public StudentGroup saveStudentGroup(StudentGroup studentGroup) {
+        return studentGroupRepository.save(studentGroup);
+    }
+
+    public StudentGroup getStudentGroupById(Long id) {
+        return studentGroupRepository.findById(id).orElse(null);
+    }
+
+    public List<StudentGroup> getAllStudentGroups() {
+        return studentGroupRepository.findAll();
+    }
+
+    public void deleteStudentGroup(Long id) {
+        studentGroupRepository.deleteById(id);
+    }
+}

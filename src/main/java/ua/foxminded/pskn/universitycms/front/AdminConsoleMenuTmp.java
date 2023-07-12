@@ -1,42 +1,60 @@
 package ua.foxminded.pskn.universitycms.front;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.foxminded.pskn.universitycms.model.user.User;
-import ua.foxminded.pskn.universitycms.service.UniversityManagementService;
+import ua.foxminded.pskn.universitycms.service.university.FacultyService;
+import ua.foxminded.pskn.universitycms.service.university.StudentGroupService;
+import ua.foxminded.pskn.universitycms.service.university.UniversityService;
 import ua.foxminded.pskn.universitycms.model.university.*;
-import ua.foxminded.pskn.universitycms.service.UserService;
+import ua.foxminded.pskn.universitycms.service.user.ProfessorService;
+import ua.foxminded.pskn.universitycms.service.user.UserService;
 
 import java.util.Scanner;
 
+@Slf4j
 @Component
 public class AdminConsoleMenuTmp {
 
-    private final UniversityManagementService universityManagementService;
+    private final UniversityService universityService;
+    private final FacultyService facultyService;
+    private final StudentGroupService studentGroupService;
     private final UserService userService;
+    private final ProfessorService professorService;
     private final Scanner scanner;
 
-    public AdminConsoleMenuTmp(UniversityManagementService universityManagementService, UserService userService) {
-        this.universityManagementService = universityManagementService;
+    public AdminConsoleMenuTmp(UniversityService universityService, FacultyService facultyService, StudentGroupService studentGroupService, UserService userService, ProfessorService professorService) {
+        this.universityService = universityService;
+        this.facultyService = facultyService;
+        this.studentGroupService = studentGroupService;
         this.userService = userService;
+        this.professorService = professorService;
         this.scanner = new Scanner(System.in);
     }
 
     public void start() {
         boolean exit = false;
         while (!exit) {
-            System.out.println("1. Display all universities");
-            System.out.println("2. Display all faculties");
-            System.out.println("3. Display all student groups");
-            System.out.println("4. Add a new university");
-            System.out.println("5. Add a new faculty");
-            System.out.println("6. Add a new student group");
-            System.out.println("7. Delete a university");
-            System.out.println("8. Delete a faculty");
-            System.out.println("9. Delete a student group");
-            System.out.println("10. Add an administrator");
-            System.out.println("0. Exit");
+            log.info("----------MANAGE UNIVERSITY-------");
+            log.info("1. Display all universities");
+            log.info("2. Display all faculties");
+            log.info("3. Display all student groups");
+            log.info("4. Add a new university");
+            log.info("5. Add a new faculty");
+            log.info("6. Add a new student group");
+            log.info("7. Delete a university");
+            log.info("8. Delete a faculty");
+            log.info("9. Delete a student group");
+            log.info("--------------MANAGE USERS------------");
+            log.info("10. Add an administrator");
+            log.info("11. Display all users");
+            log.info("12. Find user by ID");
+            log.info("13. Add a new student");
+            log.info("14. Add a new professor");
+            log.info("15. Delete a user");
+            log.info("0. Exit");
 
-            System.out.print("Enter the operation number: ");
+            log.info("Enter the operation number: ");
             int choice = scanner.nextInt();
 
             switch (choice) {
@@ -50,99 +68,102 @@ public class AdminConsoleMenuTmp {
                 case 8 -> deleteFaculty();
                 case 9 -> deleteStudentGroup();
                 case 10 -> addAdmin();
+                case 11 -> printAllUsers();
+                case 12 -> findUserById();
+                case 13 -> addStudent();
+                case 14 -> addProfessor();
+                case 15 -> deleteUser();
                 case 0 -> exit = true;
-                default -> System.out.println("Wrong operation number!");
+                default -> log.info("Wrong operation number!");
             }
-
-            System.out.println();
         }
     }
 
     private void printAllUniversities() {
-        System.out.println("List of universities:");
-        universityManagementService.getAllUniversities().forEach(university -> System.out.println(university.getUniversityId() + " - " + university.getUniversityName()));
+        log.info("List of universities:");
+        universityService.getAllUniversities().forEach(university -> log.info(university.getUniversityId() + " - " + university.getUniversityName()));
     }
 
     private void printAllFaculties() {
-        System.out.println("List of faculties:");
-        universityManagementService.getAllFaculties().forEach(faculty -> System.out.println(faculty.getFacultyId() + " - " + faculty.getFacultyName()));
+        log.info("List of faculties:");
+        facultyService.getAllFaculties().forEach(faculty -> log.info(faculty.getFacultyId() + " - " + faculty.getFacultyName()));
     }
 
     private void printAllStudentGroups() {
-        System.out.println("List of student groups:");
-        universityManagementService.getAllStudentGroups().forEach(studentGroup -> System.out.println(studentGroup.getGroupId() + " - " + studentGroup.getGroupName()));
+        log.info("List of student groups:");
+        studentGroupService.getAllStudentGroups().forEach(studentGroup -> log.info(studentGroup.getGroupId() + " - " + studentGroup.getGroupName()));
     }
 
     private void addUniversity() {
         scanner.nextLine();
-        System.out.print("Enter the name of the university: ");
+        log.info("Enter the name of the university: ");
         String name = scanner.nextLine();
 
         University university = new University();
         university.setUniversityName(name);
 
-        universityManagementService.saveUniversity(university);
-        System.out.println("University successfully added!");
+        universityService.saveUniversity(university);
+        log.info("University successfully added!");
     }
 
     private void addFaculty() {
         scanner.nextLine();
-        System.out.print("Enter the name of the faculty: ");
+        log.info("Enter the name of the faculty: ");
         String name = scanner.nextLine();
-        System.out.print("Enter the university ID: ");
+        log.info("Enter the university ID: ");
         int universityId = scanner.nextInt();
 
         Faculty faculty = new Faculty();
         faculty.setFacultyName(name);
         faculty.setUniversityId(universityId);
 
-        universityManagementService.saveFaculty(faculty);
-        System.out.println("Faculty successfully added!");
+        facultyService.saveFaculty(faculty);
+        log.info("Faculty successfully added!");
     }
 
     private void addStudentGroup() {
         scanner.nextLine();
-        System.out.print("Enter the name of the student group: ");
+        log.info("Enter the name of the student group: ");
         String name = scanner.nextLine();
-        System.out.print("Enter the faculty ID: ");
+        log.info("Enter the faculty ID: ");
         int facultyId = scanner.nextInt();
 
         StudentGroup studentGroup = new StudentGroup();
         studentGroup.setGroupName(name);
         studentGroup.setFacultyId(facultyId);
 
-        universityManagementService.saveStudentGroup(studentGroup);
-        System.out.println("Student group successfully added!");
+        studentGroupService.saveStudentGroup(studentGroup);
+        log.info("Student group successfully added!");
     }
 
     private void deleteUniversity() {
-        System.out.print("Enter the university ID: ");
+        log.info("Enter the university ID: ");
         Long id = scanner.nextLong();
-        universityManagementService.deleteUniversity(id);
-        System.out.println("University successfully deleted!");
+        universityService.deleteUniversity(id);
+        log.info("University successfully deleted!");
     }
 
     private void deleteFaculty() {
-        System.out.print("Enter the faculty ID: ");
+        log.info("Enter the faculty ID: ");
         Long id = scanner.nextLong();
-        universityManagementService.deleteFaculty(id);
-        System.out.println("Faculty successfully deleted!");
+        facultyService.deleteFaculty(id);
+        log.info("Faculty successfully deleted!");
     }
 
     private void deleteStudentGroup() {
-        System.out.print("Enter the student group ID: ");
+        log.info("Enter the student group ID: ");
         Long id = scanner.nextLong();
-        universityManagementService.deleteStudentGroup(id);
-        System.out.println("Student group successfully deleted!");
+        studentGroupService.deleteStudentGroup(id);
+        log.info("Student group successfully deleted!");
     }
 
     private void addAdmin() {
         scanner.nextLine();
-        System.out.print("Enter the admin name: ");
+        log.info("Enter the admin name: ");
         String name = scanner.nextLine();
-        System.out.print("Enter the admin password: ");
+        log.info("Enter the admin password: ");
         String pass = scanner.nextLine();
-        System.out.print("Enter the admin faculty ID: ");
+        log.info("Enter the admin faculty ID: ");
         int faculty = scanner.nextInt();
 
         User user = new User();
@@ -152,6 +173,72 @@ public class AdminConsoleMenuTmp {
         user.setFacultyId(faculty);
         userService.saveAdmin(user);
 
-        System.out.println("User successfully added!");
+        log.info("User successfully added!");
     }
+
+    private void printAllUsers() {
+        log.info("List of users:");
+        userService.getAllUsers().forEach(user -> log.info(user.getUsername() + " - " + user.getRole()));
+    }
+
+    private void findUserById() {
+        log.info("Enter the user ID: ");
+        Long id = scanner.nextLong();
+        User user = userService.getUserById(id);
+        if (user != null) {
+            log.info("User found:");
+            log.info(user.getUsername() + " - " + user.getRole());
+        } else {
+            log.info("User not found!");
+        }
+    }
+
+    private void addStudent() {
+        scanner.nextLine();
+        log.info("Enter the student name: ");
+        String name = scanner.nextLine();
+        log.info("Enter the student password: ");
+        String pass = scanner.nextLine();
+        log.info("Enter the student faculty: ");
+        int faculty = scanner.nextInt();
+
+
+        User user = new User();
+        user.setUsername(name);
+        user.setRole("student");
+        user.setPassword(pass);
+        user.setFacultyId(faculty);
+
+        userService.saveStudent(user);
+        log.info("User successfully added!");
+    }
+
+    private void addProfessor() {
+        scanner.nextLine();
+        log.info("Enter the professor name: ");
+        String name = scanner.nextLine();
+        log.info("Enter the professor password: ");
+        String pass = scanner.nextLine();
+        log.info("Enter the professor faculty: ");
+        int faculty = scanner.nextInt();
+
+        User user = new User();
+        user.setUsername(name);
+        user.setRole("professor");
+        user.setPassword(pass);
+        user.setFacultyId(faculty);
+
+        userService.saveProfessor(user);
+        log.info("Professor successfully added!");
+    }
+
+
+    private void deleteUser() {
+        log.info("Enter the user ID: ");
+        Long id = scanner.nextLong();
+        userService.deleteUser(id);
+        log.info("User successfully deleted!");
+    }
+
+
 }

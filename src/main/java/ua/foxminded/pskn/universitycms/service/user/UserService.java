@@ -1,9 +1,12 @@
-package ua.foxminded.pskn.universitycms.service;
+package ua.foxminded.pskn.universitycms.service.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.model.user.User;
+import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
+import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
 import ua.foxminded.pskn.universitycms.repository.user.UserRepository;
@@ -11,17 +14,25 @@ import ua.foxminded.pskn.universitycms.repository.user.UserRepository;
 import java.util.List;
 import java.util.Scanner;
 
+@Slf4j
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FacultyRepository facultyRepository;
+
+    private final StudentGroupRepository studentGroupRepository;
 
     private final StudentRepository studentRepository;
 
     private final ProfessorRepository professorRepository;
 
-    public UserService(UserRepository userRepository, StudentRepository studentRepository, ProfessorRepository professorRepository) {
+    Scanner scanner = new Scanner(System.in);
+
+    public UserService(UserRepository userRepository, FacultyRepository facultyRepository, StudentGroupRepository studentGroupRepository, StudentRepository studentRepository, ProfessorRepository professorRepository) {
         this.userRepository = userRepository;
+        this.facultyRepository = facultyRepository;
+        this.studentGroupRepository = studentGroupRepository;
         this.studentRepository = studentRepository;
         this.professorRepository = professorRepository;
     }
@@ -42,7 +53,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
         if ("student".equals(user.getRole())) {
             Scanner scanner = new Scanner(System.in);
-            System.out.print("Enter student group number: ");
+            log.info("Enter student group number: ");
             int groupId = scanner.nextInt();
 
             Student student = new Student();
@@ -71,6 +82,26 @@ public class UserService {
             admin.setUserId(savedUser.getUserId());
             userRepository.save(admin);
         return savedUser;
+    }
+
+    public void changeMyName(User user){
+        String username = user.getUsername();
+        log.info("You actual username is " + username);
+        log.info("Write your new username");
+        String changedUsername = scanner.nextLine();
+        user.setUsername(changedUsername);
+        userRepository.save(user);
+    }
+
+    public void changeMyFaculty(User user){
+        log.info(facultyRepository.findAll().toString());
+        int facultyId = user.getFacultyId();
+        log.info("Your actual faculty ID is: " + facultyId);
+        log.info("Write your new faculty ID ");
+        int changedFacultyId = scanner.nextInt();
+        user.setFacultyId(changedFacultyId);
+        userRepository.save(user);
+
     }
 
     public void deleteUser(Long id){
