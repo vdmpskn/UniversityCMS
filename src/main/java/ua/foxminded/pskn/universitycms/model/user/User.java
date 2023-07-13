@@ -1,9 +1,15 @@
 package ua.foxminded.pskn.universitycms.model.user;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -18,4 +24,5 @@ public class User {
     private String role;
 
     private int facultyId;
+
 }

@@ -1,6 +1,7 @@
 package ua.foxminded.pskn.universitycms.model.university;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Date;

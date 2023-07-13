@@ -22,7 +22,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FacultyRepository facultyRepository;
-    private final StudentGroupRepository studentGroupRepository;
     private final StudentRepository studentRepository;
     private final ProfessorRepository professorRepository;
 
@@ -48,7 +47,10 @@ public class UserService {
             log.info("Enter student group number: ");
             int groupId = scanner.nextInt();
 
-            Student student = new Student();
+            Student student = Student.builder()
+                    .userId(savedUser.getUserId())
+                    .groupId(groupId)
+                    .build();
             student.setUserId(savedUser.getUserId());
             student.setGroupId(groupId);
             studentRepository.save(student);
@@ -70,8 +72,9 @@ public class UserService {
 
     public User saveAdmin(User user){
         User savedUser = userRepository.save(user);
-            User admin = new User();
-            admin.setUserId(savedUser.getUserId());
+        User admin = User.builder()
+                .userId(savedUser.getUserId())
+                .build();
             userRepository.save(admin);
         return savedUser;
     }

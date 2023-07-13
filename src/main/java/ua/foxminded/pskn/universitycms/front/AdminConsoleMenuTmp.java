@@ -92,8 +92,9 @@ public class AdminConsoleMenuTmp {
         log.info("Enter the name of the university: ");
         String name = scanner.nextLine();
 
-        University university = new University();
-        university.setUniversityName(name);
+        University university = University.builder()
+                .universityName(name)
+                .build();
 
         universityService.saveUniversity(university);
         log.info("University successfully added!");
@@ -106,13 +107,15 @@ public class AdminConsoleMenuTmp {
         log.info("Enter the university ID: ");
         int universityId = scanner.nextInt();
 
-        Faculty faculty = new Faculty();
-        faculty.setFacultyName(name);
-        faculty.setUniversityId(universityId);
+        Faculty faculty = Faculty.builder()
+                .facultyName(name)
+                .universityId(universityId)
+                .build();
 
         facultyService.saveFaculty(faculty);
         log.info("Faculty successfully added!");
     }
+
 
     private void addStudentGroup() {
         scanner.nextLine();
@@ -121,9 +124,10 @@ public class AdminConsoleMenuTmp {
         log.info("Enter the faculty ID: ");
         int facultyId = scanner.nextInt();
 
-        StudentGroup studentGroup = new StudentGroup();
-        studentGroup.setGroupName(name);
-        studentGroup.setFacultyId(facultyId);
+        StudentGroup studentGroup = StudentGroup.builder()
+                .groupName(name)
+                .facultyId(facultyId)
+                .build();
 
         studentGroupService.saveStudentGroup(studentGroup);
         log.info("Student group successfully added!");
@@ -159,11 +163,12 @@ public class AdminConsoleMenuTmp {
         log.info("Enter the admin faculty ID: ");
         int faculty = scanner.nextInt();
 
-        User user = new User();
-        user.setUsername(name);
-        user.setRole("admin");
-        user.setPassword(pass);
-        user.setFacultyId(faculty);
+        User user = User.builder()
+                .username(name)
+                .role("admin")
+                .password(pass)
+                .facultyId(faculty)
+                .build();
         userService.saveAdmin(user);
 
         log.info("User successfully added!");
@@ -196,12 +201,12 @@ public class AdminConsoleMenuTmp {
         int faculty = scanner.nextInt();
 
 
-        User user = new User();
-        user.setUsername(name);
-        user.setRole("student");
-        user.setPassword(pass);
-        user.setFacultyId(faculty);
-
+        User user = User.builder()
+                .username(name)
+                .role("student")
+                .password(pass)
+                .facultyId(faculty)
+                .build();
         userService.saveStudent(user);
         log.info("User successfully added!");
     }
@@ -215,12 +220,12 @@ public class AdminConsoleMenuTmp {
         log.info("Enter the professor faculty: ");
         int faculty = scanner.nextInt();
 
-        User user = new User();
-        user.setUsername(name);
-        user.setRole("professor");
-        user.setPassword(pass);
-        user.setFacultyId(faculty);
-
+        User user = User.builder()
+                .username(name)
+                .role("professor")
+                .password(pass)
+                .facultyId(faculty)
+                .build();
         userService.saveProfessor(user);
         log.info("Professor successfully added!");
     }
