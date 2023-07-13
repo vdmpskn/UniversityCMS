@@ -49,8 +49,8 @@ CREATE TABLE students
 
 CREATE TABLE professors
 (
-    user_id      INTEGER PRIMARY KEY,
-    professor_id SERIAL,
+    user_id      INTEGER,
+    professor_id SERIAL PRIMARY KEY,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
@@ -58,11 +58,13 @@ CREATE TABLE schedule
 (
     schedule_id  SERIAL PRIMARY KEY,
     group_id INTEGER   NOT NULL,
+    professor_id INTEGER NOT NULL,
     course_id    INTEGER   NOT NULL,
     start_time   TIMESTAMP NOT NULL,
     end_time     TIMESTAMP NOT NULL,
     date         DATE      NOT NULL,
     FOREIGN KEY (course_id) REFERENCES course (course_id),
-    FOREIGN KEY (group_id) REFERENCES student_group (group_id)
+    FOREIGN KEY (group_id) REFERENCES student_group (group_id),
+    FOREIGN KEY (professor_id) REFERENCES professors (professor_id)
 
 );
