@@ -1,5 +1,6 @@
 package ua.foxminded.pskn.universitycms.front;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
@@ -12,6 +13,7 @@ import ua.foxminded.pskn.universitycms.service.user.StudentService;
 
 import java.util.Scanner;
 
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class AuthDemo {
@@ -22,17 +24,7 @@ public class AuthDemo {
     private final AdminConsoleMenuTmp adminConsoleMenu;
     private final ScheduleService scheduleService;
     private final ConsoleMenuTmp consoleMenu;
-    private final Scanner scanner;
-
-    public AuthDemo(UserService userService, StudentService studentService, ProfessorService professorService, AdminConsoleMenuTmp adminConsoleMenu, ScheduleService scheduleService, ConsoleMenuTmp consoleMenu) {
-        this.userService = userService;
-        this.studentService = studentService;
-        this.professorService = professorService;
-        this.adminConsoleMenu = adminConsoleMenu;
-        this.scheduleService = scheduleService;
-        this.consoleMenu = consoleMenu;
-        this.scanner = new Scanner(System.in);
-    }
+    Scanner scanner = new Scanner(System.in);
 
     public void start() {
         log.info("Enter username: ");

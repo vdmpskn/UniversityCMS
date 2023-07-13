@@ -1,5 +1,6 @@
 package ua.foxminded.pskn.universitycms.service.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
@@ -14,28 +15,19 @@ import ua.foxminded.pskn.universitycms.repository.user.UserRepository;
 import java.util.List;
 import java.util.Scanner;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final FacultyRepository facultyRepository;
-
     private final StudentGroupRepository studentGroupRepository;
-
     private final StudentRepository studentRepository;
-
     private final ProfessorRepository professorRepository;
 
     Scanner scanner = new Scanner(System.in);
 
-    public UserService(UserRepository userRepository, FacultyRepository facultyRepository, StudentGroupRepository studentGroupRepository, StudentRepository studentRepository, ProfessorRepository professorRepository) {
-        this.userRepository = userRepository;
-        this.facultyRepository = facultyRepository;
-        this.studentGroupRepository = studentGroupRepository;
-        this.studentRepository = studentRepository;
-        this.professorRepository = professorRepository;
-    }
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);

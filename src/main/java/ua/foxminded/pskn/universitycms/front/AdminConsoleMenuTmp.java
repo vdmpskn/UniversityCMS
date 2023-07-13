@@ -1,5 +1,6 @@
 package ua.foxminded.pskn.universitycms.front;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.foxminded.pskn.universitycms.model.user.User;
@@ -11,7 +12,7 @@ import ua.foxminded.pskn.universitycms.service.user.ProfessorService;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
 
 import java.util.Scanner;
-
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class AdminConsoleMenuTmp {
@@ -21,16 +22,8 @@ public class AdminConsoleMenuTmp {
     private final StudentGroupService studentGroupService;
     private final UserService userService;
     private final ProfessorService professorService;
-    private final Scanner scanner;
 
-    public AdminConsoleMenuTmp(UniversityService universityService, FacultyService facultyService, StudentGroupService studentGroupService, UserService userService, ProfessorService professorService) {
-        this.universityService = universityService;
-        this.facultyService = facultyService;
-        this.studentGroupService = studentGroupService;
-        this.userService = userService;
-        this.professorService = professorService;
-        this.scanner = new Scanner(System.in);
-    }
+    Scanner scanner = new Scanner(System.in);
 
     public void start() {
         boolean exit = false;

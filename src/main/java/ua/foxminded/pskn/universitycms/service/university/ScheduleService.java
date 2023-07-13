@@ -1,18 +1,16 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.university.Schedule;
 import ua.foxminded.pskn.universitycms.repository.university.ScheduleRepository;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
-
-    public ScheduleService(ScheduleRepository scheduleRepository) {
-        this.scheduleRepository = scheduleRepository;
-    }
 
     public List<Schedule> getScheduleById(Long groupId){
         return scheduleRepository.findScheduleByGroupId(groupId);

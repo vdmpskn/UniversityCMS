@@ -1,21 +1,17 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class UniversityService {
 
     private final UniversityRepository universityRepository;
-
-
-    public UniversityService(UniversityRepository universityRepository) {
-        this.universityRepository = universityRepository;
-
-    }
 
     public University saveUniversity(University university) {
         return universityRepository.save(university);
