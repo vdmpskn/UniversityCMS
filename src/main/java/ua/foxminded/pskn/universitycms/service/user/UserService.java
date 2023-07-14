@@ -25,32 +25,34 @@ public class UserService {
     private final StudentRepository studentRepository;
     private final ProfessorRepository professorRepository;
 
-    Scanner scanner = new Scanner(System.in);
-
+    private final Scanner scanner = new Scanner(System.in);
 
     public User getUserById(Long id) {
+        log.debug("Getting user by ID: {}", id);
         return userRepository.findById(id).orElse(null);
     }
 
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
+        log.debug("Getting all users");
         return userRepository.findAll();
     }
 
     public User getUserByUsername(String username) {
+        log.debug("Getting user by username: {}", username);
         return userRepository.findByUsername(username);
     }
 
-    public User saveStudent(User user){
+    public User saveStudent(User user) {
+        log.info("Saving student: {}", user);
         User savedUser = userRepository.save(user);
         if ("student".equals(user.getRole())) {
-            Scanner scanner = new Scanner(System.in);
             log.info("Enter student group number: ");
             int groupId = scanner.nextInt();
 
             Student student = Student.builder()
-                    .userId(savedUser.getUserId())
-                    .groupId(groupId)
-                    .build();
+                .userId(savedUser.getUserId())
+                .groupId(groupId)
+                .build();
             student.setUserId(savedUser.getUserId());
             student.setGroupId(groupId);
             studentRepository.save(student);
@@ -58,11 +60,10 @@ public class UserService {
         return savedUser;
     }
 
-    public User saveProfessor(User user){
+    public User saveProfessor(User user) {
+        log.info("Saving professor: {}", user);
         User savedUser = userRepository.save(user);
         if ("professor".equals(user.getRole())) {
-            Scanner scanner = new Scanner(System.in);
-
             Professor professor = new Professor();
             professor.setUserId(savedUser.getUserId());
             professorRepository.save(professor);
@@ -70,36 +71,39 @@ public class UserService {
         return savedUser;
     }
 
-    public User saveAdmin(User user){
+    public User saveAdmin(User user) {
+        log.info("Saving admin: {}", user);
         User savedUser = userRepository.save(user);
         User admin = User.builder()
-                .userId(savedUser.getUserId())
-                .build();
-            userRepository.save(admin);
+            .userId(savedUser.getUserId())
+            .build();
+        userRepository.save(admin);
         return savedUser;
     }
 
-    public void changeMyName(User user){
+    public void changeMyName(User user) {
         String username = user.getUsername();
-        log.info("You actual username is " + username);
-        log.info("Write your new username");
+        log.info("Your actual username is: {}", username);
+        log.info("Write your new username: ");
         String changedUsername = scanner.nextLine();
         user.setUsername(changedUsername);
         userRepository.save(user);
+        log.info("Username changed successfully.");
     }
 
-    public void changeMyFaculty(User user){
+    public void changeMyFaculty(User user) {
         log.info(facultyRepository.findAll().toString());
         int facultyId = user.getFacultyId();
-        log.info("Your actual faculty ID is: " + facultyId);
-        log.info("Write your new faculty ID ");
+        log.info("Your actual faculty ID is: {}", facultyId);
+        log.info("Write your new faculty ID: ");
         int changedFacultyId = scanner.nextInt();
         user.setFacultyId(changedFacultyId);
         userRepository.save(user);
-
+        log.info("Faculty ID changed successfully.");
     }
 
-    public void deleteUser(Long id){
-         userRepository.deleteById(id);
+    public void deleteUser(Long id) {
+        log.info("Deleting user with ID: {}", id);
+        userRepository.deleteById(id);
     }
 }

@@ -18,16 +18,17 @@ public class StudentService {
     Scanner scanner = new Scanner(System.in);
 
     public Student getStudentByUserId(Long userId){
-       return studentRepository.getStudentByUserId(userId);
+        log.debug("Getting student by userId: {}", userId);
+        return studentRepository.getStudentByUserId(userId);
     }
 
     public void changeMyGroup(Student student){
         studentGroupRepository.findAll();
-        log.info("Your groupID is: " + student.getGroupId());
+        log.info("Your groupID is: {}", student.getGroupId());
         log.info("Write your new groupID: ");
         int changedGroupId = scanner.nextInt();
         student.setGroupId(changedGroupId);
+        log.info("Saving student with updated groupID: {}", student);
         studentRepository.save(student);
     }
-
 }
