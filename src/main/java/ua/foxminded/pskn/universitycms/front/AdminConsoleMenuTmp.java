@@ -238,5 +238,4 @@ public class AdminConsoleMenuTmp {
         log.info("User successfully deleted!");
     }
 
-
 }

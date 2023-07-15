@@ -22,8 +22,8 @@ public class AuthDemo {
     private final StudentService studentService;
     private final ProfessorService professorService;
     private final AdminConsoleMenuTmp adminConsoleMenu;
-    private final ScheduleService scheduleService;
     private final ConsoleMenuTmp consoleMenu;
+
     Scanner scanner = new Scanner(System.in);
 
     public void start() {
