@@ -3,8 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>User Page</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+    </style>
 </head>
 <body>
+<h1>User Page</h1>
 <table>
     <tr>
         <th>User ID</th>
@@ -12,7 +33,6 @@
         <th>Password</th>
         <th>Role</th>
         <th>Faculty ID</th>
-
     </tr>
     <tr th:each="user : ${users}">
         <td th:text="${user.userId}"></td>
@@ -22,6 +42,5 @@
         <td th:text="${user.facultyId}"></td>
     </tr>
 </table>
-
 </body>
 </html>

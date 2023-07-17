@@ -3,19 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>University Page</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+    </style>
 </head>
 <body>
+<h1>University Page</h1>
 <table>
     <tr>
         <th>University ID</th>
         <th>Name</th>
-
     </tr>
     <tr th:each="university : ${university}">
         <td th:text="${university.universityId}"></td>
         <td th:text="${university.universityName}"></td>
     </tr>
 </table>
-
 </body>
 </html>

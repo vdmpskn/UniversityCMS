@@ -3,14 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Faculty Page</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+    </style>
 </head>
 <body>
+<h1>Faculty Page</h1>
 <table>
     <tr>
         <th>Faculty ID</th>
         <th>University ID</th>
         <th>Name</th>
-
     </tr>
     <tr th:each="faculty : ${faculty}">
         <td th:text="${faculty.facultyId}"></td>
@@ -18,6 +38,5 @@
         <td th:text="${faculty.facultyName}"></td>
     </tr>
 </table>
-
 </body>
 </html>

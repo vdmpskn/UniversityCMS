@@ -3,8 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Schedule Page</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+    </style>
 </head>
 <body>
+<h1>Schedule Page</h1>
 <table>
     <tr>
         <th>Schedule ID</th>
@@ -14,7 +35,6 @@
         <th>Start Time</th>
         <th>End Time</th>
         <th>Date</th>
-
     </tr>
     <tr th:each="schedule : ${schedule}">
         <td th:text="${schedule.scheduleId}"></td>
@@ -26,6 +46,5 @@
         <td th:text="${schedule.date}"></td>
     </tr>
 </table>
-
 </body>
 </html>
