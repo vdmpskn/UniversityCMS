@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Group Page</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Group ID</th>
+        <th>Faculty ID</th>
+        <th>Group Name</th>
+
+    </tr>
+    <tr th:each="student_group : ${student_group}">
+        <td th:text="${student_group.groupId}"></td>
+        <td th:text="${student_group.facultyId}"></td>
+        <td th:text="${student_group.groupName}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

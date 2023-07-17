@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Faculty Page</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Faculty ID</th>
+        <th>University ID</th>
+        <th>Name</th>
+
+    </tr>
+    <tr th:each="faculty : ${faculty}">
+        <td th:text="${faculty.facultyId}"></td>
+        <td th:text="${faculty.universityId}"></td>
+        <td th:text="${faculty.facultyName}"></td>
+    </tr>
+</table>
+
+</body>
+</html>
