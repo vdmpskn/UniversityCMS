@@ -2,6 +2,8 @@ package ua.foxminded.pskn.universitycms.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.model.user.Student;
@@ -35,6 +37,11 @@ public class UserService {
     public List<User> getAllUsers() {
         log.debug("Getting all users");
         return userRepository.findAll();
+    }
+
+    public Page<User> getAllUsers(Pageable pageable){
+        log.debug("Retrieving all users");
+        return userRepository.findAll(pageable);
     }
 
     public User getUserByUsername(String username) {

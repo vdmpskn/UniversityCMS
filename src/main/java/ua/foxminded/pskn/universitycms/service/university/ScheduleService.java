@@ -2,6 +2,8 @@ package ua.foxminded.pskn.universitycms.service.university;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.university.Schedule;
 import ua.foxminded.pskn.universitycms.repository.university.ScheduleRepository;
@@ -24,8 +26,12 @@ public class ScheduleService {
         return scheduleRepository.findScheduleByProfessorId(professorId);
     }
 
-    public List<Schedule> findAll(){
+    public List<Schedule> getAllSchedule(){
         log.debug("Retrieving all schedules");
         return scheduleRepository.findAll();
+    }
+    public Page<Schedule> getAllSchedule(Pageable pageable){
+        log.debug("Retrieving all schedules");
+        return scheduleRepository.findAll(pageable);
     }
 }

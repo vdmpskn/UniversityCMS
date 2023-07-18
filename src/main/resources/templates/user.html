@@ -22,6 +22,22 @@
         th {
             background-color: lightgray;
         }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            margin-right: 5px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .pagination .current {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -34,6 +50,7 @@
         <th>Role</th>
         <th>Faculty ID</th>
     </tr>
+
     <tr th:each="user : ${users}">
         <td th:text="${user.userId}"></td>
         <td th:text="${user.username}"></td>
@@ -41,6 +58,25 @@
         <td th:text="${user.role}"></td>
         <td th:text="${user.facultyId}"></td>
     </tr>
+
 </table>
+
+<div class="pagination">
+    <span th:if="${currentPage > 0}">
+        <a th:href="@{/user(page=0)}">First</a>
+        <a th:href="@{/user(page=${currentPage - 1})}">Previous</a>
+    </span>
+
+    <span th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/user(page=${pageNumber})}" th:class="${pageNumber == currentPage ? 'current' : ''}"
+           th:text="${pageNumber + 1}"></a>
+    </span>
+
+    <span th:if="${currentPage < totalPages - 1}">
+        <a th:href="@{/user(page=${currentPage + 1})}">Next</a>
+        <a th:href="@{/user(page=${totalPages - 1})}">Last</a>
+    </span>
+</div>
+
 </body>
 </html>
