@@ -20,7 +20,7 @@ public class UniversityController {
     }
 
     @GetMapping
-    public String universityyPage(Model model) {
+    public String universityPage(Model model) {
         List<University> universities = universityRepository.findAll();
         model.addAttribute("university", universities);
         return "university";

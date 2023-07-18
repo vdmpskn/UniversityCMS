@@ -12,6 +12,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/faculty.html")
 public class FacultyController {
+
     private final FacultyRepository facultyRepository;
 
     public FacultyController(FacultyRepository facultyRepository) {
