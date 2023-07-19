@@ -55,7 +55,7 @@ class ScheduleServiceTest {
         List<Schedule> schedules = Arrays.asList(new Schedule(), new Schedule());
         when(scheduleRepository.findAll()).thenReturn(schedules);
 
-        List<Schedule> retrievedSchedules = scheduleService.findAll();
+        List<Schedule> retrievedSchedules = scheduleService.getAllSchedule();
 
         assertEquals(schedules, retrievedSchedules);
         verify(scheduleRepository).findAll();

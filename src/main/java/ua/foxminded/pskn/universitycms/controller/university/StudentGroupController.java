@@ -27,6 +27,6 @@ public class StudentGroupController {
         model.addAttribute("student_group", studentGroupPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", studentGroupPage.getTotalPages());
-        return "studentgroup";
+        return "/university/studentgroup";
     }
 }

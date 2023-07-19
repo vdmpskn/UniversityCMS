@@ -28,6 +28,6 @@ public class UserController {
         model.addAttribute("users", userPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", userPage.getTotalPages());
-        return "user";
+        return "/users/user";
     }
 }

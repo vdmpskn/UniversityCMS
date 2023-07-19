@@ -28,6 +28,6 @@ public class ProfessorController {
         model.addAttribute("professors", professorPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", professorPage.getTotalPages());
-        return "professors";
+        return "/users/professors";
     }
 }

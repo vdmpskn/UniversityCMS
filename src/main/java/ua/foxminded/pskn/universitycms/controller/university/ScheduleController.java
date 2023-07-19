@@ -27,6 +27,6 @@ public class ScheduleController {
         model.addAttribute("schedule", schedulePage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", schedulePage.getTotalPages());
-        return "schedule";
+        return "/university/schedule";
     }
 }

@@ -1,47 +1,48 @@
 package ua.foxminded.pskn.universitycms.controller.user;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.ui.Model;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.test.web.servlet.MockMvc;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
-import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
+import ua.foxminded.pskn.universitycms.service.user.ProfessorService;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@WebMvcTest(ProfessorController.class)
 class ProfessorControllerTest {
 
-    @Mock
-    private ProfessorRepository professorRepository;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
-    private Model model;
-
-    private ProfessorController professorController;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        professorController = new ProfessorController(professorRepository);
-    }
+    @MockBean
+    private ProfessorService professorService;
 
     @Test
-    void professorPage_ShouldReturnProfessorsTemplate() {
-        List<Professor> professorList = Arrays.asList(
-            new Professor(1L, 1),
-            new Professor(2L, 2)
-        );
-        when(professorRepository.findAll()).thenReturn(professorList);
+    void testProfessorPage() throws Exception {
+        Professor professor = new Professor();
+        professor.setProfessorId(1);
+        professor.setUserId(1L);
 
-        String viewName = professorController.professorPage(model);
+        Page<Professor> professorPage = new PageImpl<>(Collections.singletonList(professor));
+        when(professorService.getAllProfessors(any())).thenReturn(professorPage);
 
-        assertEquals("professors", viewName);
-        verify(model).addAttribute("professors", professorList);
-        verify(professorRepository).findAll();
+        mockMvc.perform(get("/professors"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("/users/professors"))
+            .andExpect(model().attributeExists("professors"))
+            .andExpect(model().attribute("professors", professorPage.getContent()))
+            .andExpect(model().attributeExists("currentPage"))
+            .andExpect(model().attribute("currentPage", 0))
+            .andExpect(model().attributeExists("totalPages"))
+            .andExpect(model().attribute("totalPages", professorPage.getTotalPages()));
     }
 }

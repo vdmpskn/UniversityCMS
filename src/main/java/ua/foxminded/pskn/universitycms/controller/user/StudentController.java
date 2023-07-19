@@ -28,6 +28,6 @@ public class StudentController {
         model.addAttribute("students", studentPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", studentPage.getTotalPages());
-        return "students";
+        return "/users/students";
     }
 }

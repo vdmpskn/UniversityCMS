@@ -27,6 +27,6 @@ public class FacultyController {
         model.addAttribute("faculty", facultyPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", facultyPage.getTotalPages());
-        return "faculty";
+        return "/university/faculty";
     }
 }
