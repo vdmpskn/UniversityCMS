@@ -27,7 +27,7 @@ class FacultyControllerTest {
     private FacultyService facultyService;
 
     @Test
-    void testFacultyPage() throws Exception {
+    void shouldGetFacultyPage() throws Exception {
         Faculty faculty = new Faculty();
         faculty.setFacultyId(1L);
         faculty.setFacultyName("Computer Science");

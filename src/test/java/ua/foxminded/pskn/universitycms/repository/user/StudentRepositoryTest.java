@@ -30,7 +30,7 @@ class StudentRepositoryTest {
     private TestEntityManager entityManager;
 
     @Test
-    void testGetStudentByUserId() {
+    void shouldGetStudentByUserId() {
         Long userId = 10L;
         Student student = Student.builder()
             .groupId(1)

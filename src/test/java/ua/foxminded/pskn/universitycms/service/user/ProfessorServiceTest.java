@@ -24,7 +24,7 @@ class ProfessorServiceTest {
     }
 
     @Test
-    void testGetProfessorByUserId() {
+    void shouldGetProfessorByUserId() {
         Long userId = 1L;
         Professor professor = new Professor();
         when(professorRepository.getProfessorByUserId(userId)).thenReturn(professor);

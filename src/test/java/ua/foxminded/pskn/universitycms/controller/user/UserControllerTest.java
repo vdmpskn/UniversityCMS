@@ -27,7 +27,7 @@ class UserControllerTest {
     private UserService userService;
 
     @Test
-    void testUserPage() throws Exception {
+    void shouldGetUserPage() throws Exception {
         User user = new User();
         user.setUserId(1L);
         user.setUsername("John Doe");

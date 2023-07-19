@@ -27,7 +27,7 @@ class ScheduleServiceTest {
     }
 
     @Test
-    void testGetScheduleById() {
+    void shouldGetScheduleById() {
         Long groupId = 1L;
         List<Schedule> schedules = Arrays.asList(new Schedule(), new Schedule());
         when(scheduleRepository.findScheduleByGroupId(groupId)).thenReturn(schedules);
@@ -39,7 +39,7 @@ class ScheduleServiceTest {
     }
 
     @Test
-    void testGetScheduleByProfessorId() {
+    void shouldGetScheduleByProfessorId() {
         int professorId = 1;
         List<Schedule> schedules = Arrays.asList(new Schedule(), new Schedule());
         when(scheduleRepository.findScheduleByProfessorId(professorId)).thenReturn(schedules);
@@ -51,7 +51,7 @@ class ScheduleServiceTest {
     }
 
     @Test
-    void testFindAll() {
+    void shouldFindAll() {
         List<Schedule> schedules = Arrays.asList(new Schedule(), new Schedule());
         when(scheduleRepository.findAll()).thenReturn(schedules);
 

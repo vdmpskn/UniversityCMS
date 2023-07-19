@@ -27,7 +27,7 @@ class StudentControllerTest {
     private StudentService studentService;
 
     @Test
-    void testStudentPage() throws Exception {
+    void shouldGetStudentPage() throws Exception {
         Student student = new Student();
         student.setUserId(1L);
         student.setGroupId(3);

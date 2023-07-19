@@ -32,7 +32,7 @@ class ProfessorRepositoryTest {
     private TestEntityManager entityManager;
 
     @Test
-    void testGetProfessorByUserId() {
+    void shouldGetProfessorByUserId() {
         long userId = 10L;
         Professor professor = new Professor();
         professor.setUserId(userId);
@@ -45,7 +45,7 @@ class ProfessorRepositoryTest {
     }
 
     @Test
-    void testFindMaxProfessorId() {
+    void shouldFindMaxProfessorId() {
         Professor professor1 = Professor.builder()
             .professorId(1)
             .build();

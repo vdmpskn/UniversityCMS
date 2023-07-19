@@ -32,7 +32,7 @@ class ScheduleControllerTest {
     private ScheduleService scheduleService;
 
     @Test
-    void testSchedulePage() throws Exception {
+    void shouldGetSchedulePage() throws Exception {
         Schedule schedule = Schedule.builder()
             .scheduleId(1L)
             .courseId(1)

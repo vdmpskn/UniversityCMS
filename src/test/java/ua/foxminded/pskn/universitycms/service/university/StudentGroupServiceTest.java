@@ -28,7 +28,7 @@ class StudentGroupServiceTest {
     }
 
     @Test
-    void testSaveStudentGroup() {
+    void shouldSaveStudentGroup() {
         StudentGroup studentGroup = new StudentGroup();
         studentGroup.setGroupId(1L);
         when(studentGroupRepository.save(studentGroup)).thenReturn(studentGroup);
@@ -40,7 +40,7 @@ class StudentGroupServiceTest {
     }
 
     @Test
-    void testGetStudentGroupById() {
+    void shouldGetStudentGroupById() {
         Long groupId = 1L;
         StudentGroup studentGroup = new StudentGroup();
         studentGroup.setGroupId(groupId);
@@ -53,7 +53,7 @@ class StudentGroupServiceTest {
     }
 
     @Test
-    void testGetAllStudentGroups() {
+    void shouldGetAllStudentGroups() {
         StudentGroup studentGroup1 = new StudentGroup();
         studentGroup1.setGroupId(1L);
         StudentGroup studentGroup2 = new StudentGroup();

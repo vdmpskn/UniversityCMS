@@ -30,7 +30,7 @@ class ScheduleRepositoryTest {
     private ScheduleRepository scheduleRepository;
 
     @Test
-    void testFindScheduleByGroupId() {
+    void shouldFindScheduleByGroupId() {
         int groupId = 1;
         Schedule schedule = Schedule.builder()
             .groupId(groupId)
@@ -48,7 +48,7 @@ class ScheduleRepositoryTest {
     }
 
     @Test
-    void testFindScheduleByProfessorId() {
+    void shouldFindScheduleByProfessorId() {
         int groupId = 1;
         int professorId = 1;
         Schedule schedule = Schedule.builder()

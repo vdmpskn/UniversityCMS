@@ -27,7 +27,7 @@ class ProfessorControllerTest {
     private ProfessorService professorService;
 
     @Test
-    void testProfessorPage() throws Exception {
+    void shouldGetProfessorPage() throws Exception {
         Professor professor = new Professor();
         professor.setProfessorId(1);
         professor.setUserId(1L);

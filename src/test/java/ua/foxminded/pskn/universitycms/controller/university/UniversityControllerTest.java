@@ -27,7 +27,7 @@ class UniversityControllerTest {
     private UniversityService universityService;
 
     @Test
-    void testUniversityPage() throws Exception {
+    void shouldGetUniversityPage() throws Exception {
         University university = new University();
         university.setUniversityId(1L);
         university.setUniversityName("KNU");

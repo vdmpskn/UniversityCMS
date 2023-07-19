@@ -27,7 +27,7 @@ class StudentGroupControllerTest {
     private StudentGroupService studentGroupService;
 
     @Test
-    void testStudentGroupPage() throws Exception {
+    void shouldGetStudentGroupPage() throws Exception {
         StudentGroup studentGroup = new StudentGroup();
         studentGroup.setGroupId(1L);
         studentGroup.setGroupName("IC-72");

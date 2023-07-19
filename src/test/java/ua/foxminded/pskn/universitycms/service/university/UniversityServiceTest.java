@@ -29,7 +29,7 @@ class UniversityServiceTest {
     }
 
     @Test
-    void testSaveUniversity() {
+    void shouldSaveUniversity() {
         University university = new University();
         university.setUniversityId(1L);
         when(universityRepository.save(university)).thenReturn(university);
@@ -41,7 +41,7 @@ class UniversityServiceTest {
     }
 
     @Test
-    void testGetUniversityById() {
+    void shouldGetUniversityById() {
         Long universityId = 1L;
         University university = new University();
         university.setUniversityId(universityId);
@@ -56,7 +56,7 @@ class UniversityServiceTest {
 
 
     @Test
-    void testGetAllUniversities() {
+    void shouldGetAllUniversities() {
         University university1 = new University();
         university1.setUniversityId(1L);
         University university2 = new University();
@@ -71,7 +71,7 @@ class UniversityServiceTest {
     }
 
     @Test
-    void testDeleteUniversity() {
+    void shouldDeleteUniversity() {
         Long universityId = 1L;
 
         universityService.deleteUniversity(universityId);
