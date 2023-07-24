@@ -4,6 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.model.user.Student;
@@ -14,6 +20,7 @@ import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
 import ua.foxminded.pskn.universitycms.repository.user.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,6 +28,8 @@ import java.util.Scanner;
 @Slf4j
 @Service
 public class UserService {
+
+    private final BCryptPasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
     private final FacultyRepository facultyRepository;
@@ -51,6 +60,7 @@ public class UserService {
 
     public User saveStudent(User user) {
         log.info("Saving student: {}", user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         if ("student".equals(user.getRole())) {
             log.info("Enter student group number: ");
@@ -69,6 +79,7 @@ public class UserService {
 
     public User saveProfessor(User user) {
         log.info("Saving professor: {}", user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         if ("professor".equals(user.getRole())) {
             Professor professor = new Professor();
@@ -80,6 +91,7 @@ public class UserService {
 
     public User saveAdmin(User user) {
         log.info("Saving admin: {}", user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         User admin = User.builder()
             .userId(savedUser.getUserId())
