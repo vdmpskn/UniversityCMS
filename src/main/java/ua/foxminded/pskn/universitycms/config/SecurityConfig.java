@@ -25,9 +25,9 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/home").permitAll()
-                .requestMatchers("/students").hasRole("student")
-                .requestMatchers("/professors").hasRole("professor")
-                .requestMatchers("/user").hasRole("admin")
+                .requestMatchers("/studentscab").hasRole("student")
+                .requestMatchers("/professorscab").hasRole("professor")
+                .requestMatchers("/adminscab", "/welcome").hasRole("admin")
 
                 .anyRequest().authenticated()
             )
