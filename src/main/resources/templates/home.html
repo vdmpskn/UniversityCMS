@@ -1,11 +1,49 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Spring Security Example</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            font-size: 16px;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding-top: 100px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        p {
+            font-size: 18px;
+            text-align: center;
+        }
+
+        a {
+            color: #007bff;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-<h1>Welcome!</h1>
-
-<p>Click <a th:href="@{/login}">Sign In</a> to see a greeting.</p>
+<div class="container">
+    <h1>Welcome at Amazing University Campus!</h1>
+    <p>Click <a th:href="@{/login}">Sign In</a> to go to your cabinet.</p>
+</div>
 </body>
 </html>

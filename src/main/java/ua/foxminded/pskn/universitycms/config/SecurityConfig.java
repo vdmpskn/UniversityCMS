@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import ua.foxminded.pskn.universitycms.security.MyAuthenticationSuccessHandler;
 import ua.foxminded.pskn.universitycms.security.MyUserDetailsService;
 
 @Configuration
@@ -31,6 +33,7 @@ public class SecurityConfig {
             )
             .formLogin((form) -> form
                 .defaultSuccessUrl("/cabinet")
+                .successHandler(myAuthenticationSuccessHandler())
                 .loginPage("/login")
                 .permitAll()
             )
@@ -47,6 +50,11 @@ public class SecurityConfig {
         daoAuthenticationProvider.setPasswordEncoder(cryptPasswordEncoder());
 
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
+        return new MyAuthenticationSuccessHandler();
     }
 
     @Bean
