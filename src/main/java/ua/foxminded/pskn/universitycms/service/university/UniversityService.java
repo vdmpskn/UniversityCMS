@@ -33,7 +33,7 @@ public class UniversityService {
     }
 
     public Page<University> getAllUniversities(Pageable pageable){
-        log.debug("Retrieving all universities");
+        log.debug("Retrieving all universities with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return universityRepository.findAll(pageable);
     }
 

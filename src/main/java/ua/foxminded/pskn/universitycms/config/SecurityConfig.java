@@ -10,24 +10,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import ua.foxminded.pskn.universitycms.security.MyAuthenticationSuccessHandler;
-import ua.foxminded.pskn.universitycms.security.MyUserDetailsService;
+import ua.foxminded.pskn.universitycms.security.SecureAuthenticationSuccessHandler;
+import ua.foxminded.pskn.universitycms.security.SecureUserDetailsService;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final MyUserDetailsService myUserDetailsService;
+    private final SecureUserDetailsService secureUserDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/home").permitAll()
-                .requestMatchers("/studentscab").hasRole("student")
-                .requestMatchers("/professorscab").hasRole("professor")
-                .requestMatchers("/adminscab", "/welcome").hasRole("admin")
 
                 .anyRequest().authenticated()
             )
@@ -38,7 +35,15 @@ public class SecurityConfig {
                 .permitAll()
             )
             .authenticationProvider(authenticationProvider())
-            .logout((logout) -> logout.permitAll());
+            .logout((logout) -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .permitAll()
+            );
+
 
         return http.build();
     }
@@ -46,7 +51,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(myUserDetailsService);
+        daoAuthenticationProvider.setUserDetailsService(secureUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(cryptPasswordEncoder());
 
         return daoAuthenticationProvider;
@@ -54,7 +59,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
-        return new MyAuthenticationSuccessHandler();
+        return new SecureAuthenticationSuccessHandler();
     }
 
     @Bean

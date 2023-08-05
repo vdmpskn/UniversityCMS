@@ -20,8 +20,8 @@ public class FacultyController {
     private final FacultyService facultyService;
 
     @GetMapping
-    public String facultyPage(Model model, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 5);
+    public String facultyPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<Faculty> facultyPage = facultyService.getAllFaculties(pageable);
 
         model.addAttribute("faculty", facultyPage.getContent());
@@ -29,4 +29,5 @@ public class FacultyController {
         model.addAttribute("totalPages", facultyPage.getTotalPages());
         return "/university/faculty";
     }
+
 }

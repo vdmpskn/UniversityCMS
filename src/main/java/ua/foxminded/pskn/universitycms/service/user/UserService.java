@@ -48,8 +48,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Page<User> getAllUsers(Pageable pageable){
-        log.debug("Retrieving all users");
+    public Page<User> getAllUsers(Pageable pageable) {
+        log.debug("Retrieving all users with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return userRepository.findAll(pageable);
     }
 

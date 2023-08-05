@@ -20,8 +20,8 @@ public class StudentGroupController {
     private final StudentGroupService studentGroupService;
 
     @GetMapping
-    public String studentGroupPage(Model model, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 5);
+    public String studentGroupPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<StudentGroup> studentGroupPage = studentGroupService.getAllStudentGroups(pageable);
 
         model.addAttribute("student_group", studentGroupPage.getContent());

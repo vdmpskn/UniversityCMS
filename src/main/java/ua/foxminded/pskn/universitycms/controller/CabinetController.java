@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @Controller
-public class CabController {
-
+public class CabinetController {
 
     @GetMapping("/professorscab")
     public String professorCabinetPage() {

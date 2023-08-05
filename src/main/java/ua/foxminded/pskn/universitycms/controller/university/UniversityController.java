@@ -19,8 +19,8 @@ public class UniversityController {
     private final UniversityService universityService;
 
     @GetMapping
-    public String universityPage(Model model, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 5);
+    public String universityPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<University> universityPage = universityService.getAllUniversities(pageable);
         model.addAttribute("university", universityPage.getContent());
         model.addAttribute("currentPage", page);

@@ -20,8 +20,8 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @GetMapping
-    public String schedulePage(Model model, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 5);
+    public String schedulePage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<Schedule> schedulePage = scheduleService.getAllSchedule(pageable);
 
         model.addAttribute("schedule", schedulePage.getContent());

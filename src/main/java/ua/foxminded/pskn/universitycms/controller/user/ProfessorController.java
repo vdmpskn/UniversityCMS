@@ -21,8 +21,8 @@ public class ProfessorController {
     private final ProfessorService professorService;
 
     @GetMapping
-    public String professorPage(Model model, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 5);
+    public String professorPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<Professor> professorPage = professorService.getAllProfessors(pageable);
 
         model.addAttribute("professors", professorPage.getContent());

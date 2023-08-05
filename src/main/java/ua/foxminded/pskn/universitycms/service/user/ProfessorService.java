@@ -27,7 +27,7 @@ public class ProfessorService {
     }
 
     public Page<Professor> getAllProfessors(Pageable pageable){
-        log.debug("Retrieving all professors");
+        log.debug("Retrieving all professors with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return professorRepository.findAll(pageable);
     }
 }

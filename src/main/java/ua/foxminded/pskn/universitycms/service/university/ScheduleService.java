@@ -31,7 +31,7 @@ public class ScheduleService {
         return scheduleRepository.findAll();
     }
     public Page<Schedule> getAllSchedule(Pageable pageable){
-        log.debug("Retrieving all schedules");
+        log.debug("Retrieving all schedules with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return scheduleRepository.findAll(pageable);
     }
 }

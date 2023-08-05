@@ -31,7 +31,7 @@ public class FacultyService {
     }
 
     public Page<Faculty> getAllFaculties(Pageable pageable){
-        log.debug("Retrieving all faculties");
+        log.debug("Retrieving all faculties with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return facultyRepository.findAll(pageable);
     }
 

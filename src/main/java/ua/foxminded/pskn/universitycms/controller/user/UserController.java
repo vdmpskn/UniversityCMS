@@ -21,8 +21,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public String userPage(Model model, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 5);
+    public String userPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<User> userPage = userService.getAllUsers(pageable);
 
         model.addAttribute("users", userPage.getContent());

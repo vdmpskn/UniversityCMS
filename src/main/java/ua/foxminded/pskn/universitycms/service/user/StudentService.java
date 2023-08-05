@@ -41,7 +41,7 @@ public class StudentService {
     }
 
     public Page<Student> getAllStudents(Pageable pageable){
-        log.debug("Retrieving all students");
+        log.debug("Retrieving all students with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return studentRepository.findAll(pageable);
     }
 }

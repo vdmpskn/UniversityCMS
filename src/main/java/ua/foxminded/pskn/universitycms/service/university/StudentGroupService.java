@@ -32,7 +32,7 @@ public class StudentGroupService {
     }
 
     public Page<StudentGroup> getAllStudentGroups(Pageable pageable){
-        log.debug("Retrieving all student groups");
+        log.debug("Retrieving all students group with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return studentGroupRepository.findAll(pageable);
     }
 

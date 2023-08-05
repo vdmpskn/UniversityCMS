@@ -21,8 +21,8 @@ public class StudentController {
 
 
     @GetMapping
-    public String studentPage(Model model, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 5);
+    public String studentPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<Student> studentPage = studentService.getAllStudents(pageable);
 
         model.addAttribute("students", studentPage.getContent());
