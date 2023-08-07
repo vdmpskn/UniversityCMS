@@ -28,7 +28,7 @@ class FacultyServiceTest {
     }
 
     @Test
-    void testSaveFaculty() {
+    void shouldSaveFaculty() {
         Faculty faculty = new Faculty();
         faculty.setFacultyId(1L);
         when(facultyRepository.save(faculty)).thenReturn(faculty);
@@ -40,7 +40,7 @@ class FacultyServiceTest {
     }
 
     @Test
-    void testGetFacultyById() {
+    void shouldGetFacultyById() {
         Long facultyId = 1L;
         Faculty faculty = new Faculty();
         faculty.setFacultyId(facultyId);
@@ -53,7 +53,7 @@ class FacultyServiceTest {
     }
 
     @Test
-    void testGetAllFaculties() {
+    void shouldGetAllFaculties() {
         Faculty faculty1 = new Faculty();
         faculty1.setFacultyId(1L);
         Faculty faculty2 = new Faculty();
@@ -68,7 +68,7 @@ class FacultyServiceTest {
     }
 
     @Test
-    void testDeleteFaculty() {
+    void shouldDeleteFaculty() {
         Long facultyId = 1L;
 
         facultyService.deleteFaculty(facultyId);

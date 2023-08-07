@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Group Page</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            margin-right: 5px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .pagination .current {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1>Student Group Page</h1>
+<table>
+    <tr>
+        <th>Group ID</th>
+        <th>Faculty ID</th>
+        <th>Group Name</th>
+    </tr>
+    <tr th:each="group : ${student_group}">
+        <td th:text="${group.groupId}"></td>
+        <td th:text="${group.facultyId}"></td>
+        <td th:text="${group.groupName}"></td>
+    </tr>
+</table>
+
+<div class="pagination">
+    <span th:if="${currentPage > 0}">
+        <a th:href="@{/studentgroup(page=0)}">First</a>
+        <a th:href="@{/studentgroup(page=${currentPage - 1})}">Previous</a>
+    </span>
+
+    <span th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/studentgroup(page=${pageNumber})}" th:class="${pageNumber == currentPage ? 'current' : ''}"
+           th:text="${pageNumber + 1}"></a>
+    </span>
+
+    <span th:if="${currentPage < totalPages - 1}">
+        <a th:href="@{/studentgroup(page=${currentPage + 1})}">Next</a>
+        <a th:href="@{/studentgroup(page=${totalPages - 1})}">Last</a>
+    </span>
+</div>
+</body>
+</html>

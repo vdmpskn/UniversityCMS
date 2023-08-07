@@ -28,7 +28,7 @@ class StudentServiceTest {
     }
 
     @Test
-    public void testGetStudentByUserId() {
+    void shouldGetStudentByUserId() {
         Long userId = 1L;
         Student student = new Student();
         when(studentRepository.getStudentByUserId(userId)).thenReturn(student);

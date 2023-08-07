@@ -41,7 +41,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testGetUserById() {
+    void shouldGetUserById() {
         Long userId = 1L;
         User user = new User();
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -53,7 +53,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testGetAllUsers() {
+    void shouldGetAllUsers() {
         List<User> userList = new ArrayList<>();
         userList.add(new User());
         userList.add(new User());
@@ -66,7 +66,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testGetUserByUsername() {
+    void shouldGetUserByUsername() {
         String username = "john";
         User user = new User();
         when(userRepository.findByUsername(username)).thenReturn(user);
@@ -79,7 +79,7 @@ class UserServiceTest {
 
 
     @Test
-    public void testDeleteUser() {
+    void shouldDeleteUser() {
         Long userId = 1L;
 
         userService.deleteUser(userId);

@@ -2,6 +2,8 @@ package ua.foxminded.pskn.universitycms.service.university;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
@@ -28,6 +30,11 @@ public class UniversityService {
     public List<University> getAllUniversities() {
         log.debug("Retrieving all universities");
         return universityRepository.findAll();
+    }
+
+    public Page<University> getAllUniversities(Pageable pageable){
+        log.debug("Retrieving all universities with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
+        return universityRepository.findAll(pageable);
     }
 
     public void deleteUniversity(Long id) {

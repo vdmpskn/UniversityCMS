@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ADMIN PANEL</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            font-size: 16px;
+            color: #333;
+            background-color: #fff;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #000;
+            text-decoration: none;
+        }
+
+        button {
+            background-color: #000;
+            color: #fff;
+            font-weight: 500;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        #header {
+            background-image: url(https://i.imgur.com/yiDkDhH.jpeg);
+            background-size: 1546px 423px;
+            background-position: center;
+            height: 30vh;
+        }
+
+        #main {
+            padding: 20px;
+        }
+
+        #footer {
+            background-color: #000;
+            color: #fff;
+            font-size: 12px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <header id="header">
+
+    </header>
+
+    <main id="main">
+        <h1 class="text-center">ADMIN PANEL</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="text-center">Manage University</h2>
+                <ul class="list-unstyled">
+                    <li><a href="#">Display all universities</a></li>
+                    <li><a href="#">Add a new university</a></li>
+                    <li><a href="#">Delete a university</a></li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h2 class="text-center">Manage Users</h2>
+                <ul class="list-unstyled">
+                    <li><a href="#">Display all users</a></li>
+                    <li><a href="#">Add an administrator</a></li>
+                    <li><a href="#">Add a new student</a></li>
+                    <li><a href="#">Add a new professor</a></li>
+                    <li><a href="#">Delete a user</a></li>
+                </ul>
+            </div>
+            <a href="/logout">Logout</a>
+        </div>
+    </main>
+
+    <footer id="footer">
+        <p>&copy; 2023 University of California, Berkeley</p>
+    </footer>
+</div>
+</body>
+</html>

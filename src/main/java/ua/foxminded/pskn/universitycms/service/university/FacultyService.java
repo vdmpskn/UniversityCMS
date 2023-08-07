@@ -2,6 +2,8 @@ package ua.foxminded.pskn.universitycms.service.university;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.university.Faculty;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
@@ -24,7 +26,13 @@ public class FacultyService {
     }
 
     public List<Faculty> getAllFaculties() {
+        log.debug("Retrieving all schedules");
         return facultyRepository.findAll();
+    }
+
+    public Page<Faculty> getAllFaculties(Pageable pageable){
+        log.debug("Retrieving all faculties with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
+        return facultyRepository.findAll(pageable);
     }
 
     public void deleteFaculty(Long id) {

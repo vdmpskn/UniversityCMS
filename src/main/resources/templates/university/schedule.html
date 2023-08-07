@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule Page</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            margin-right: 5px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .pagination .current {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1>Schedule Page</h1>
+<table>
+    <tr>
+        <th>Schedule ID</th>
+        <th>Group ID</th>
+        <th>Professor ID</th>
+        <th>Course ID</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Date</th>
+    </tr>
+    <tr th:each="schedule : ${schedule}">
+        <td th:text="${schedule.scheduleId}"></td>
+        <td th:text="${schedule.groupId}"></td>
+        <td th:text="${schedule.professorId}"></td>
+        <td th:text="${schedule.courseId}"></td>
+        <td th:text="${schedule.startTime}"></td>
+        <td th:text="${schedule.endTime}"></td>
+        <td th:text="${schedule.date}"></td>
+    </tr>
+</table>
+
+<div class="pagination">
+    <span th:if="${currentPage > 0}">
+        <a th:href="@{/schedule(page=0)}">First</a>
+        <a th:href="@{/schedule(page=${currentPage - 1})}">Previous</a>
+    </span>
+
+    <span th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/schedule(page=${pageNumber})}" th:class="${pageNumber == currentPage ? 'current' : ''}"
+           th:text="${pageNumber + 1}"></a>
+    </span>
+
+    <span th:if="${currentPage < totalPages - 1}">
+        <a th:href="@{/schedule(page=${currentPage + 1})}">Next</a>
+        <a th:href="@{/schedule(page=${totalPages - 1})}">Last</a>
+    </span>
+</div>
+</body>
+</html>

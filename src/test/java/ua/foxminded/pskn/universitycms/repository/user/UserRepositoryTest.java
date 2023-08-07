@@ -27,7 +27,7 @@ class UserRepositoryTest {
         .withPassword("test");
 
     @Test
-    void testFindByUsername() {
+    void shouldFindByUsername() {
         String username = "testUser";
         User user = User.builder()
             .username("testUser")
