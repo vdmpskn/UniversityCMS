@@ -21,7 +21,6 @@ public class AdminConsoleMenuTmp {
     private final FacultyService facultyService;
     private final StudentGroupService studentGroupService;
     private final UserService userService;
-    private final ProfessorService professorService;
 
     Scanner scanner = new Scanner(System.in);
 

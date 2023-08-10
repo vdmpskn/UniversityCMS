@@ -18,15 +18,16 @@ public class SecureAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String role = authentication.getAuthorities().iterator().next().getAuthority();
+        String username = authentication.getName();
 
         if (role.equals("admin")) {
-            response.sendRedirect("/adminscab");
+            response.sendRedirect("/adminscab?username=" + username);
         }
         if (role.equals("professor")) {
-            response.sendRedirect("/professorscab");
+            response.sendRedirect("/professorscab?username=" + username);
         }
         if (role.equals("student")) {
-            response.sendRedirect("/studentscab");
+            response.sendRedirect("/studentscab?username=" + username);
         }
     }
 }

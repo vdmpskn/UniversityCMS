@@ -6,4 +6,5 @@ import ua.foxminded.pskn.universitycms.model.university.University;
 
 @Repository
 public interface UniversityRepository extends JpaRepository<University, Long> {
+    void deleteUniversityByUniversityName(String universityName);
 }

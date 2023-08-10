@@ -1,5 +1,6 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,12 @@ public class FacultyService {
     public Faculty saveFaculty(Faculty faculty) {
         log.info("Saving faculty: {}", faculty);
         return facultyRepository.save(faculty);
+    }
+
+    @Transactional
+    public void deleteFacultyByName(String facultyName) {
+        log.info("Delete faculty: {}", facultyName);
+        facultyRepository.deleteFacultyByFacultyName(facultyName);
     }
 
     public Faculty getFacultyById(Long id) {
