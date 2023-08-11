@@ -23,11 +23,22 @@ public class UniversityService {
         return universityRepository.save(university);
     }
 
-    @Transactional
-    public void deleteUniversityByName(String universityName) {
+    public University saveUniversityByName(String universityName) {
+        University newUniversity = new University();
+        newUniversity.setUniversityName(universityName);
+        log.info("Saving university: {}", universityName);
+        return universityRepository.save(newUniversity);
+    }
 
+    @Transactional
+    public boolean deleteUniversityByName(String universityName) {
         log.info("Delete university: {}", universityName);
-        universityRepository.deleteUniversityByUniversityName(universityName);
+        University university = universityRepository.findByUniversityName(universityName).orElse(null);
+        if (university != null) {
+            universityRepository.delete(university);
+            return true;
+        }
+        return false;
     }
 
     public University getUniversityById(Long id) {

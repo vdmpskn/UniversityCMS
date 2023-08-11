@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.university.Faculty;
+import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 
 import java.util.List;
@@ -22,10 +23,23 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
+    public Faculty saveFacultyByName(String facultyName, int universityId) {
+        Faculty newFaculty = new Faculty();
+        newFaculty.setFacultyName(facultyName);
+        newFaculty.setUniversityId(universityId);
+        log.info("Saving faculty: {}", newFaculty);
+        return facultyRepository.save(newFaculty);
+    }
+
     @Transactional
-    public void deleteFacultyByName(String facultyName) {
+    public boolean deleteFacultyByName(String facultyName) {
         log.info("Delete faculty: {}", facultyName);
-        facultyRepository.deleteFacultyByFacultyName(facultyName);
+        Faculty faculty = facultyRepository.findByFacultyName(facultyName).orElse(null);
+        if (faculty != null) {
+            facultyRepository.delete(faculty);
+            return true;
+        }
+        return false;
     }
 
     public Faculty getFacultyById(Long id) {

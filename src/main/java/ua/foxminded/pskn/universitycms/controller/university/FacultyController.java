@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.foxminded.pskn.universitycms.model.university.Faculty;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.service.university.FacultyService;
@@ -34,21 +35,17 @@ public class FacultyController {
     }
 
     @PostMapping("/add")
-    public String addFaculty(@RequestParam String name, int universityId) {
-        Faculty newFaculty = new Faculty();
-        newFaculty.setFacultyName(name);
-        newFaculty.setUniversityId(universityId);
-
-        facultyService.saveFaculty(newFaculty);
-
-        return "redirect:/faculty";
+    public String addFaculty(String name, int universityId, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("successFacultyMessage", "Faculty added successfully!");
+        facultyService.saveFacultyByName(name, universityId);
+        return "redirect:/adminscab";
     }
 
     @PostMapping("/delete")
-    @Transactional
-    public String deleteUniversity(@RequestParam String name) {
+    public String deleteUniversity(String name, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("deleteFacultyMessage", "Faculty deleted successfully!");
         facultyService.deleteFacultyByName(name);
-        return "redirect:/faculty";
+        return "redirect:/adminscab";
     }
 
 }

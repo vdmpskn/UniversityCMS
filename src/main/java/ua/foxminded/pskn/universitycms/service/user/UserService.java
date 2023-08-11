@@ -51,6 +51,21 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public User findAdminByUsername(String username){
+        log.debug("Getting admin by username: {}", username);
+        return userRepository.findAdminByUsername(username);
+    }
+
+    public User findProfessorByUsername(String username){
+        log.debug("Getting admin by username: {}", username);
+        return userRepository.findProfessorByUsername(username);
+    }
+
+    public User findStudentByUsername(String username){
+        log.debug("Getting admin by username: {}", username);
+        return userRepository.findStudentByUsername(username);
+    }
+
     public User saveStudent(User user) {
         log.info("Saving student: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));

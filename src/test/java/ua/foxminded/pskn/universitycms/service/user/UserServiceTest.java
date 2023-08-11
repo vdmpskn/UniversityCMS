@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
@@ -19,6 +20,8 @@ class UserServiceTest {
 
     private UserService userService;
 
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
     @Mock
     private UserRepository userRepository;
 
@@ -37,7 +40,7 @@ class UserServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserService(userRepository, facultyRepository, studentRepository, professorRepository);
+        userService = new UserService(passwordEncoder,userRepository, facultyRepository, studentRepository, professorRepository);
     }
 
     @Test

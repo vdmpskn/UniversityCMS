@@ -4,7 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ua.foxminded.pskn.universitycms.model.university.University;
 
+import java.util.Optional;
+
 @Repository
 public interface UniversityRepository extends JpaRepository<University, Long> {
-    void deleteUniversityByUniversityName(String universityName);
+    boolean deleteUniversityByUniversityName(String universityName);
+
+    Optional<University> findByUniversityName(String universityName);
 }
+

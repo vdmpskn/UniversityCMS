@@ -1,19 +1,17 @@
 package ua.foxminded.pskn.universitycms.security;
 
-import jakarta.servlet.FilterChain;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
+import org.springframework.security.web.WebAttributes;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
 import java.io.IOException;
 
+@Component
 public class SecureAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        AuthenticationSuccessHandler.super.onAuthenticationSuccess(request, response, chain, authentication);
-    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -29,6 +27,5 @@ public class SecureAuthenticationSuccessHandler implements AuthenticationSuccess
         if (role.equals("student")) {
             response.sendRedirect("/studentscab?username=" + username);
         }
-    }
+        request.getSession().setAttribute("successMessage", "You have successfully logged in as " + role + " " + username);    }
 }
-
