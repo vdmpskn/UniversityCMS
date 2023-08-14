@@ -45,4 +45,5 @@ public class CabinetController {
         return "studentscab";
     }
 
+
 }

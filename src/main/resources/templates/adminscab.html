@@ -114,37 +114,7 @@
                     <button type="submit">Display All Schedules</button>
                 </form>
                 <hr>
-                <form th:action="@{/university/add}" method="post">
-                    <input type="text" name="name" placeholder="University Name" required>
-                    <button type="submit">Add University</button>
-                </form>
-                <div th:if="${successUniversityMessage}" class="alert alert-success">
-                    <p th:text="${successUniversityMessage}"></p>
-                </div>
-                <form th:action="@{/university/delete}" method="post">
-                    <input type="text" name="name" placeholder="University Name" required>
-                    <button type="submit">Delete University</button>
-                </form>
-                <div th:if="${deleteUniversityMessage}" class="alert alert-success">
-                    <p th:text="${deleteUniversityMessage}"></p>
-                </div>
-                <hr>
-                <form th:action="@{/faculty/add}" method="post">
-                    <input type="text" name="name" placeholder="Faculty Name" required>
-                    <input type="number" name="universityId" placeholder="University ID" required>
-                    <button type="submit">Add Faculty</button>
-                </form>
-                <div th:if="${successFacultyMessage}" class="alert alert-success">
-                    <p th:text="${successFacultyMessage}"></p>
-                </div>
-                <form th:action="@{/faculty/delete}" method="post">
-                    <input type="text" name="name" placeholder="Faculty Name" required>
-                    <button type="submit">Delete Faculty</button>
-                </form>
-                <div th:if="${deleteFacultyMessage}" class="alert alert-success">
-                    <p th:text="${deleteFacultyMessage}"></p>
-                </div>
-                <hr>
+
                 <a href="/logout">Logout</a>
             </div>
             <div class="col-md-6">

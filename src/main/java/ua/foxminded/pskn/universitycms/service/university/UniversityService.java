@@ -10,6 +10,7 @@ import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,16 +31,33 @@ public class UniversityService {
         return universityRepository.save(newUniversity);
     }
 
+    public boolean isUniversityExistByUniversityId(int universityId){
+
+        return universityRepository.existsByUniversityId(universityId);
+
+    }
+
+    public University findUniversityByName(String name){
+        return universityRepository.findByUniversityName(name);
+    }
+
     @Transactional
-    public boolean deleteUniversityByName(String universityName) {
-        log.info("Delete university: {}", universityName);
-        University university = universityRepository.findByUniversityName(universityName).orElse(null);
+    public void updateUniversityName(String universityName, Long id){
+
+        log.info("Update university: {}", universityName);
+        universityRepository.updateUniversityName(id, universityName);
+    }
+
+    @Transactional
+    public boolean deleteUniversityByName(String name) {
+        University university = universityRepository.findByUniversityName(name);
         if (university != null) {
             universityRepository.delete(university);
             return true;
         }
         return false;
     }
+
 
     public University getUniversityById(Long id) {
         log.debug("Retrieving university by ID: {}", id);

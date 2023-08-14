@@ -32,7 +32,19 @@ public class FacultyService {
     }
 
     @Transactional
-    public boolean deleteFacultyByName(String facultyName) {
+    public void updateFacultyName(String facultyName, Long id){
+
+        log.info("Update faculty: {}", facultyName);
+        facultyRepository.updateFacultyNameById(id, facultyName);
+    }
+
+    public boolean hasFacultiesWithUniversityId(Long universityId) {
+        List<Faculty> faculties = facultyRepository.findByUniversityId(universityId);
+        return !faculties.isEmpty();
+    }
+
+    @Transactional
+    public boolean deleteFacultyByName(String facultyName, int universityId) {
         log.info("Delete faculty: {}", facultyName);
         Faculty faculty = facultyRepository.findByFacultyName(facultyName).orElse(null);
         if (faculty != null) {
