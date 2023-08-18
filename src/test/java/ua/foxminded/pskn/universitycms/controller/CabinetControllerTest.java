@@ -24,7 +24,7 @@ class CabinetControllerTest {
     private UserService userService;
 
     @Test
-    void testProfessorCabinetPage() throws Exception {
+    void shouldGetProfessorCabinetPage() throws Exception {
         User professor = new User();
         professor.setUsername("p");
         professor.setPassword("p");
@@ -39,7 +39,7 @@ class CabinetControllerTest {
     }
 
     @Test
-    void testAdminCabinetPage() throws Exception {
+    void shouldGetAdminCabinetPage() throws Exception {
         User admin = new User();
         admin.setUsername("test_admin");
 
@@ -53,7 +53,7 @@ class CabinetControllerTest {
     }
 
     @Test
-    void testStudentCabinetPage() throws Exception {
+    void shouldGetStudentCabinetPage() throws Exception {
         User student = new User();
         student.setUsername("test_student");
 

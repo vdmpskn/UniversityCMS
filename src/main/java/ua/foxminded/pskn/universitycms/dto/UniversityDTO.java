@@ -13,6 +13,7 @@ import ua.foxminded.pskn.universitycms.model.university.University;
 public class UniversityDTO {
 
     private Long universityId;
+
     private String universityName;
 
     public static UniversityDTO fromUniversity(University university) {

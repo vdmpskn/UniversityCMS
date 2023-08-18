@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
 
@@ -34,7 +35,7 @@ class UniversityServiceTest {
         university.setUniversityId(1L);
         when(universityRepository.save(university)).thenReturn(university);
 
-        University savedUniversity = universityService.saveUniversity(university);
+        University savedUniversity = universityService.saveUniversity(UniversityDTO.fromUniversity(university));
 
         assertEquals(university, savedUniversity);
         verify(universityRepository).save(university);

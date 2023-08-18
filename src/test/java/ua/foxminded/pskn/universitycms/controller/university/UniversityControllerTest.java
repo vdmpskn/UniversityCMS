@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.service.university.UniversityService;
 
@@ -36,7 +37,7 @@ class UniversityControllerTest {
     private UniversityService universityService;
 
     @Test
-    void testUniversityPage() throws Exception {
+    void shouldUniversityPage() throws Exception {
         List<University> universityList = new ArrayList<>();
         universityList.add(new University(1L, "University 1"));
         universityList.add(new University(2L, "University 2"));
@@ -55,28 +56,40 @@ class UniversityControllerTest {
     }
 
     @Test
-    void testAddUniversity() throws Exception {
+    void shouldAddUniversity() throws Exception {
         mockMvc.perform(post("/university/add")
                 .param("name", "Test University")
-                .with(csrf())
-                .with(user("a").password("a").roles("ADMIN")))
+                .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/adminscab"))
+            .andExpect(redirectedUrl("/university"))
             .andExpect(flash().attributeExists("successUniversityMessage"));
 
-        verify(universityService).saveUniversityByName("Test University");
+        verify(universityService, times(1)).saveUniversity(any(UniversityDTO.class));
     }
 
     @Test
-    void testDeleteUniversity() throws Exception {
+    void shouldDeleteUniversity() throws Exception {
         mockMvc.perform(post("/university/delete")
-                .param("name", "Test University")
-            .with(csrf())
-            .with(user("a").password("a").roles("ADMIN")))
+                .param("universityId", "1")
+                .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/adminscab"))
+            .andExpect(redirectedUrl("/university"))
             .andExpect(flash().attributeExists("deleteUniversityMessage"));
 
-        verify(universityService).deleteUniversityByName("Test University");
+        verify(universityService, times(1)).deleteUniversity(anyLong());
     }
+
+    @Test
+    void shouldEditUniversity() throws Exception {
+        mockMvc.perform(post("/university/edit")
+                .param("universityId", "1")
+                .param("name", "Updated University")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/university"))
+            .andExpect(flash().attributeExists("editUniversityMessage"));
+
+        verify(universityService, times(1)).updateUniversityName(any(UniversityDTO.class));
+    }
+
 }

@@ -13,6 +13,8 @@ import ua.foxminded.pskn.universitycms.model.university.Faculty;
 @AllArgsConstructor
 public class FacultyDTO {
 
+    private Long facultyId;
+
     private String facultyName;
 
     private int universityId;

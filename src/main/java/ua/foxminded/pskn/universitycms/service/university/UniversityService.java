@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
 
@@ -19,7 +20,8 @@ public class UniversityService {
 
     private final UniversityRepository universityRepository;
 
-    public University saveUniversity(University university) {
+    public University saveUniversity(UniversityDTO universityDTO) {
+        University university = universityDTO.toUniversity();
         log.info("Saving university: {}", university);
         return universityRepository.save(university);
     }
@@ -42,15 +44,15 @@ public class UniversityService {
     }
 
     @Transactional
-    public void updateUniversityName(String universityName, Long id){
+    public void updateUniversityName(UniversityDTO universityDTO){
 
-        log.info("Update university: {}", universityName);
-        universityRepository.updateUniversityName(id, universityName);
+        log.info("Update university: {}", universityDTO.getUniversityName());
+        universityRepository.updateUniversityName(universityDTO.getUniversityId(), universityDTO.getUniversityName());
     }
 
     @Transactional
-    public boolean deleteUniversityByName(String name) {
-        University university = universityRepository.findByUniversityName(name);
+    public boolean deleteUniversityByName(UniversityDTO universityDTO) {
+        University university = universityRepository.findByUniversityName(universityDTO.getUniversityName());
         if (university != null) {
             universityRepository.delete(university);
             return true;

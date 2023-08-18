@@ -53,15 +53,15 @@
         <td th:text="${university.universityId}"></td>
         <td th:text="${university.universityName}"></td>
         <td>
-            <form th:action="@{/university/delete}" method="post">
-                <input type="hidden" name="name" th:value="${university.universityName}">
-                <button type="submit">Delete</button>
+            <form th:action="@{/university/delete}" th:object="${universityDTO}" method="post">
+                <input type="hidden" name="universityId" th:value="${university.universityId}" />
+                <button type="submit">Delete University</button>
             </form>
+
             <button type="button" class="btn btn-primary edit-btn" th:data-university-id="${university.universityId}" data-toggle="modal" data-target="#editUniversityModal">Edit</button>
         </td>
     </tr>
 </table>
-<hr>
 <div th:each="university : ${university}">
     <div class="modal fade" th:id="'editUniversityModal-' + ${university.universityId}" tabindex="-1" role="dialog">
         <div class="modal-dialog">
@@ -72,22 +72,21 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/university/edit}" method="post">
-                        <input type="hidden" name="id" th:value="${university.universityId}">
-                        <label>Name:</label>
-                        <input type="text" name="name" th:value="${university.universityName}">
-                        <button type="submit">Save</button>
+                        <input type="hidden" name="universityId" th:value="${university.universityId}" />
+                        <input type="text" name="universityName" th:value="${university.universityName}" placeholder="University Name"/>
+                        <button type="submit">Edit University</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<form th:action="@{/university/add}" method="post">
-    <label>Name:</label>
-    <input type="text" name="name" placeholder="University Name" required>
-    <button type="submit">Add University</button>
-</form>
-<hr>
+
+    <form th:action="@{/university/add}" th:object="${universityDTO}" method="post">
+        <input type="text" th:field="*{universityName}" placeholder="University Name"/>
+        <button type="submit">Add University</button>
+    </form>
+
 <div th:if="${deleteUniversityMessage}" class="alert alert-success" role="alert">
     <p th:text="${deleteUniversityMessage}"></p>
 </div>

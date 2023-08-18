@@ -1,13 +1,17 @@
 package ua.foxminded.pskn.universitycms.controller.university;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
+import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
 import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.service.university.FacultyService;
@@ -20,8 +24,6 @@ public class UniversityController {
 
     private final UniversityService universityService;
 
-    private final FacultyService facultyService;
-
     @GetMapping
     public String universityPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -29,48 +31,48 @@ public class UniversityController {
         model.addAttribute("university", universityPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", universityPage.getTotalPages());
+
+        model.addAttribute("universityDTO", new UniversityDTO());
+
         return "university/university";
     }
 
     @PostMapping("/add")
-    public String addUniversity(String name, RedirectAttributes redirectAttributes) {
-        UniversityDTO universityDTO = new UniversityDTO();
-        universityDTO.setUniversityName(name);
-
-        universityService.saveUniversity(universityDTO.toUniversity());
-
+    public String addUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes) {
+        universityService.saveUniversity(universityDTO);
         redirectAttributes.addFlashAttribute("successUniversityMessage", "University added successfully!");
         return "redirect:/university";
     }
 
-
     @PostMapping("/delete")
-    public String deleteUniversity(@RequestParam("name") String universityName, RedirectAttributes redirectAttributes) {
-        University university = universityService.findUniversityByName(universityName);
-
-        if (university != null) {
-            if (facultyService.hasFacultiesWithUniversityId(university.getUniversityId())) {
-                redirectAttributes.addFlashAttribute("failDeleteUniversity", "Cannot delete university as it has associated faculties.");
-            } else {
-                universityService.deleteUniversity(university.getUniversityId());
-                redirectAttributes.addFlashAttribute("deleteUniversityMessage", "University deleted successfully!");
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("failDeleteUniversity", "University not found");
+    public String deleteUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes) {
+        try {
+            universityService.deleteUniversity(universityDTO.getUniversityId());
+            redirectAttributes.addFlashAttribute("deleteUniversityMessage", "University deleted successfully!");
+        } catch (DataIntegrityViolationException ex) {
+            redirectAttributes.addFlashAttribute("failDeleteUniversity", "Cannot delete university as it has associated faculties.");
         }
 
         return "redirect:/university";
     }
 
+
     @PostMapping("/edit")
-    public String editUniversity(Long id, String name, RedirectAttributes redirectAttributes){
-        if (id != null && name != null) {
-            universityService.updateUniversityName(name, id);
+    public String editUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes){
+        try {
+            universityService.updateUniversityName(universityDTO);
             redirectAttributes.addFlashAttribute("editUniversityMessage", "University edited successfully!");
-        } else {
+        } catch(UniversityNotFoundException ex) {
             redirectAttributes.addFlashAttribute("failEditUniversity", "Failed to edit university.");
         }
         return "redirect:/university";
+    }
+
+    @ExceptionHandler(UniversityNotFoundException.class)
+    public ModelAndView handleUniversityNotFoundException(UniversityNotFoundException ex) {
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("errorMessage", "University not found: " + ex.getMessage());
+        return modelAndView;
     }
 
 }

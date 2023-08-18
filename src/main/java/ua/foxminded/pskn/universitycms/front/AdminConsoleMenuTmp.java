@@ -3,6 +3,7 @@ package ua.foxminded.pskn.universitycms.front;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.service.university.FacultyService;
 import ua.foxminded.pskn.universitycms.service.university.StudentGroupService;
@@ -91,11 +92,11 @@ public class AdminConsoleMenuTmp {
         log.info("Enter the name of the university: ");
         String name = scanner.nextLine();
 
-        University university = University.builder()
+        University university = UniversityDTO.builder()
                 .universityName(name)
-                .build();
+                .build().toUniversity();
 
-        universityService.saveUniversity(university);
+        universityService.saveUniversity(UniversityDTO.fromUniversity(university));
         log.info("University successfully added!");
     }
 
