@@ -17,20 +17,4 @@ public class UserDTO {
 
     private int facultyId;
 
-    public static UserDTO fromUser(User user) {
-        return UserDTO.builder()
-            .username(user.getUsername())
-            .role(user.getRole())
-            .facultyId(user.getFacultyId())
-            .build();
-    }
-
-    public User toUser() {
-        return User.builder()
-            .username(username)
-            .role(role)
-            .facultyId(facultyId)
-            .build();
-    }
-
 }

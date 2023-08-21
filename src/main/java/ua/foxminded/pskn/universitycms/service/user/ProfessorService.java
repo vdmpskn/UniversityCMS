@@ -9,6 +9,7 @@ import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ import java.util.List;
 public class ProfessorService {
     private final ProfessorRepository professorRepository;
 
-    public Professor getProfessorByUserId(Long userId) {
+    public Optional<Professor> getProfessorByUserId(Long userId) {
         log.debug("Getting professor by user ID: {}", userId);
         return professorRepository.getProfessorByUserId(userId);
     }

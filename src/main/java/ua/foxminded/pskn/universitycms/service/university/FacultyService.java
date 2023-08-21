@@ -6,9 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ua.foxminded.pskn.universitycms.converter.faculty.FacultyDTOToFacultyConverter;
+import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
 import ua.foxminded.pskn.universitycms.model.university.Faculty;
-import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 
 import java.util.List;
@@ -20,9 +21,16 @@ import java.util.Optional;
 public class FacultyService {
     private final FacultyRepository facultyRepository;
 
-    public Faculty saveFaculty(Faculty faculty) {
-        log.info("Saving faculty: {}", faculty);
-        return facultyRepository.save(faculty);
+    private final FacultyDTOToFacultyConverter toFacultyConverter;
+
+    public Faculty saveFaculty(FacultyDTO facultyDTO) {
+        try {
+            log.info("Saving faculty: {}", facultyDTO);
+            return facultyRepository.save(toFacultyConverter.convert(facultyDTO));
+        }catch (FacultyNotFoundException ex){
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     public Faculty saveFacultyByName(String facultyName, int universityId) {
@@ -35,14 +43,16 @@ public class FacultyService {
 
     @Transactional
     public void updateFacultyName(FacultyDTO facultyDTO){
-
-        log.info("Update faculty: {}", facultyDTO.getFacultyName());
-        facultyRepository.updateFacultyNameById(facultyDTO.getFacultyId(), facultyDTO.getFacultyName());
+        try{
+            log.info("Update faculty: {}", facultyDTO.getFacultyName());
+            facultyRepository.updateFacultyNameById(facultyDTO.getFacultyId(), facultyDTO.getFacultyName());
+        } catch (FacultyNotFoundException ex){
+            ex.printStackTrace();
+        }
     }
 
     public boolean hasFacultiesWithUniversityId(Long universityId) {
-        List<Faculty> faculties = facultyRepository.findByUniversityId(universityId);
-        return !faculties.isEmpty();
+        return facultyRepository.existsById(universityId);
     }
 
     @Transactional
@@ -58,16 +68,17 @@ public class FacultyService {
     }
 
     @Transactional
-    public boolean deleteFacultyById(Long facultyId) {
+    public void deleteFacultyById(Long facultyId) {
         log.info("Delete faculty with ID: {}", facultyId);
 
         Optional<Faculty> facultyOptional = facultyRepository.findById(facultyId);
         if (facultyOptional.isPresent()) {
             facultyRepository.delete(facultyOptional.get());
-            return true;
+        } else {
+            throw new FacultyNotFoundException("Faculty with ID " + facultyId + " not found");
         }
-        return false;
     }
+
 
     public Faculty getFacultyById(Long id) {
         return facultyRepository.findById(id).orElse(null);

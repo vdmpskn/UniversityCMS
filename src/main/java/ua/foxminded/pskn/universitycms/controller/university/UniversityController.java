@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.foxminded.pskn.universitycms.converter.university.UniversityDTOToUniversityConverter;
 import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
 import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
@@ -23,6 +24,10 @@ import ua.foxminded.pskn.universitycms.service.university.UniversityService;
 public class UniversityController {
 
     private final UniversityService universityService;
+
+    private final FacultyService facultyService;
+
+    private final UniversityDTOToUniversityConverter toUniversityConverter;
 
     @GetMapping
     public String universityPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
@@ -41,28 +46,29 @@ public class UniversityController {
     public String addUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes) {
         universityService.saveUniversity(universityDTO);
         redirectAttributes.addFlashAttribute("successUniversityMessage", "University added successfully!");
+
         return "redirect:/university";
     }
 
     @PostMapping("/delete")
     public String deleteUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes) {
-        try {
-            universityService.deleteUniversity(universityDTO.getUniversityId());
-            redirectAttributes.addFlashAttribute("deleteUniversityMessage", "University deleted successfully!");
-        } catch (DataIntegrityViolationException ex) {
-            redirectAttributes.addFlashAttribute("failDeleteUniversity", "Cannot delete university as it has associated faculties.");
-        }
-
+        University university = toUniversityConverter.convert(universityDTO);
+            if  (facultyService.hasFacultiesWithUniversityId(university.getUniversityId())) {
+                redirectAttributes.addFlashAttribute("failDeleteUniversity", "Cannot delete university as it has associated faculties.");
+            } else {
+                universityService.deleteUniversityByName(universityDTO);
+                redirectAttributes.addFlashAttribute("deleteUniversityMessage", "University deleted successfully!");
+            }
         return "redirect:/university";
     }
 
 
     @PostMapping("/edit")
     public String editUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes){
-        try {
+        if(universityDTO.getUniversityName() != null && universityDTO.getUniversityId() != null){
             universityService.updateUniversityName(universityDTO);
             redirectAttributes.addFlashAttribute("editUniversityMessage", "University edited successfully!");
-        } catch(UniversityNotFoundException ex) {
+        } else {
             redirectAttributes.addFlashAttribute("failEditUniversity", "Failed to edit university.");
         }
         return "redirect:/university";

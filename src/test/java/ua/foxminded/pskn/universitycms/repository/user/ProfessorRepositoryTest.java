@@ -11,6 +11,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -38,10 +40,10 @@ class ProfessorRepositoryTest {
         professor.setUserId(userId);
         entityManager.persistAndFlush(professor);
 
-        Professor foundProfessor = professorRepository.getProfessorByUserId(userId);
+        Optional<Professor> foundProfessor = professorRepository.getProfessorByUserId(userId);
 
         assertNotNull(foundProfessor);
-        assertEquals(userId, foundProfessor.getUserId());
+        assertEquals(userId, foundProfessor.equals(userId));
     }
 
     @Test

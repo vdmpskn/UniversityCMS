@@ -1,7 +1,6 @@
 package ua.foxminded.pskn.universitycms.controller.university;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.foxminded.pskn.universitycms.converter.faculty.FacultyDTOToFacultyConverter;
+import ua.foxminded.pskn.universitycms.converter.faculty.FacultyToFacultyDTOConverter;
 import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
 import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
@@ -43,50 +44,37 @@ public class FacultyController {
 
     @PostMapping("/add")
     public String addFaculty(@ModelAttribute("facultyDTO") FacultyDTO facultyDTO, RedirectAttributes redirectAttributes) {
-        try {
             if (universityService.isUniversityExistByUniversityId(facultyDTO.getUniversityId())) {
-                facultyService.saveFaculty(facultyDTO.toFaculty());
+                facultyService.saveFaculty(facultyDTO);
                 redirectAttributes.addFlashAttribute("successFacultyMessage", "Faculty added successfully!");
             } else {
-                throw new UniversityNotFoundException("University with the provided ID does not exist.");
+                redirectAttributes.addFlashAttribute("errorFacultyMessage", "Faculty dont added!");
             }
-        } catch (UniversityNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorFacultyMessage", ex.getMessage());
-        }
         return "redirect:/faculty";
     }
 
     @PostMapping("/delete")
     public String deleteFaculty(@ModelAttribute("facultyDTO") FacultyDTO facultyDTO, RedirectAttributes redirectAttributes) {
-        try {
-            boolean deletionSuccessful = facultyService.deleteFacultyById(facultyDTO.getFacultyId());
-            if (deletionSuccessful) {
-                redirectAttributes.addFlashAttribute("deleteFacultyMessage", "Faculty deleted successfully!");
-            } else {
-                throw new FacultyNotFoundException("Faculty not found.");
-            }
-        } catch (DataIntegrityViolationException ex) {
-            redirectAttributes.addFlashAttribute("failDeleteFaculty", ex.getMessage());
+       if(facultyDTO != null){
+            facultyService.deleteFacultyById(facultyDTO.getFacultyId());
+            redirectAttributes.addFlashAttribute("deleteFacultyMessage", "Faculty deleted successfully!");
+        } else{
+            redirectAttributes.addFlashAttribute("failDeleteFaculty", "Faculty cant be deleted!");
         }
         return "redirect:/faculty";
     }
 
-
     @PostMapping("/edit")
     public String editFaculty(@ModelAttribute("facultyDTO") FacultyDTO facultyDTO, RedirectAttributes redirectAttributes) {
-        try {
             if (facultyDTO.getFacultyId() != null && facultyDTO.getFacultyName() != null) {
                 facultyService.updateFacultyName(facultyDTO);
                 redirectAttributes.addFlashAttribute("editFacultyMessage", "Faculty edited successfully!");
             } else {
-                throw new FacultyEditException("Failed to edit faculty.");
+                redirectAttributes.addFlashAttribute("failToEditFacultyMessage", "Faculty cant be edited!");
             }
-        } catch (FacultyEditException ex) {
-            redirectAttributes.addFlashAttribute("failEditFaculty", ex.getMessage());
-        }
+
         return "redirect:/faculty";
     }
-
 
     @ExceptionHandler(NullPointerException.class)
     public ModelAndView handleNullPointerException(NullPointerException ex) {

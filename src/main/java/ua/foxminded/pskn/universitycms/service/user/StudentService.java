@@ -10,6 +10,7 @@ import ua.foxminded.pskn.universitycms.repository.university.StudentGroupReposit
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 @Slf4j
@@ -20,7 +21,7 @@ public class StudentService {
     private final StudentGroupRepository studentGroupRepository;
     Scanner scanner = new Scanner(System.in);
 
-    public Student getStudentByUserId(Long userId){
+    public Optional<Student> getStudentByUserId(Long userId){
         log.debug("Getting student by userId: {}", userId);
         return studentRepository.getStudentByUserId(userId);
     }

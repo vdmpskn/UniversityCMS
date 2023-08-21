@@ -10,6 +10,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -38,9 +40,9 @@ class StudentRepositoryTest {
             .build();
         entityManager.persistAndFlush(student);
 
-        Student foundStudent = studentRepository.getStudentByUserId(userId);
+        Optional<Student> foundStudent = studentRepository.getStudentByUserId(userId);
 
         assertNotNull(foundStudent);
-        assertEquals(userId, foundStudent.getUserId());
+        assertEquals(userId, foundStudent.equals(userId));
     }
 }
