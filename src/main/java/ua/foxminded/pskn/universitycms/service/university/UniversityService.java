@@ -26,7 +26,7 @@ public class UniversityService {
 
     private final UniversityDTOToUniversityConverter toUniversityConverter;
 
-    public University saveUniversity(UniversityDTO universityDTO) {
+    public University saveUniversity(UniversityDTO universityDTO) throws UniversityNotFoundException {
         if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
             try {
                 University university = toUniversityConverter.convert(universityDTO);
@@ -55,7 +55,7 @@ public class UniversityService {
     }
 
     @Transactional
-    public void updateUniversityName(UniversityDTO universityDTO) {
+    public void updateUniversityName(UniversityDTO universityDTO) throws UniversityNotFoundException {
         if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
             log.info("Update university: {}", universityDTO.getUniversityName());
             try {
@@ -93,7 +93,7 @@ public class UniversityService {
     }
 
     @Transactional
-    public void deleteUniversity(Long id) {
+    public void deleteUniversity(Long id) throws DataIntegrityViolationException {
         log.info("Deleting university with ID: {}", id);
         try {
             universityRepository.deleteById(id);

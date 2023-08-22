@@ -72,15 +72,6 @@ public class FacultyController {
             } else {
                 redirectAttributes.addFlashAttribute("failToEditFacultyMessage", "Faculty cant be edited!");
             }
-
         return "redirect:/faculty";
     }
-
-    @ExceptionHandler(NullPointerException.class)
-    public ModelAndView handleNullPointerException(NullPointerException ex) {
-        ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("errorMessage", "An error occurred: " + ex.getMessage());
-        return modelAndView;
-    }
-
 }

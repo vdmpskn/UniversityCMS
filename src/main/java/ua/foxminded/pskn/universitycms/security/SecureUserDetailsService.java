@@ -25,7 +25,7 @@ public class SecureUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userService.getUserByUsername(username);
-        if (user == null) {
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("Bad username!");
         }
 

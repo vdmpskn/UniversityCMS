@@ -53,19 +53,19 @@ public class UniversityController {
     @PostMapping("/delete")
     public String deleteUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes) {
         University university = toUniversityConverter.convert(universityDTO);
-            if  (facultyService.hasFacultiesWithUniversityId(university.getUniversityId())) {
-                redirectAttributes.addFlashAttribute("failDeleteUniversity", "Cannot delete university as it has associated faculties.");
-            } else {
-                universityService.deleteUniversityByName(universityDTO);
-                redirectAttributes.addFlashAttribute("deleteUniversityMessage", "University deleted successfully!");
-            }
+        if (facultyService.hasFacultiesWithUniversityId(university.getUniversityId())) {
+            redirectAttributes.addFlashAttribute("failDeleteUniversity", "Cannot delete university as it has associated faculties.");
+        } else {
+            universityService.deleteUniversityByName(universityDTO);
+            redirectAttributes.addFlashAttribute("deleteUniversityMessage", "University deleted successfully!");
+        }
         return "redirect:/university";
     }
 
 
     @PostMapping("/edit")
-    public String editUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes){
-        if(universityDTO != null){
+    public String editUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes) {
+        if (universityDTO != null) {
             universityService.updateUniversityName(universityDTO);
             redirectAttributes.addFlashAttribute("editUniversityMessage", "University edited successfully!");
         } else {
@@ -73,12 +73,4 @@ public class UniversityController {
         }
         return "redirect:/university";
     }
-
-    @ExceptionHandler(UniversityNotFoundException.class)
-    public ModelAndView handleUniversityNotFoundException(UniversityNotFoundException ex) {
-        ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("errorMessage", "University not found: " + ex.getMessage());
-        return modelAndView;
-    }
-
 }

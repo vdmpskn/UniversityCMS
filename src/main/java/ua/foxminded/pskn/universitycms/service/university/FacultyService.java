@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.converter.faculty.FacultyDTOToFacultyConverter;
+import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
 import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
 import ua.foxminded.pskn.universitycms.model.university.Faculty;
@@ -24,7 +25,7 @@ public class FacultyService {
 
     private final FacultyDTOToFacultyConverter toFacultyConverter;
 
-    public Faculty saveFaculty(FacultyDTO facultyDTO) {
+    public Faculty saveFaculty(FacultyDTO facultyDTO) throws FacultyNotFoundException {
         if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
             try {
                 log.info("Saving faculty: {}", facultyDTO);
@@ -45,7 +46,7 @@ public class FacultyService {
     }
 
     @Transactional
-    public void updateFacultyName(FacultyDTO facultyDTO) {
+    public void updateFacultyName(FacultyDTO facultyDTO) throws FacultyEditException {
         if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
             try {
                 log.info("Update faculty: {}", facultyDTO.getFacultyName());
@@ -72,7 +73,7 @@ public class FacultyService {
     }
 
     @Transactional
-    public void deleteFacultyById(Long facultyId) {
+    public void deleteFacultyById(Long facultyId) throws FacultyNotFoundException {
         log.info("Delete faculty with ID: {}", facultyId);
         Optional<Faculty> facultyOptional = facultyRepository.findById(facultyId);
         if (facultyOptional.isPresent()) {
