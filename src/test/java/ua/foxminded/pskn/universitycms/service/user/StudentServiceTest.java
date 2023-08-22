@@ -2,17 +2,21 @@ package ua.foxminded.pskn.universitycms.service.user;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class StudentServiceTest {
 
+    @InjectMocks
     private StudentService studentService;
 
     @Mock
@@ -24,16 +28,15 @@ class StudentServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        studentService = new StudentService(studentRepository, studentGroupRepository);
     }
 
     @Test
     void shouldGetStudentByUserId() {
         Long userId = 1L;
-        Student student = new Student();
+        Optional<Student> student = Optional.of(new Student());
         when(studentRepository.getStudentByUserId(userId)).thenReturn(student);
 
-        Student retrievedStudent = studentService.getStudentByUserId(userId);
+        Optional<Student> retrievedStudent = studentService.getStudentByUserId(userId);
 
         assertEquals(student, retrievedStudent);
         verify(studentRepository).getStudentByUserId(userId);

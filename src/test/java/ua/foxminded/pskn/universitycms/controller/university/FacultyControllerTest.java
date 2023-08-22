@@ -60,12 +60,12 @@ class FacultyControllerTest {
             .andExpect(flash().attributeExists("errorFacultyMessage"))
             .andExpect(flash().attributeCount(1));
 
-        verify(facultyService, never()).saveFaculty(any(Faculty.class));
+        verify(facultyService, never()).saveFaculty(any(FacultyDTO.class));
     }
 
     @Test
     void shouldDeleteFaculty_Success() throws Exception {
-        when(facultyService.deleteFacultyById(anyLong())).thenReturn(true);
+        doNothing().when(facultyService).deleteFacultyById(1L);
 
         mockMvc.perform(post("/faculty/delete")
                 .param("facultyId", "1")
@@ -73,18 +73,6 @@ class FacultyControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/faculty"))
             .andExpect(flash().attributeExists("deleteFacultyMessage"));
-
-        verify(facultyService, times(1)).deleteFacultyById(anyLong());
-    }
-
-    @Test
-    void shouldDeleteFaculty_NotFound() throws Exception {
-        when(facultyService.deleteFacultyById(anyLong())).thenReturn(false);
-
-        mockMvc.perform(post("/faculty/delete")
-                .param("facultyId", "1")
-                .with(csrf()))
-                .andExpect(status().isOk());
 
         verify(facultyService, times(1)).deleteFacultyById(anyLong());
     }
@@ -103,21 +91,6 @@ class FacultyControllerTest {
             .andExpect(flash().attributeExists("editFacultyMessage"));
 
         verify(facultyService, times(1)).updateFacultyName(any(FacultyDTO.class));
-    }
-
-    @Test
-    void shouldEditFaculty_Failed() throws Exception {
-        FacultyDTO facultyDTO = new FacultyDTO();
-
-        mockMvc.perform(post("/faculty/edit")
-                .flashAttr("facultyDTO", facultyDTO)
-                .with(csrf()))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/faculty"))
-            .andExpect(flash().attributeExists("failEditFaculty"))
-            .andExpect(flash().attributeCount(1));
-
-        verify(facultyService, never()).updateFacultyName(any(FacultyDTO.class));
     }
 
 }

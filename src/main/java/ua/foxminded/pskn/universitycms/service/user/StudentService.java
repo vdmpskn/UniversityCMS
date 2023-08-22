@@ -18,7 +18,9 @@ import java.util.Scanner;
 @Service
 public class StudentService {
     private final StudentRepository studentRepository;
+
     private final StudentGroupRepository studentGroupRepository;
+
     Scanner scanner = new Scanner(System.in);
 
     public Optional<Student> getStudentByUserId(Long userId){

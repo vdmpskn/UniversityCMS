@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
 
+import java.util.Optional;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -19,8 +21,8 @@ public class CabinetController {
     @GetMapping("/professorscab")
     public String professorCabinetPage(@RequestParam(name = "username", required = false) String name, Model model) {
         if (StringUtils.isNotBlank(name)) {
-            User professor = userService.findProfessorByUsername(name);
-            model.addAttribute("username", professor.getUsername());
+            Optional<User> professor = userService.findProfessorByUsername(name);
+            model.addAttribute("username", professor.get().getUsername());
         }
         return "professorscab";
     }
@@ -28,8 +30,8 @@ public class CabinetController {
     @GetMapping("/adminscab")
     public String adminCabinetPage(@RequestParam(name="username", required=false) String name, Model model) {
         if (StringUtils.isNotBlank(name)) {
-            User admin = userService.findAdminByUsername(name);
-            model.addAttribute("username", admin.getUsername());
+            Optional<User> admin = userService.findAdminByUsername(name);
+            model.addAttribute("username", admin.get().getUsername());
         }
         return "adminscab";
     }
@@ -37,8 +39,8 @@ public class CabinetController {
     @GetMapping("/studentscab")
     public String studentCabinetPage(@RequestParam(name="username", required=false) String name, Model model) {
         if (StringUtils.isNotBlank(name)) {
-            User student = userService.findStudentByUsername(name);
-            model.addAttribute("username", student.getUsername());
+            Optional<User> student = userService.findStudentByUsername(name);
+            model.addAttribute("username", student.get().getUsername());
         }
         return "studentscab";
     }

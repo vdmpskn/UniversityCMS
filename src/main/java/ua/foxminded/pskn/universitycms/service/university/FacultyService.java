@@ -1,5 +1,6 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +25,13 @@ public class FacultyService {
     private final FacultyDTOToFacultyConverter toFacultyConverter;
 
     public Faculty saveFaculty(FacultyDTO facultyDTO) {
-        try {
-            log.info("Saving faculty: {}", facultyDTO);
-            return facultyRepository.save(toFacultyConverter.convert(facultyDTO));
-        }catch (FacultyNotFoundException ex){
-            ex.printStackTrace();
+        if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
+            try {
+                log.info("Saving faculty: {}", facultyDTO);
+                return facultyRepository.save(toFacultyConverter.convert(facultyDTO));
+            } catch (FacultyNotFoundException ex) {
+                log.error("Faculty not found exception! Because: " + ex.getMessage());
+            }
         }
         return null;
     }
@@ -42,12 +45,14 @@ public class FacultyService {
     }
 
     @Transactional
-    public void updateFacultyName(FacultyDTO facultyDTO){
-        try{
-            log.info("Update faculty: {}", facultyDTO.getFacultyName());
-            facultyRepository.updateFacultyNameById(facultyDTO.getFacultyId(), facultyDTO.getFacultyName());
-        } catch (FacultyNotFoundException ex){
-            ex.printStackTrace();
+    public void updateFacultyName(FacultyDTO facultyDTO) {
+        if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
+            try {
+                log.info("Update faculty: {}", facultyDTO.getFacultyName());
+                facultyRepository.updateFacultyNameById(facultyDTO.getFacultyId(), facultyDTO.getFacultyName());
+            } catch (FacultyNotFoundException ex) {
+                log.error("Faculty not found exception! Because: " + ex.getMessage());
+            }
         }
     }
 
@@ -58,7 +63,6 @@ public class FacultyService {
     @Transactional
     public boolean deleteFacultyByName(FacultyDTO facultyDTO) {
         log.info("Delete faculty: {}", facultyDTO.getFacultyName());
-
         Faculty faculty = facultyRepository.findByFacultyName(facultyDTO.getFacultyName()).orElse(null);
         if (faculty != null) {
             facultyRepository.delete(faculty);
@@ -70,7 +74,6 @@ public class FacultyService {
     @Transactional
     public void deleteFacultyById(Long facultyId) {
         log.info("Delete faculty with ID: {}", facultyId);
-
         Optional<Faculty> facultyOptional = facultyRepository.findById(facultyId);
         if (facultyOptional.isPresent()) {
             facultyRepository.delete(facultyOptional.get());
@@ -78,7 +81,6 @@ public class FacultyService {
             throw new FacultyNotFoundException("Faculty with ID " + facultyId + " not found");
         }
     }
-
 
     public Faculty getFacultyById(Long id) {
         return facultyRepository.findById(id).orElse(null);

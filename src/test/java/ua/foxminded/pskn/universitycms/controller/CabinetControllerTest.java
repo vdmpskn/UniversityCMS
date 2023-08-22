@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
 
+import java.util.Optional;
+
 @WebMvcTest(CabinetController.class)
 @WithMockUser(authorities = "ROLE_ADMIN")
 class CabinetControllerTest {
@@ -29,7 +31,7 @@ class CabinetControllerTest {
         professor.setUsername("p");
         professor.setPassword("p");
 
-        when(userService.findProfessorByUsername("test_professor")).thenReturn(professor);
+        when(userService.findProfessorByUsername("test_professor")).thenReturn(Optional.of(professor));
 
         mockMvc.perform(get("/professorscab")
                 .param("username", "test_professor"))
@@ -43,7 +45,7 @@ class CabinetControllerTest {
         User admin = new User();
         admin.setUsername("test_admin");
 
-        when(userService.findAdminByUsername("test_admin")).thenReturn(admin);
+        when(userService.findAdminByUsername("test_admin")).thenReturn(Optional.of(admin));
 
         mockMvc.perform(get("/adminscab")
                 .param("username", "test_admin"))
@@ -57,7 +59,7 @@ class CabinetControllerTest {
         User student = new User();
         student.setUsername("test_student");
 
-        when(userService.findStudentByUsername("test_student")).thenReturn(student);
+        when(userService.findStudentByUsername("test_student")).thenReturn(Optional.of(student));
 
         mockMvc.perform(get("/studentscab")
                 .param("username", "test_student"))

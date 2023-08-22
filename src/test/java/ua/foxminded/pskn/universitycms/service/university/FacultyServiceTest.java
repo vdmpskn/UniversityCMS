@@ -2,8 +2,12 @@ package ua.foxminded.pskn.universitycms.service.university;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import ua.foxminded.pskn.universitycms.converter.faculty.FacultyDTOToFacultyConverter;
+import ua.foxminded.pskn.universitycms.converter.faculty.FacultyToFacultyDTOConverter;
+import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
 import ua.foxminded.pskn.universitycms.model.university.Faculty;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 
@@ -11,32 +15,44 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class FacultyServiceTest {
-
+    @InjectMocks
     private FacultyService facultyService;
 
     @Mock
     private FacultyRepository facultyRepository;
 
+    @Mock
+    private FacultyDTOToFacultyConverter toFacultyConverter;
+
+    @Mock
+    private FacultyToFacultyDTOConverter toFacultyDTOConverter;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        facultyService = new FacultyService(facultyRepository);
     }
 
     @Test
-    void shouldSaveFaculty() {
-        Faculty faculty = new Faculty();
-        faculty.setFacultyId(1L);
-        when(facultyRepository.save(faculty)).thenReturn(faculty);
+    void shouldSaveFaculty_Success() {
+        FacultyDTO facultyDTO = new FacultyDTO();
+        facultyDTO.setFacultyName("Test Faculty");
 
-        Faculty savedFaculty = facultyService.saveFaculty(faculty);
+        Faculty convertedFaculty = new Faculty();
+        when(toFacultyConverter.convert(facultyDTO)).thenReturn(convertedFaculty);
 
-        assertEquals(faculty, savedFaculty);
-        verify(facultyRepository).save(faculty);
+        when(facultyRepository.save(convertedFaculty)).thenReturn(convertedFaculty);
+
+        Faculty savedFaculty = facultyService.saveFaculty(facultyDTO);
+
+        assertNotNull(savedFaculty);
+        assertEquals(convertedFaculty, savedFaculty);
+        verify(toFacultyConverter, times(1)).convert(facultyDTO);
+        verify(facultyRepository, times(1)).save(convertedFaculty);
     }
 
     @Test

@@ -2,6 +2,7 @@ package ua.foxminded.pskn.universitycms.service.user;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +19,7 @@ import static org.mockito.Mockito.*;
 
 class UserServiceTest {
 
+    @InjectMocks
     private UserService userService;
 
     @Mock
@@ -40,7 +42,6 @@ class UserServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserService(passwordEncoder,userRepository, facultyRepository, studentRepository, professorRepository);
     }
 
     @Test
@@ -72,11 +73,11 @@ class UserServiceTest {
     void shouldGetUserByUsername() {
         String username = "john";
         User user = new User();
-        when(userRepository.findByUsername(username)).thenReturn(user);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
-        User retrievedUser = userService.getUserByUsername(username);
+        Optional<User> retrievedUser = userService.getUserByUsername(username);
 
-        assertEquals(user, retrievedUser);
+        assertEquals(user, retrievedUser.orElse(null));
         verify(userRepository).findByUsername(username);
     }
 

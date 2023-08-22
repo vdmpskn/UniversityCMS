@@ -10,6 +10,7 @@ import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 
@@ -23,13 +24,13 @@ public class SecureUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.getUserByUsername(username);
+        Optional<User> user = userService.getUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("Bad username!");
         }
 
         return new org.springframework.security.core.userdetails.User(
-            user.getUsername(), user.getPassword(), List.of(new SimpleGrantedAuthority(user.getRole()))
+            user.get().getUsername(), user.get().getPassword(), List.of(new SimpleGrantedAuthority(user.get().getRole()))
         );
     }
 }

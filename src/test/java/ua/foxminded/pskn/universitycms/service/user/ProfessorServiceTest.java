@@ -34,7 +34,7 @@ class ProfessorServiceTest {
 
         Optional<Professor> retrievedProfessor = professorService.getProfessorByUserId(userId);
 
-        assertEquals(professor, retrievedProfessor);
+        assertEquals(professor, retrievedProfessor.orElse(null));
         verify(professorRepository).getProfessorByUserId(userId);
     }
 }

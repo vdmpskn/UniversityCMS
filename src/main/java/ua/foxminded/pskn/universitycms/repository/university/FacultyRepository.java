@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface FacultyRepository extends JpaRepository<Faculty, Long> {
     boolean deleteFacultyByFacultyName(String facultyName);
 
-    Optional<Faculty> findByFacultyName(String universityName);
+    Optional<Faculty> findByFacultyName(String facultyName);
 
     List<Faculty> findByUniversityId(Long universityId);
 

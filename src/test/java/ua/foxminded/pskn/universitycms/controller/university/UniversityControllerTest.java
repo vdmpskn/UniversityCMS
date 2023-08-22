@@ -12,6 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
+import ua.foxminded.pskn.universitycms.service.university.FacultyService;
 import ua.foxminded.pskn.universitycms.service.university.UniversityService;
 
 import java.util.ArrayList;
@@ -35,6 +36,9 @@ class UniversityControllerTest {
 
     @MockBean
     private UniversityService universityService;
+
+    @MockBean
+    private FacultyService facultyService;
 
     @Test
     void shouldUniversityPage() throws Exception {
@@ -76,7 +80,7 @@ class UniversityControllerTest {
             .andExpect(redirectedUrl("/university"))
             .andExpect(flash().attributeExists("deleteUniversityMessage"));
 
-        verify(universityService, times(1)).deleteUniversity(anyLong());
+        verify(universityService, times(1)).deleteUniversityByName(any(UniversityDTO.class));
     }
 
     @Test

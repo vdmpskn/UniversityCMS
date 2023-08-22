@@ -9,7 +9,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception ex) {
-        ModelAndView modelAndView = new ModelAndView("error"); // Create an "error" view for displaying error messages
+        ModelAndView modelAndView = new ModelAndView("error");
         modelAndView.addObject("errorMessage", "An error occurred: " + ex.getMessage());
         return modelAndView;
     }

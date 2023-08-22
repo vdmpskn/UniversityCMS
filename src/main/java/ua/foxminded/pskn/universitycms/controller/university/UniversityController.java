@@ -65,7 +65,7 @@ public class UniversityController {
 
     @PostMapping("/edit")
     public String editUniversity(@ModelAttribute("universityDTO") UniversityDTO universityDTO, RedirectAttributes redirectAttributes){
-        if(universityDTO.getUniversityName() != null && universityDTO.getUniversityId() != null){
+        if(universityDTO != null){
             universityService.updateUniversityName(universityDTO);
             redirectAttributes.addFlashAttribute("editUniversityMessage", "University edited successfully!");
         } else {

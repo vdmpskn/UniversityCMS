@@ -19,18 +19,4 @@ public class FacultyDTO {
 
     private int universityId;
 
-    public static FacultyDTO fromFaculty(Faculty faculty) {
-        return FacultyDTO.builder()
-            .facultyName(faculty.getFacultyName())
-            .universityId(faculty.getUniversityId())
-            .build();
-    }
-
-    public Faculty toFaculty() {
-        Faculty faculty = new Faculty();
-        faculty.setFacultyName(facultyName);
-        faculty.setUniversityId(universityId);
-        return faculty;
-    }
-
 }

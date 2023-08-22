@@ -1,5 +1,6 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,12 +27,14 @@ public class UniversityService {
     private final UniversityDTOToUniversityConverter toUniversityConverter;
 
     public University saveUniversity(UniversityDTO universityDTO) {
-        try{
-            University university = toUniversityConverter.convert(universityDTO);
-            log.info("Saving university: {}", university);
-            return universityRepository.save(university);
-        } catch (UniversityNotFoundException ex){
-            ex.printStackTrace();
+        if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
+            try {
+                University university = toUniversityConverter.convert(universityDTO);
+                log.info("Saving university: {}", university);
+                return universityRepository.save(university);
+            } catch (UniversityNotFoundException ex) {
+                log.error("University not found exception! Because: " + ex.getMessage());
+            }
         }
         return null;
     }
@@ -46,17 +50,19 @@ public class UniversityService {
         return universityRepository.existsByUniversityId(universityId);
     }
 
-    public University findUniversityByName(String name) {
+    public Optional<University> findUniversityByName(String name) {
         return universityRepository.findByUniversityName(name);
     }
 
     @Transactional
     public void updateUniversityName(UniversityDTO universityDTO) {
-        log.info("Update university: {}", universityDTO.getUniversityName());
-        try {
-            universityRepository.updateUniversityName(universityDTO.getUniversityId(), universityDTO.getUniversityName());
-        } catch (UniversityNotFoundException ex) {
-            throw new UniversityNotFoundException("University not found with ID " + universityDTO.getUniversityId());
+        if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
+            log.info("Update university: {}", universityDTO.getUniversityName());
+            try {
+                universityRepository.updateUniversityName(universityDTO.getUniversityId(), universityDTO.getUniversityName());
+            } catch (UniversityNotFoundException ex) {
+                throw new UniversityNotFoundException("University not found with ID " + universityDTO.getUniversityId());
+            }
         }
     }
 
@@ -70,7 +76,6 @@ public class UniversityService {
         }
         return false;
     }
-
 
     public University getUniversityById(Long id) {
         log.debug("Retrieving university by ID: {}", id);
