@@ -26,7 +26,7 @@ public class UniversityService {
 
     private final UniversityDTOToUniversityConverter toUniversityConverter;
 
-    public University saveUniversity(UniversityDTO universityDTO) throws UniversityNotFoundException {
+    public University saveUniversity(UniversityDTO universityDTO) {
         if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
             try {
                 University university = toUniversityConverter.convert(universityDTO);
@@ -34,6 +34,7 @@ public class UniversityService {
                 return universityRepository.save(university);
             } catch (UniversityNotFoundException ex) {
                 log.error("University not found exception! Because: " + ex.getMessage());
+                throw ex;
             }
         }
         return null;
@@ -55,13 +56,14 @@ public class UniversityService {
     }
 
     @Transactional
-    public void updateUniversityName(UniversityDTO universityDTO) throws UniversityNotFoundException {
+    public void updateUniversityName(UniversityDTO universityDTO){
         if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
             log.info("Update university: {}", universityDTO.getUniversityName());
             try {
                 universityRepository.updateUniversityName(universityDTO.getUniversityId(), universityDTO.getUniversityName());
             } catch (UniversityNotFoundException ex) {
-                throw new UniversityNotFoundException("University not found with ID " + universityDTO.getUniversityId());
+                log.error("University not found with ID: " + universityDTO.getUniversityId());
+                throw ex;
             }
         }
     }
@@ -93,12 +95,13 @@ public class UniversityService {
     }
 
     @Transactional
-    public void deleteUniversity(Long id) throws DataIntegrityViolationException {
+    public void deleteUniversity(Long id) {
         log.info("Deleting university with ID: {}", id);
         try {
             universityRepository.deleteById(id);
         } catch (DataIntegrityViolationException ex) {
-            throw new DataIntegrityViolationException("Unable to delete university with ID " + id + ". Data integrity violation.");
+            log.error("Unable to delete university with ID " + id + ". Data integrity violation.");
+            throw ex;
         }
     }
 

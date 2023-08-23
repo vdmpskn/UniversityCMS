@@ -25,13 +25,14 @@ public class FacultyService {
 
     private final FacultyDTOToFacultyConverter toFacultyConverter;
 
-    public Faculty saveFaculty(FacultyDTO facultyDTO) throws FacultyNotFoundException {
+    public Faculty saveFaculty(FacultyDTO facultyDTO){
         if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
             try {
                 log.info("Saving faculty: {}", facultyDTO);
                 return facultyRepository.save(toFacultyConverter.convert(facultyDTO));
             } catch (FacultyNotFoundException ex) {
                 log.error("Faculty not found exception! Because: " + ex.getMessage());
+                throw ex;
             }
         }
         return null;
@@ -46,13 +47,14 @@ public class FacultyService {
     }
 
     @Transactional
-    public void updateFacultyName(FacultyDTO facultyDTO) throws FacultyEditException {
+    public void updateFacultyName(FacultyDTO facultyDTO){
         if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
             try {
                 log.info("Update faculty: {}", facultyDTO.getFacultyName());
                 facultyRepository.updateFacultyNameById(facultyDTO.getFacultyId(), facultyDTO.getFacultyName());
             } catch (FacultyNotFoundException ex) {
                 log.error("Faculty not found exception! Because: " + ex.getMessage());
+                throw ex;
             }
         }
     }
@@ -73,7 +75,7 @@ public class FacultyService {
     }
 
     @Transactional
-    public void deleteFacultyById(Long facultyId) throws FacultyNotFoundException {
+    public void deleteFacultyById(Long facultyId) {
         log.info("Delete faculty with ID: {}", facultyId);
         Optional<Faculty> facultyOptional = facultyRepository.findById(facultyId);
         if (facultyOptional.isPresent()) {
