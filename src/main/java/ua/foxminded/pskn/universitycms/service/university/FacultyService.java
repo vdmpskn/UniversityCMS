@@ -25,17 +25,14 @@ public class FacultyService {
 
     private final FacultyDTOToFacultyConverter toFacultyConverter;
 
-    public Faculty saveFaculty(FacultyDTO facultyDTO){
+    public Faculty saveFaculty(FacultyDTO facultyDTO) {
         if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
-            try {
-                log.info("Saving faculty: {}", facultyDTO);
-                return facultyRepository.save(toFacultyConverter.convert(facultyDTO));
-            } catch (FacultyNotFoundException ex) {
-                log.error("Faculty not found exception! Because: " + ex.getMessage());
-                throw ex;
-            }
+            Faculty faculty = toFacultyConverter.convert(facultyDTO);
+            Optional<Faculty> savedFaculty = Optional.ofNullable(facultyRepository.save(faculty));
+            return savedFaculty.orElseThrow(() -> new FacultyNotFoundException("Failed to save faculty."));
+        } else {
+            throw new IllegalArgumentException("Faculty name cannot be blank.");
         }
-        return null;
     }
 
     public Faculty saveFacultyByName(String facultyName, int universityId) {
@@ -47,15 +44,15 @@ public class FacultyService {
     }
 
     @Transactional
-    public void updateFacultyName(FacultyDTO facultyDTO){
+    public void updateFacultyName(FacultyDTO facultyDTO) {
         if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
-            try {
-                log.info("Update faculty: {}", facultyDTO.getFacultyName());
-                facultyRepository.updateFacultyNameById(facultyDTO.getFacultyId(), facultyDTO.getFacultyName());
-            } catch (FacultyNotFoundException ex) {
-                log.error("Faculty not found exception! Because: " + ex.getMessage());
-                throw ex;
+            log.info("Update faculty: {}", facultyDTO.getFacultyName());
+            facultyRepository.updateFacultyNameById(facultyDTO.getFacultyId(), facultyDTO.getFacultyName());
+            if (!facultyRepository.existsById(facultyDTO.getFacultyId())) {
+                throw new FacultyNotFoundException("Faculty not found.");
             }
+        } else {
+            throw new IllegalArgumentException("Faculty name cannot be blank.");
         }
     }
 
@@ -77,13 +74,12 @@ public class FacultyService {
     @Transactional
     public void deleteFacultyById(Long facultyId) {
         log.info("Delete faculty with ID: {}", facultyId);
-        Optional<Faculty> facultyOptional = facultyRepository.findById(facultyId);
-        if (facultyOptional.isPresent()) {
-            facultyRepository.delete(facultyOptional.get());
-        } else {
+        if (!facultyRepository.existsById(facultyId)) {
             throw new FacultyNotFoundException("Faculty with ID " + facultyId + " not found");
         }
+        facultyRepository.deleteById(facultyId);
     }
+
 
     public Faculty getFacultyById(Long id) {
         return facultyRepository.findById(id).orElse(null);

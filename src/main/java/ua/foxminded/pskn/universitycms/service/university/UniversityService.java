@@ -27,17 +27,15 @@ public class UniversityService {
     private final UniversityDTOToUniversityConverter toUniversityConverter;
 
     public University saveUniversity(UniversityDTO universityDTO) {
+        log.info("Saving university: {}", universityDTO.getUniversityName());
         if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
-            try {
-                University university = toUniversityConverter.convert(universityDTO);
-                log.info("Saving university: {}", university);
-                return universityRepository.save(university);
-            } catch (UniversityNotFoundException ex) {
-                log.error("University not found exception! Because: " + ex.getMessage());
-                throw ex;
-            }
+            University university = toUniversityConverter.convert(universityDTO);
+            University savedUniversity = universityRepository.save(university);
+            return Optional.ofNullable(savedUniversity)
+                .orElseThrow(() -> new UniversityNotFoundException("Failed to save university."));
+        } else {
+            throw new IllegalArgumentException("University name cannot be blank.");
         }
-        return null;
     }
 
     public University saveUniversityByName(String universityName) {
@@ -56,17 +54,18 @@ public class UniversityService {
     }
 
     @Transactional
-    public void updateUniversityName(UniversityDTO universityDTO){
+    public void updateUniversityName(UniversityDTO universityDTO) {
         if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
             log.info("Update university: {}", universityDTO.getUniversityName());
-            try {
-                universityRepository.updateUniversityName(universityDTO.getUniversityId(), universityDTO.getUniversityName());
-            } catch (UniversityNotFoundException ex) {
-                log.error("University not found with ID: " + universityDTO.getUniversityId());
-                throw ex;
+            universityRepository.updateUniversityName(universityDTO.getUniversityId(), universityDTO.getUniversityName());
+            if (!universityRepository.existsById(universityDTO.getUniversityId())) {
+                throw new UniversityNotFoundException("University not found with ID: " + universityDTO.getUniversityId());
             }
+        } else {
+            throw new IllegalArgumentException("University name cannot be blank.");
         }
     }
+
 
     @Transactional
     public boolean deleteUniversityByName(UniversityDTO universityDTO) {
@@ -97,6 +96,9 @@ public class UniversityService {
     @Transactional
     public void deleteUniversity(Long id) {
         log.info("Deleting university with ID: {}", id);
+        if (!universityRepository.existsById(id)) {
+            throw new UniversityNotFoundException("University not found with ID: " + id);
+        }
         try {
             universityRepository.deleteById(id);
         } catch (DataIntegrityViolationException ex) {
@@ -104,5 +106,4 @@ public class UniversityService {
             throw ex;
         }
     }
-
 }
