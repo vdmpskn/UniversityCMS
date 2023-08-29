@@ -4,10 +4,12 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.converter.faculty.FacultyDTOToFacultyConverter;
+import ua.foxminded.pskn.universitycms.converter.faculty.FacultyToFacultyDTOConverter;
 import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
 import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
@@ -25,13 +27,19 @@ public class FacultyService {
 
     private final FacultyDTOToFacultyConverter toFacultyConverter;
 
-    public Faculty saveFaculty(FacultyDTO facultyDTO) {
+    private final FacultyToFacultyDTOConverter toFacultyDTOConverter;
+
+    public FacultyDTO saveFaculty(FacultyDTO facultyDTO) {
         if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
-            Faculty faculty = toFacultyConverter.convert(facultyDTO);
-            Optional<Faculty> savedFaculty = Optional.ofNullable(facultyRepository.save(faculty));
-            return savedFaculty.orElseThrow(() -> new FacultyNotFoundException("Failed to save faculty."));
+            try {
+                Faculty faculty = toFacultyConverter.convert(facultyDTO);
+                faculty = facultyRepository.save(faculty);
+                return toFacultyDTOConverter.convert(faculty);
+            } catch (DataAccessException e) {
+                throw new FacultyEditException("Faculty with name " + facultyDTO.getFacultyName() + " already exists.");
+            }
         } else {
-            throw new IllegalArgumentException("Faculty name cannot be blank.");
+            throw new FacultyEditException("Faculty name cannot be blank.");
         }
     }
 
@@ -79,7 +87,6 @@ public class FacultyService {
         }
         facultyRepository.deleteById(facultyId);
     }
-
 
     public Faculty getFacultyById(Long id) {
         return facultyRepository.findById(id).orElse(null);

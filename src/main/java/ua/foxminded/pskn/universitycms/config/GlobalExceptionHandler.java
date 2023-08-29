@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.UniversityEditException;
 import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
 
 @ControllerAdvice
@@ -36,5 +37,13 @@ public class GlobalExceptionHandler {
         modelAndView.addObject("errorMessage", "FacultyNotFoundException: " + ex.getMessage());
         return modelAndView;
     }
+
+    @ExceptionHandler(UniversityEditException.class)
+    public ModelAndView handleUniversityEditException(UniversityEditException ex) {
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("errorMessage", "UniversityEditException: " + ex.getMessage());
+        return modelAndView;
+    }
+
 }
 

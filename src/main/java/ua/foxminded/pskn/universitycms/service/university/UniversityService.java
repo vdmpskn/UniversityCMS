@@ -4,11 +4,14 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.converter.university.UniversityDTOToUniversityConverter;
+import ua.foxminded.pskn.universitycms.converter.university.UniversityToUniversityDTOConverter;
+import ua.foxminded.pskn.universitycms.customexception.UniversityEditException;
 import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
@@ -26,13 +29,18 @@ public class UniversityService {
 
     private final UniversityDTOToUniversityConverter toUniversityConverter;
 
-    public University saveUniversity(UniversityDTO universityDTO) {
+    private final UniversityToUniversityDTOConverter toUniversityDTOConverter;
+
+    public UniversityDTO saveUniversity(UniversityDTO universityDTO) {
         log.info("Saving university: {}", universityDTO.getUniversityName());
         if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
-            University university = toUniversityConverter.convert(universityDTO);
-            University savedUniversity = universityRepository.save(university);
-            return Optional.ofNullable(savedUniversity)
-                .orElseThrow(() -> new UniversityNotFoundException("Failed to save university."));
+            try{
+                University university = toUniversityConverter.convert(universityDTO);
+                university = universityRepository.save(university);
+                return toUniversityDTOConverter.convert(university);
+            } catch (DataAccessException ex){
+                throw new UniversityEditException("University with name " + universityDTO.getUniversityName() + " already exists.");
+            }
         } else {
             throw new IllegalArgumentException("University name cannot be blank.");
         }
