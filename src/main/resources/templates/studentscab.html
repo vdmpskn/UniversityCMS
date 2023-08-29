@@ -94,12 +94,23 @@
         <div th:if="${session.successMessage}" class="alert alert-success" role="alert">
             <p th:text="${session.successMessage}"></p>
         </div>
+        <h2 class="text-center">My Student Group: <span th:text="${studentGroup}"></span></h2>
+        <li>
+            <form th:action="@{/studentscab/changeGroup}" method="post">
+                <input type="hidden" name="studentId" th:value="${studentId}">
+                <select name="groupId">
+                    <option value="">Select a group</option>
+                    <option th:each="group : ${availableGroups}" th:value="${group.groupId}" th:text="${group.groupName}"></option>
+                </select>
+                <button type="submit">Change my group</button>
+            </form>
+        </li>
+
         <h2 class="text-center">Manage my profile</h2>
         <ul class="list-unstyled">
             <li><button onclick="getStudentSchedule()">Get my schedule</button></li>
             <li><button onclick="changeUsername()">Change my username</button></li>
             <li><button onclick="changeFaculty()">Change my faculty</button></li>
-            <li><button onclick="changeGroup()">Change my group</button></li>
         </ul>
         <a href="/logout">Logout</a>
     </main>

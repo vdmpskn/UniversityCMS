@@ -28,15 +28,18 @@ public class StudentService {
         return studentRepository.getStudentByUserId(userId);
     }
 
-    public void changeMyGroup(Student student){
-        studentGroupRepository.findAll();
-        log.info("Your groupID is: {}", student.getGroupId());
-        log.info("Write your new groupID: ");
-        int changedGroupId = scanner.nextInt();
-        student.setGroupId(changedGroupId);
-        log.info("Saving student with updated groupID: {}", student);
-        studentRepository.save(student);
+    public void changeMyGroup(Long studentID, int newGroupId) {
+        Optional<Student> studentOptional = studentRepository.findById(studentID);
+        if (studentOptional.isPresent()) {
+            Student student = studentOptional.get();
+            student.setGroupId(newGroupId);
+            studentRepository.save(student);
+            log.info("Updated student with ID {} to new group ID: {}", student.getUserId(), newGroupId);
+        } else {
+            log.error("Student with ID {} not found.", studentID);
+        }
     }
+
 
     public List<Student> getAllStudents(){
         log.debug("Retrieving all students");
