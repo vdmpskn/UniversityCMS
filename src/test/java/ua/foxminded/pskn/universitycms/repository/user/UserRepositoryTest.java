@@ -9,6 +9,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.pskn.universitycms.model.user.User;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -38,10 +40,10 @@ class UserRepositoryTest {
             .build();
         userRepository.save(user);
 
-        User foundUser = userRepository.findByUsername(username);
+        Optional<User> foundUser = userRepository.findByUsername(username);
 
         assertNotNull(foundUser);
-        assertEquals(username, foundUser.getUsername());
+        assertEquals(username, foundUser.get().getUsername());
     }
 }
 

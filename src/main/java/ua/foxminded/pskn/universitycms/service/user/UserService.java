@@ -4,24 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
-import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
 import ua.foxminded.pskn.universitycms.repository.user.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 @RequiredArgsConstructor
@@ -53,9 +47,24 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public User getUserByUsername(String username) {
+    public Optional<User> getUserByUsername(String username) {
         log.debug("Getting user by username: {}", username);
         return userRepository.findByUsername(username);
+    }
+
+    public Optional<User> findAdminByUsername(String username){
+        log.debug("Getting admin by username: {}", username);
+        return userRepository.findAdminByUsername(username);
+    }
+
+    public Optional<User> findProfessorByUsername(String username){
+        log.debug("Getting admin by username: {}", username);
+        return userRepository.findProfessorByUsername(username);
+    }
+
+    public Optional<User> findStudentByUsername(String username){
+        log.debug("Getting admin by username: {}", username);
+        return userRepository.findStudentByUsername(username);
     }
 
     public User saveStudent(User user) {

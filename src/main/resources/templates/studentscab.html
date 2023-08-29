@@ -91,7 +91,9 @@
     </header>
 
     <main id="main">
-        <h1 class="text-center" style="color: black">STUDENTS CABINET</h1>
+        <div th:if="${session.successMessage}" class="alert alert-success" role="alert">
+            <p th:text="${session.successMessage}"></p>
+        </div>
         <h2 class="text-center">Manage my profile</h2>
         <ul class="list-unstyled">
             <li><button onclick="getStudentSchedule()">Get my schedule</button></li>
@@ -106,5 +108,4 @@
         <p>&copy; 2023 University of California, Berkeley</p>
     </footer>
 </div>
-</body>
-</html>
+

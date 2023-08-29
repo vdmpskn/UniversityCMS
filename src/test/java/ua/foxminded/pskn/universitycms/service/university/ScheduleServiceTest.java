@@ -2,6 +2,7 @@ package ua.foxminded.pskn.universitycms.service.university;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ua.foxminded.pskn.universitycms.model.university.Schedule;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class ScheduleServiceTest {
-
+    @InjectMocks
     private ScheduleService scheduleService;
 
     @Mock
@@ -23,7 +24,6 @@ class ScheduleServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        scheduleService = new ScheduleService(scheduleRepository);
     }
 
     @Test

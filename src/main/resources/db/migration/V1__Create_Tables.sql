@@ -1,14 +1,14 @@
 CREATE TABLE university
 (
     university_id SERIAL PRIMARY KEY,
-    name          VARCHAR(255) NOT NULL
+    name          VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE faculty
 (
     faculty_id    SERIAL PRIMARY KEY,
     university_id INTEGER      NOT NULL,
-    name          VARCHAR(255) NOT NULL,
+    name          VARCHAR(255) NOT NULL UNIQUE,
     FOREIGN KEY (university_id) REFERENCES university (university_id)
 );
 
@@ -16,14 +16,14 @@ CREATE TABLE student_group
 (
     group_id   SERIAL PRIMARY KEY,
     faculty_id INTEGER      NOT NULL,
-    name       VARCHAR(255) NOT NULL,
+    name       VARCHAR(255) NOT NULL UNIQUE,
     FOREIGN KEY (faculty_id) REFERENCES faculty (faculty_id)
 );
 
 CREATE TABLE course
 (
     course_id  SERIAL PRIMARY KEY,
-    name       VARCHAR(255) NOT NULL,
+    name       VARCHAR(255) NOT NULL UNIQUE,
     description VARCHAR(255) NOT NULL,
     faculty_id INTEGER      NOT NULL,
     FOREIGN KEY (faculty_id) REFERENCES faculty (faculty_id)
@@ -32,7 +32,7 @@ CREATE TABLE course
 CREATE TABLE users
 (
     user_id    SERIAL PRIMARY KEY,
-    username   VARCHAR(255) NOT NULL,
+    username   VARCHAR(255) NOT NULL UNIQUE,
     password   VARCHAR(255) NOT NULL,
     role       VARCHAR(20)  NOT NULL,
     faculty_id INTEGER      NOT NULL,

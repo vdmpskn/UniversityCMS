@@ -2,8 +2,10 @@ package ua.foxminded.pskn.universitycms.service.user;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
@@ -17,8 +19,11 @@ import static org.mockito.Mockito.*;
 
 class UserServiceTest {
 
+    @InjectMocks
     private UserService userService;
 
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
     @Mock
     private UserRepository userRepository;
 
@@ -37,7 +42,6 @@ class UserServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserService(userRepository, facultyRepository, studentRepository, professorRepository);
     }
 
     @Test
@@ -69,11 +73,11 @@ class UserServiceTest {
     void shouldGetUserByUsername() {
         String username = "john";
         User user = new User();
-        when(userRepository.findByUsername(username)).thenReturn(user);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
-        User retrievedUser = userService.getUserByUsername(username);
+        Optional<User> retrievedUser = userService.getUserByUsername(username);
 
-        assertEquals(user, retrievedUser);
+        assertEquals(user, retrievedUser.orElse(null));
         verify(userRepository).findByUsername(username);
     }
 

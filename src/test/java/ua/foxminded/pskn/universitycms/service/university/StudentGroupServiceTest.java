@@ -2,6 +2,7 @@ package ua.foxminded.pskn.universitycms.service.university;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class StudentGroupServiceTest {
-
+    @InjectMocks
     private StudentGroupService studentGroupService;
 
     @Mock
@@ -24,7 +25,6 @@ class StudentGroupServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        studentGroupService = new StudentGroupService(studentGroupRepository);
     }
 
     @Test
@@ -68,7 +68,7 @@ class StudentGroupServiceTest {
     }
 
     @Test
-    void testDeleteStudentGroup() {
+    void shouldDeleteStudentGroup() {
         Long groupId = 1L;
 
         studentGroupService.deleteStudentGroup(groupId);
