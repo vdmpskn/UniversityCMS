@@ -27,7 +27,7 @@ class ChangeGroupControllerTest {
     }
 
     @Test
-    void testChangeStudentGroup() {
+    void shouldChangeStudentGroup() {
         Principal principal = () -> "testuser";
 
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
