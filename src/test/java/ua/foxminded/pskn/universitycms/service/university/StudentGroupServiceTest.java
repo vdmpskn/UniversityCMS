@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupDTOToStudentGroupConverter;
+import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupToStudentGroupDTOConverter;
+import ua.foxminded.pskn.universitycms.dto.StudentGroupDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
 import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
 
@@ -12,8 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class StudentGroupServiceTest {
     @InjectMocks
@@ -22,21 +27,38 @@ class StudentGroupServiceTest {
     @Mock
     private StudentGroupRepository studentGroupRepository;
 
+    @Mock
+    private StudentGroupDTOToStudentGroupConverter toStudentGroupConverter;
+
+    @Mock
+    private StudentGroupToStudentGroupDTOConverter toStudentGroupDTOConverter;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void shouldSaveStudentGroup() {
+    void testSaveStudentGroup_ValidStudentGroup() {
+        StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
+        studentGroupDTO.setStudentGroupName("Test Group");
+
         StudentGroup studentGroup = new StudentGroup();
         studentGroup.setGroupId(1L);
+        studentGroup.setGroupName("Test Group");
+
+        when(toStudentGroupConverter.convert(studentGroupDTO)).thenReturn(studentGroup);
         when(studentGroupRepository.save(studentGroup)).thenReturn(studentGroup);
+        when(toStudentGroupDTOConverter.convert(studentGroup)).thenReturn(studentGroupDTO);
 
-        StudentGroup savedStudentGroup = studentGroupService.saveStudentGroup(studentGroup);
+        StudentGroupDTO savedStudentGroupDTO = studentGroupService.saveStudentGroup(studentGroupDTO);
 
-        assertEquals(studentGroup, savedStudentGroup);
+        assertNotNull(savedStudentGroupDTO);
+        assertEquals("Test Group", savedStudentGroupDTO.getStudentGroupName());
+
+        verify(toStudentGroupConverter).convert(studentGroupDTO);
         verify(studentGroupRepository).save(studentGroup);
+        verify(toStudentGroupDTOConverter).convert(studentGroup);
     }
 
     @Test

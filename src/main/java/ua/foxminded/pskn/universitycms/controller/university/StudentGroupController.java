@@ -11,9 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupDTOToStudentGroupConverter;
 import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupToStudentGroupDTOConverter;
 import ua.foxminded.pskn.universitycms.dto.StudentGroupDTO;
-import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
-import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.service.university.StudentGroupService;
 
 @Controller
@@ -41,7 +39,7 @@ public class StudentGroupController {
     }
 
     @PostMapping("/add")
-    public String addStudentGroup(@ModelAttribute("studentGroupDTO")StudentGroupDTO studentGroupDTO, RedirectAttributes redirectAttributes) {
+    public String addStudentGroup(@ModelAttribute("studentGroupDTO") StudentGroupDTO studentGroupDTO, RedirectAttributes redirectAttributes) {
         studentGroupService.saveStudentGroup(studentGroupDTO);
         redirectAttributes.addFlashAttribute("successStudentGroupMessage", "Student Group added successfully!");
 
@@ -50,8 +48,8 @@ public class StudentGroupController {
 
     @PostMapping("/delete")
     public String deleteStudentGroup(@ModelAttribute("studentGroupDTO") StudentGroupDTO studentGroupDTO, RedirectAttributes redirectAttributes) {
-            studentGroupService.deleteStudentGroup(studentGroupDTO.getStudentGroupId());
-            redirectAttributes.addFlashAttribute("deleteStudentGroupMessage", "Student Group deleted successfully!");
+        studentGroupService.deleteStudentGroup(studentGroupDTO.getStudentGroupId());
+        redirectAttributes.addFlashAttribute("deleteStudentGroupMessage", "Student Group deleted successfully!");
         return "redirect:/studentgroup";
     }
 

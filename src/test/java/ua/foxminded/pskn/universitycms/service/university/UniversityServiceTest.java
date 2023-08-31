@@ -1,24 +1,34 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import ua.foxminded.pskn.universitycms.converter.university.UniversityDTOToUniversityConverter;
 import ua.foxminded.pskn.universitycms.converter.university.UniversityToUniversityDTOConverter;
 import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
+
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertNotNull;
+
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
+
 
 class UniversityServiceTest {
 
@@ -40,23 +50,27 @@ class UniversityServiceTest {
     }
 
     @Test
-    void shouldSaveUniversity_Success() {
+    void shouldSaveUniversity_ValidUniversity() {
         UniversityDTO universityDTO = new UniversityDTO();
         universityDTO.setUniversityName("Test University");
 
-        University convertedUniversity = new University();
-        when(toUniversityConverter.convert(universityDTO)).thenReturn(convertedUniversity);
+        University university = new University();
+        university.setUniversityId(1L);
+        university.setUniversityName("Test University");
 
-        when(universityRepository.save(convertedUniversity)).thenReturn(convertedUniversity);
+        when(toUniversityConverter.convert(universityDTO)).thenReturn(university);
+        when(universityRepository.save(university)).thenReturn(university);
+        when(toUniversityDTOConverter.convert(university)).thenReturn(universityDTO);
 
-        University savedUniversity = universityService.saveUniversity(universityDTO);
+        UniversityDTO savedUniversityDTO = universityService.saveUniversity(universityDTO);
 
-        assertNotNull(savedUniversity);
-        assertEquals(convertedUniversity, savedUniversity);
-        verify(toUniversityConverter, times(1)).convert(universityDTO);
-        verify(universityRepository, times(1)).save(convertedUniversity);
+        Assertions.assertNotNull(savedUniversityDTO);
+        assertEquals("Test University", savedUniversityDTO.getUniversityName());
+
+        verify(toUniversityConverter).convert(universityDTO);
+        verify(universityRepository).save(university);
+        verify(toUniversityDTOConverter).convert(university);
     }
-
 
     @Test
     void shouldGetUniversityById() {
@@ -71,7 +85,6 @@ class UniversityServiceTest {
         assertEquals(university, retrievedUniversity.get());
         verify(universityRepository).findById(universityId);
     }
-
 
     @Test
     void shouldGetAllUniversities() {
@@ -89,11 +102,22 @@ class UniversityServiceTest {
     }
 
     @Test
-    void shouldDeleteUniversity() {
-        Long universityId = 1L;
+    void shouldDeleteUniversityByName() {
+        UniversityDTO universityDTO = new UniversityDTO();
+        universityDTO.setUniversityName("Test University");
 
-        universityService.deleteUniversity(universityId);
+        University university = new University();
+        university.setUniversityId(1L);
 
-        verify(universityRepository).deleteById(universityId);
+        when(toUniversityConverter.convert(universityDTO)).thenReturn(university);
+        when(universityRepository.existsById(1L)).thenReturn(true);
+        doNothing().when(universityRepository).delete(university);
+
+        boolean result = universityService.deleteUniversityByName(universityDTO);
+
+        assertTrue(result);
+
+        verify(toUniversityConverter).convert(universityDTO);
+        verify(universityRepository).delete(university);
     }
 }

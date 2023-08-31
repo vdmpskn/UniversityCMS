@@ -16,21 +16,22 @@ import java.util.List;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
-    public List<Schedule> getScheduleById(Long groupId){
+    public List<Schedule> getScheduleById(Long groupId) {
         log.debug("Retrieving schedule for group ID: {}", groupId);
         return scheduleRepository.findScheduleByGroupId(groupId);
     }
 
-    public List<Schedule> getScheduleByProfessorId(int professorId){
+    public List<Schedule> getScheduleByProfessorId(int professorId) {
         log.debug("Retrieving schedule for professor ID: {}", professorId);
         return scheduleRepository.findScheduleByProfessorId(professorId);
     }
 
-    public List<Schedule> getAllSchedule(){
+    public List<Schedule> getAllSchedule() {
         log.debug("Retrieving all schedules");
         return scheduleRepository.findAll();
     }
-    public Page<Schedule> getAllSchedule(Pageable pageable){
+
+    public Page<Schedule> getAllSchedule(Pageable pageable) {
         log.debug("Retrieving all schedules with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return scheduleRepository.findAll(pageable);
     }

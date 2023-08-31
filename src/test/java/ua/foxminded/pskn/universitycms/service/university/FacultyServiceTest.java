@@ -38,21 +38,20 @@ class FacultyServiceTest {
     }
 
     @Test
-    void shouldSaveFaculty_Success() {
+    void shouldSaveFaculty_success() {
         FacultyDTO facultyDTO = new FacultyDTO();
-        facultyDTO.setFacultyName("Test Faculty");
+        facultyDTO.setFacultyName("Computer Science");
 
-        Faculty convertedFaculty = new Faculty();
-        when(toFacultyConverter.convert(facultyDTO)).thenReturn(convertedFaculty);
+        Faculty faculty = new Faculty();
+        faculty.setFacultyName("Computer Science");
 
-        when(facultyRepository.save(convertedFaculty)).thenReturn(convertedFaculty);
+        when(facultyRepository.save(any())).thenReturn(faculty);
+        when(toFacultyDTOConverter.convert(any())).thenReturn(facultyDTO);
 
-        Faculty savedFaculty = facultyService.saveFaculty(facultyDTO);
+        FacultyDTO savedFacultyDTO = facultyService.saveFaculty(facultyDTO);
 
-        assertNotNull(savedFaculty);
-        assertEquals(convertedFaculty, savedFaculty);
-        verify(toFacultyConverter, times(1)).convert(facultyDTO);
-        verify(facultyRepository, times(1)).save(convertedFaculty);
+        // Then
+        assertEquals(facultyDTO, savedFacultyDTO);
     }
 
     @Test

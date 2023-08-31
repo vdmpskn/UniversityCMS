@@ -6,12 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.user.Student;
-import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,11 +17,7 @@ import java.util.Scanner;
 public class StudentService {
     private final StudentRepository studentRepository;
 
-    private final StudentGroupRepository studentGroupRepository;
-
-    Scanner scanner = new Scanner(System.in);
-
-    public Optional<Student> getStudentByUserId(Long userId){
+    public Optional<Student> getStudentByUserId(Long userId) {
         log.debug("Getting student by userId: {}", userId);
         return studentRepository.getStudentByUserId(userId);
     }
@@ -40,14 +34,14 @@ public class StudentService {
         }
     }
 
-
-    public List<Student> getAllStudents(){
+    public List<Student> getAllStudents() {
         log.debug("Retrieving all students");
         return studentRepository.findAll();
     }
 
-    public Page<Student> getAllStudents(Pageable pageable){
+    public Page<Student> getAllStudents(Pageable pageable) {
         log.debug("Retrieving all students with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return studentRepository.findAll(pageable);
     }
+
 }

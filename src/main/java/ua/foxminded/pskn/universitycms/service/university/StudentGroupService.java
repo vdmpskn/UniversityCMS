@@ -12,11 +12,8 @@ import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupDTOToS
 import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupToStudentGroupDTOConverter;
 import ua.foxminded.pskn.universitycms.customexception.StudentGroupEditException;
 import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
-import ua.foxminded.pskn.universitycms.customexception.UniversityEditException;
-import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.StudentGroupDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
-import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
 
 import java.util.List;
@@ -34,11 +31,11 @@ public class StudentGroupService {
     public StudentGroupDTO saveStudentGroup(StudentGroupDTO studentGroupDTO) {
         log.info("Saving university: {}", studentGroupDTO.getStudentGroupName());
         if (StringUtils.isNotBlank(studentGroupDTO.getStudentGroupName())) {
-            try{
+            try {
                 StudentGroup studentGroup = toStudentGroupConverter.convert(studentGroupDTO);
                 studentGroup = studentGroupRepository.save(studentGroup);
                 return toStudentGroupDTOConverter.convert(studentGroup);
-            } catch (DataAccessException ex){
+            } catch (DataAccessException ex) {
                 throw new StudentGroupEditException("Student Group with name " + studentGroupDTO.getStudentGroupName() + " already exists.");
             }
         } else {
@@ -47,7 +44,7 @@ public class StudentGroupService {
     }
 
     @Transactional
-    public void updateStudentGroupName(StudentGroupDTO studentGroupDTO){
+    public void updateStudentGroupName(StudentGroupDTO studentGroupDTO) {
         if (StringUtils.isNotBlank(studentGroupDTO.getStudentGroupName())) {
             log.info("Update student group: {}", studentGroupDTO.getStudentGroupName());
             studentGroupRepository.updateStudentGroupName(studentGroupDTO.getStudentGroupId(), studentGroupDTO.getStudentGroupName());
@@ -69,7 +66,7 @@ public class StudentGroupService {
         return studentGroupRepository.findAll();
     }
 
-    public Page<StudentGroup> getAllStudentGroups(Pageable pageable){
+    public Page<StudentGroup> getAllStudentGroups(Pageable pageable) {
         log.debug("Retrieving all students group with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return studentGroupRepository.findAll(pageable);
     }

@@ -106,6 +106,10 @@
             </form>
         </li>
 
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <p th:text="${successMessage}"></p>
+        </div>
+
         <h2 class="text-center">Manage my profile</h2>
         <ul class="list-unstyled">
             <li><button onclick="getStudentSchedule()">Get my schedule</button></li>
