@@ -2,6 +2,7 @@ package ua.foxminded.pskn.universitycms.service.usercabinet;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
 import ua.foxminded.pskn.universitycms.model.user.Student;
@@ -14,6 +15,7 @@ import ua.foxminded.pskn.universitycms.service.user.UserService;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserCabinetService {
@@ -26,6 +28,7 @@ public class UserCabinetService {
 
     public StudentCabinetData getStudentCabinetData(String username) {
         if (StringUtils.isBlank(username)) {
+            log.error("Username is blank");
             throw new IllegalArgumentException("Username cant be blank");
         }
         Optional<User> userOptional = userService.findStudentByUsername(username);
@@ -44,10 +47,12 @@ public class UserCabinetService {
                 cabinetData.setStudentGroup(groupName.getGroupName());
                 cabinetData.setAvailableGroups(availableGroups);
 
+                log.info("Retrieved student cabinet data for username: {}", username);
                 return cabinetData;
             }
         }
 
+        log.error("Student with username {} not found.", username);
         throw new IllegalArgumentException("Student with username " + username + " not found.");
     }
 }

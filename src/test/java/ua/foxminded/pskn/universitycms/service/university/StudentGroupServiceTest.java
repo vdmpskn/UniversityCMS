@@ -39,7 +39,7 @@ class StudentGroupServiceTest {
     }
 
     @Test
-    void testSaveStudentGroup_ValidStudentGroup() {
+    void shouldSaveStudentGroup_ValidStudentGroup() {
         StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
         studentGroupDTO.setStudentGroupName("Test Group");
 

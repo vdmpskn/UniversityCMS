@@ -27,6 +27,8 @@ public class CabinetController {
         if (StringUtils.isNotBlank(name)) {
             Optional<User> professor = userService.findProfessorByUsername(name);
             professor.ifPresent(p -> model.addAttribute("username", p.getUsername()));
+        } else{
+            throw new IllegalArgumentException("Username cannot be blank");
         }
         return "professorscab";
     }
@@ -36,6 +38,8 @@ public class CabinetController {
         if (StringUtils.isNotBlank(name)) {
             Optional<User> admin = userService.findAdminByUsername(name);
             admin.ifPresent(a -> model.addAttribute("username", a.getUsername()));
+        } else {
+            throw new IllegalArgumentException("Username cannot be blank");
         }
         return "adminscab";
     }
@@ -50,6 +54,8 @@ public class CabinetController {
             model.addAttribute("studentId", cabinetData.getStudentId());
             model.addAttribute("studentGroup", cabinetData.getStudentGroup());
             model.addAttribute("availableGroups", cabinetData.getAvailableGroups());
+        } else {
+            throw new IllegalArgumentException("Cabinet data cannot be blank");
         }
         return "studentscabview";
     }
