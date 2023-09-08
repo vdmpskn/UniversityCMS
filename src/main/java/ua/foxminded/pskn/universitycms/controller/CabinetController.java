@@ -48,15 +48,11 @@ public class CabinetController {
     public String studentCabinetPage(@RequestParam(name = "username", required = false) String name, Model model) {
         StudentCabinetData cabinetData = userCabinetService.getStudentCabinetData(name);
 
-
-        if (cabinetData != null) {
             model.addAttribute("username", cabinetData.getUsername());
             model.addAttribute("studentId", cabinetData.getStudentId());
             model.addAttribute("studentGroup", cabinetData.getStudentGroup());
             model.addAttribute("availableGroups", cabinetData.getAvailableGroups());
-        } else {
-            throw new IllegalArgumentException("Cabinet data cannot be blank");
-        }
+
         return "studentscabview";
     }
 }

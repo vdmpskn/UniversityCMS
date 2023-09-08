@@ -5,8 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import ua.foxminded.pskn.universitycms.converter.faculty.FacultyDTOToFacultyConverter;
 import ua.foxminded.pskn.universitycms.converter.faculty.FacultyToFacultyDTOConverter;
+import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
+import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
 import ua.foxminded.pskn.universitycms.model.university.Faculty;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
@@ -16,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -38,7 +44,7 @@ class FacultyServiceTest {
     }
 
     @Test
-    void shouldSaveFaculty_success() {
+    void shouldSaveFaculty_Success() {
         FacultyDTO facultyDTO = new FacultyDTO();
         facultyDTO.setFacultyName("Computer Science");
 
@@ -50,8 +56,68 @@ class FacultyServiceTest {
 
         FacultyDTO savedFacultyDTO = facultyService.saveFaculty(facultyDTO);
 
-        // Then
         assertEquals(facultyDTO, savedFacultyDTO);
+    }
+
+    @Test
+    void shouldFailToSaveFaculty_BlankName() {
+        FacultyDTO facultyDTO = new FacultyDTO();
+        facultyDTO.setFacultyName("");
+
+        assertThrows(FacultyEditException.class, () -> facultyService.saveFaculty(facultyDTO));
+    }
+
+    @Test
+    void shouldUpdateFacultyName_Success() {
+        FacultyDTO facultyDTO = new FacultyDTO();
+        facultyDTO.setFacultyId(1L);
+        facultyDTO.setFacultyName("New Faculty Name");
+
+        when(facultyRepository.existsById(anyLong())).thenReturn(true);
+
+        assertDoesNotThrow(() -> facultyService.updateFacultyName(facultyDTO));
+
+        verify(facultyRepository).updateFacultyNameById(eq(1L), eq("New Faculty Name"));
+    }
+
+    @Test
+    void shouldFailToUpdateFacultyName_FacultyNotFound() {
+        FacultyDTO facultyDTO = new FacultyDTO();
+        facultyDTO.setFacultyId(1L);
+        facultyDTO.setFacultyName("New Faculty Name");
+
+        when(facultyRepository.existsById(anyLong())).thenReturn(false);
+
+        assertThrows(FacultyNotFoundException.class, () -> facultyService.updateFacultyName(facultyDTO));
+    }
+
+    @Test
+    void shouldFailToUpdateFacultyName_BlankName() {
+        FacultyDTO facultyDTO = new FacultyDTO();
+        facultyDTO.setFacultyId(1L);
+        facultyDTO.setFacultyName("");
+
+        assertThrows(IllegalArgumentException.class, () -> facultyService.updateFacultyName(facultyDTO));
+    }
+
+    @Test
+    void shouldDeleteFacultyById_Success() {
+        Long facultyId = 1L;
+
+        when(facultyRepository.existsById(eq(facultyId))).thenReturn(true);
+
+        assertDoesNotThrow(() -> facultyService.deleteFacultyById(facultyId));
+
+        verify(facultyRepository).deleteById(eq(facultyId));
+    }
+
+    @Test
+    void shouldFailToDeleteFacultyById_FacultyNotFound() {
+        Long facultyId = 1L;
+
+        when(facultyRepository.existsById(eq(facultyId))).thenReturn(false);
+
+        assertThrows(FacultyNotFoundException.class, () -> facultyService.deleteFacultyById(facultyId));
     }
 
     @Test
@@ -82,12 +148,4 @@ class FacultyServiceTest {
         verify(facultyRepository).findAll();
     }
 
-    @Test
-    void shouldDeleteFaculty() {
-        Long facultyId = 1L;
-
-        facultyService.deleteFaculty(facultyId);
-
-        verify(facultyRepository).deleteById(facultyId);
-    }
 }

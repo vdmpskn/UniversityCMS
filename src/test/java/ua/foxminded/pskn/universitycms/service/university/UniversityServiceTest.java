@@ -6,27 +6,23 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import ua.foxminded.pskn.universitycms.converter.university.UniversityDTOToUniversityConverter;
 import ua.foxminded.pskn.universitycms.converter.university.UniversityToUniversityDTOConverter;
+import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-
-
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 
 
@@ -70,6 +66,44 @@ class UniversityServiceTest {
         verify(toUniversityConverter).convert(universityDTO);
         verify(universityRepository).save(university);
         verify(toUniversityDTOConverter).convert(university);
+    }
+
+    @Test
+    void shouldFailToSaveUniversity_BlankName() {
+        UniversityDTO universityDTO = new UniversityDTO();
+        universityDTO.setUniversityName("");
+
+        assertThrows(IllegalArgumentException.class, () -> universityService.saveUniversity(universityDTO));
+    }
+
+    @Test
+    void shouldUpdateUniversityName_Success() {
+        UniversityDTO universityDTO = new UniversityDTO();
+        universityDTO.setUniversityId(1L);
+        universityDTO.setUniversityName("New University Name");
+
+        when(universityRepository.existsById(1L)).thenReturn(true);
+
+        assertDoesNotThrow(() -> universityService.updateUniversityName(universityDTO));
+
+        verify(universityRepository).updateUniversityName(1L, "New University Name");
+        verify(universityRepository).existsById(1L);
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentException_WhenUniversityNameIsBlank() {
+        UniversityDTO universityDTO = new UniversityDTO();
+        universityDTO.setUniversityId(1L);
+        universityDTO.setUniversityName("");
+
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> universityService.updateUniversityName(universityDTO)
+        );
+
+        assertEquals("University name cannot be blank.", exception.getMessage());
+        verify(universityRepository, never()).existsById(anyLong());
+        verify(universityRepository, never()).updateUniversityName(anyLong(), anyString());
     }
 
     @Test
@@ -120,4 +154,36 @@ class UniversityServiceTest {
         verify(toUniversityConverter).convert(universityDTO);
         verify(universityRepository).delete(university);
     }
+
+    @Test
+    void shouldDeleteUniversity_Success() {
+        Long universityId = 1L;
+
+        when(universityRepository.existsById(universityId)).thenReturn(true);
+
+        universityService.deleteUniversity(universityId);
+
+        verify(universityRepository).deleteById(universityId);
+    }
+
+    @Test
+    void shouldThrowUniversityNotFoundException_WhenUniversityNotFound() {
+        Long universityId = 1L;
+
+        when(universityRepository.existsById(universityId)).thenReturn(false);
+
+        assertThrows(UniversityNotFoundException.class, () -> universityService.deleteUniversity(universityId));
+    }
+
+    @Test
+    void shouldThrowDataIntegrityViolationException_WhenDataIntegrityViolationOccurs() {
+        Long universityId = 1L;
+
+        when(universityRepository.existsById(universityId)).thenReturn(true);
+
+        doThrow(DataIntegrityViolationException.class).when(universityRepository).deleteById(universityId);
+
+        assertThrows(DataIntegrityViolationException.class, () -> universityService.deleteUniversity(universityId));
+    }
+
 }

@@ -74,7 +74,6 @@ public class UniversityService {
         }
     }
 
-
     @Transactional
     public boolean deleteUniversityByName(UniversityDTO universityDTO) {
         University university = toUniversityConverter.convert(universityDTO);
