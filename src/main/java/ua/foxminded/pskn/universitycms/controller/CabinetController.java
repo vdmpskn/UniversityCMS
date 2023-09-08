@@ -47,12 +47,12 @@ public class CabinetController {
     @GetMapping("/studentscab")
     public String studentCabinetPage(@RequestParam(name = "username", required = false) String name, Model model) {
         StudentCabinetData cabinetData = userCabinetService.getStudentCabinetData(name);
-
+        
             model.addAttribute("username", cabinetData.getUsername());
             model.addAttribute("studentId", cabinetData.getStudentId());
             model.addAttribute("studentGroup", cabinetData.getStudentGroup());
             model.addAttribute("availableGroups", cabinetData.getAvailableGroups());
 
-        return "studentscabview";
+        return "studentscab";
     }
 }
