@@ -17,7 +17,6 @@ import ua.foxminded.pskn.universitycms.model.university.Faculty;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -97,7 +96,7 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
 
-    public Page<Faculty> getAllFaculties(Pageable pageable){
+    public Page<Faculty> getAllFaculties(Pageable pageable) {
         log.debug("Retrieving all faculties with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return facultyRepository.findAll(pageable);
     }

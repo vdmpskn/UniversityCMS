@@ -5,17 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FacultyDTO {
+public class StudentGroupDTO {
 
-    private Long facultyId;
+    private Long studentGroupId;
 
-    private String facultyName;
+    private int facultyID;
 
-    private int universityId;
+    private String studentGroupName;
 
 }

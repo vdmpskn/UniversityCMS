@@ -22,12 +22,12 @@ public class ProfessorService {
         return professorRepository.getProfessorByUserId(userId);
     }
 
-    public List<Professor> getAllProfessors(){
+    public List<Professor> getAllProfessors() {
         log.debug("Retrieving all professors");
         return professorRepository.findAll();
     }
 
-    public Page<Professor> getAllProfessors(Pageable pageable){
+    public Page<Professor> getAllProfessors(Pageable pageable) {
         log.debug("Retrieving all professors with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return professorRepository.findAll(pageable);
     }

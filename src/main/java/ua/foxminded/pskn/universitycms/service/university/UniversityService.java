@@ -34,11 +34,11 @@ public class UniversityService {
     public UniversityDTO saveUniversity(UniversityDTO universityDTO) {
         log.info("Saving university: {}", universityDTO.getUniversityName());
         if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
-            try{
+            try {
                 University university = toUniversityConverter.convert(universityDTO);
                 university = universityRepository.save(university);
                 return toUniversityDTOConverter.convert(university);
-            } catch (DataAccessException ex){
+            } catch (DataAccessException ex) {
                 throw new UniversityEditException("University with name " + universityDTO.getUniversityName() + " already exists.");
             }
         } else {
@@ -73,7 +73,6 @@ public class UniversityService {
             throw new IllegalArgumentException("University name cannot be blank.");
         }
     }
-
 
     @Transactional
     public boolean deleteUniversityByName(UniversityDTO universityDTO) {

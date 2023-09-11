@@ -12,10 +12,14 @@ import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
 import ua.foxminded.pskn.universitycms.repository.user.UserRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class UserServiceTest {
 

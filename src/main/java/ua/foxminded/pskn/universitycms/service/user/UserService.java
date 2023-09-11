@@ -52,17 +52,17 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public Optional<User> findAdminByUsername(String username){
+    public Optional<User> findAdminByUsername(String username) {
         log.debug("Getting admin by username: {}", username);
         return userRepository.findAdminByUsername(username);
     }
 
-    public Optional<User> findProfessorByUsername(String username){
+    public Optional<User> findProfessorByUsername(String username) {
         log.debug("Getting admin by username: {}", username);
         return userRepository.findProfessorByUsername(username);
     }
 
-    public Optional<User> findStudentByUsername(String username){
+    public Optional<User> findStudentByUsername(String username) {
         log.debug("Getting admin by username: {}", username);
         return userRepository.findStudentByUsername(username);
     }

@@ -8,14 +8,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import ua.foxminded.pskn.universitycms.dto.StudentGroupDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
 import ua.foxminded.pskn.universitycms.service.university.StudentGroupService;
 
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StudentGroupController.class)
@@ -40,11 +43,58 @@ class StudentGroupControllerTest {
         mockMvc.perform(get("/studentgroup"))
             .andExpect(status().isOk())
             .andExpect(view().name("/university/studentgroup"))
-            .andExpect(model().attributeExists("student_group"))
-            .andExpect(model().attribute("student_group", studentGroupPage.getContent()))
+            .andExpect(model().attributeExists("studentGroup"))
+            .andExpect(model().attribute("studentGroup", studentGroupPage.getContent()))
             .andExpect(model().attributeExists("currentPage"))
             .andExpect(model().attribute("currentPage", 0))
             .andExpect(model().attributeExists("totalPages"))
             .andExpect(model().attribute("totalPages", studentGroupPage.getTotalPages()));
     }
+
+    @Test
+    void shouldAddStudentGroup_Success() throws Exception {
+        StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
+        studentGroupDTO.setStudentGroupName("Group A");
+
+        mockMvc.perform(post("/studentgroup/add")
+                .param("studentGroupName", "Group A")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/studentgroup"))
+            .andExpect(flash().attributeExists("successStudentGroupMessage"));
+
+        verify(studentGroupService, times(1)).saveStudentGroup(studentGroupDTO);
+    }
+
+    @Test
+    void shouldDeleteStudentGroup_Success() throws Exception {
+        doNothing().when(studentGroupService).deleteStudentGroup(1L);
+
+        mockMvc.perform(post("/studentgroup/delete")
+                .param("studentGroupId", "1")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/studentgroup"))
+            .andExpect(flash().attributeExists("deleteStudentGroupMessage"));
+
+        verify(studentGroupService, times(1)).deleteStudentGroup(1L);
+    }
+
+    @Test
+    void shouldEditStudentGroup_Success() throws Exception {
+        StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
+        studentGroupDTO.setStudentGroupId(1L);
+        studentGroupDTO.setStudentGroupName("Updated Group Name");
+
+        mockMvc.perform(post("/studentgroup/edit")
+                .param("studentGroupId", "1")
+                .param("studentGroupName", "Updated Group Name")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/studentgroup"))
+            .andExpect(flash().attributeExists("editStudentGroupMessage"));
+
+        verify(studentGroupService, times(1)).updateStudentGroupName(studentGroupDTO);
+    }
+
 }

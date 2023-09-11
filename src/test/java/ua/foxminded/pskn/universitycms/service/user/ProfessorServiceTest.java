@@ -11,7 +11,8 @@ import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ProfessorServiceTest {
 

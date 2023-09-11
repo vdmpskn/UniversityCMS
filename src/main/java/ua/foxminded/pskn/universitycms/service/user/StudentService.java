@@ -6,12 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pskn.universitycms.model.user.Student;
-import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,32 +17,31 @@ import java.util.Scanner;
 public class StudentService {
     private final StudentRepository studentRepository;
 
-    private final StudentGroupRepository studentGroupRepository;
-
-    Scanner scanner = new Scanner(System.in);
-
-    public Optional<Student> getStudentByUserId(Long userId){
+    public Optional<Student> getStudentByUserId(Long userId) {
         log.debug("Getting student by userId: {}", userId);
         return studentRepository.getStudentByUserId(userId);
     }
 
-    public void changeMyGroup(Student student){
-        studentGroupRepository.findAll();
-        log.info("Your groupID is: {}", student.getGroupId());
-        log.info("Write your new groupID: ");
-        int changedGroupId = scanner.nextInt();
-        student.setGroupId(changedGroupId);
-        log.info("Saving student with updated groupID: {}", student);
-        studentRepository.save(student);
+    public void changeMyGroup(Long studentID, int newGroupId) {
+        Optional<Student> studentOptional = studentRepository.findById(studentID);
+        if (studentOptional.isPresent()) {
+            Student student = studentOptional.get();
+            student.setGroupId(newGroupId);
+            studentRepository.save(student);
+            log.info("Updated student with ID {} to new group ID: {}", student.getUserId(), newGroupId);
+        } else {
+            log.error("Student with ID {} not found.", studentID);
+        }
     }
 
-    public List<Student> getAllStudents(){
+    public List<Student> getAllStudents() {
         log.debug("Retrieving all students");
         return studentRepository.findAll();
     }
 
-    public Page<Student> getAllStudents(Pageable pageable){
+    public Page<Student> getAllStudents(Pageable pageable) {
         log.debug("Retrieving all students with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return studentRepository.findAll(pageable);
     }
+
 }
