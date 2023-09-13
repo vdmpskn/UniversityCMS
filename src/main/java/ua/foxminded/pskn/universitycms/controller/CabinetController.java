@@ -1,9 +1,9 @@
 package ua.foxminded.pskn.universitycms.controller;
 
-import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.foxminded.pskn.universitycms.model.user.User;
@@ -24,7 +24,7 @@ public class CabinetController {
 
     @GetMapping("/professorscab")
     public String professorCabinetPage(@RequestParam(name = "username", required = false) String name, Model model) {
-        if (StringUtils.isNotBlank(name)) {
+        if (StringUtils.hasText(name)) {
             Optional<User> professor = userService.findProfessorByUsername(name);
             professor.ifPresent(p -> model.addAttribute("username", p.getUsername()));
         } else{
@@ -34,20 +34,15 @@ public class CabinetController {
     }
 
     @GetMapping("/adminscab")
-    public String adminCabinetPage(@RequestParam(name = "username", required = false) String name, Model model) {
-        if (StringUtils.isNotBlank(name)) {
-            Optional<User> admin = userService.findAdminByUsername(name);
-            admin.ifPresent(a -> model.addAttribute("username", a.getUsername()));
-        } else {
-            throw new IllegalArgumentException("Username cannot be blank");
-        }
+    public String adminCabinetPage() {
+
         return "adminscab";
     }
 
     @GetMapping("/studentscab")
     public String studentCabinetPage(@RequestParam(name = "username", required = false) String name, Model model) {
         StudentCabinetData cabinetData = userCabinetService.getStudentCabinetData(name);
-        
+
             model.addAttribute("username", cabinetData.getUsername());
             model.addAttribute("studentId", cabinetData.getStudentId());
             model.addAttribute("studentGroup", cabinetData.getStudentGroup());

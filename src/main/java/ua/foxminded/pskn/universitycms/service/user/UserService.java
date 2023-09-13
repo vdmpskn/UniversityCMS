@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.model.user.User;
@@ -67,13 +69,11 @@ public class UserService {
         return userRepository.findStudentByUsername(username);
     }
 
-    public User saveStudent(User user) {
+    public User saveStudent(User user, int groupId) {
         log.info("Saving student: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         if ("student".equals(user.getRole())) {
-            log.info("Enter student group number: ");
-            int groupId = scanner.nextInt();
 
             Student student = Student.builder()
                 .userId(savedUser.getUserId())
@@ -104,6 +104,10 @@ public class UserService {
         User savedUser = userRepository.save(user);
         User admin = User.builder()
             .userId(savedUser.getUserId())
+            .username(savedUser.getUsername())
+            .password(savedUser.getPassword())
+            .role(savedUser.getRole())
+            .facultyId(savedUser.getFacultyId())
             .build();
         userRepository.save(admin);
         return savedUser;
@@ -130,8 +134,30 @@ public class UserService {
         log.info("Faculty ID changed successfully.");
     }
 
-    public void deleteUser(Long id) {
-        log.info("Deleting user with ID: {}", id);
-        userRepository.deleteById(id);
+    @Transactional
+    public void deleteUser(UserDTO userDTO) {
+        if(userDTO.getRole().equals("professor")){
+            professorRepository.deleteProfessorByUserId(userDTO.getUserId());
+        }
+        if(userDTO.getRole().equals("student")){
+            studentRepository.deleteById(userDTO.getUserId());
+        }
+        log.info("Deleting user with ID: {}", userDTO.getUserId());
+        userRepository.deleteById(userDTO.getUserId());
+    }
+
+    public void updateUser(UserDTO userDTO) {
+        Optional<User> userOptional = userRepository.findById(userDTO.getUserId());
+
+        if (userOptional.isPresent()) {
+            User existingUser = userOptional.get();
+
+            existingUser.setUsername(userDTO.getUsername());
+            existingUser.setRole(userDTO.getRole());
+            existingUser.setFacultyId(userDTO.getFacultyId());
+            existingUser.setUserId(userDTO.getUserId());
+
+            userRepository.save(existingUser);
+        }
     }
 }
