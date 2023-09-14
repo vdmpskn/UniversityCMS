@@ -136,15 +136,15 @@ public class UserService {
 
     @Transactional
     public void deleteUser(UserDTO userDTO) {
-        if(userDTO.getRole().equals("professor")){
-            professorRepository.deleteProfessorByUserId(userDTO.getUserId());
-        }
-        if(userDTO.getRole().equals("student")){
-            studentRepository.deleteById(userDTO.getUserId());
+        switch (userDTO.getRole()) {
+            case "professor" -> professorRepository.deleteProfessorByUserId(userDTO.getUserId());
+            case "student" -> studentRepository.deleteById(userDTO.getUserId());
+            default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRole());
         }
         log.info("Deleting user with ID: {}", userDTO.getUserId());
         userRepository.deleteById(userDTO.getUserId());
     }
+
 
     public void updateUser(UserDTO userDTO) {
         Optional<User> userOptional = userRepository.findById(userDTO.getUserId());
@@ -158,6 +158,15 @@ public class UserService {
             existingUser.setUserId(userDTO.getUserId());
 
             userRepository.save(existingUser);
+        }
+    }
+
+    public void createUserWithRole(User user, int groupId) {
+        switch (user.getRole()) {
+            case "admin" -> saveAdmin(user);
+            case "student" -> saveStudent(user, groupId);
+            case "professor" -> saveProfessor(user);
+            default -> throw new IllegalArgumentException("Invalid role: " + user.getRole());
         }
     }
 }

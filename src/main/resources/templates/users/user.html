@@ -138,6 +138,21 @@
     </span>
 </div>
 
+<div th:if="${successDeleteMessage}" class="alert alert-success">
+    <p th:text="${successDeleteMessage}"></p>
+</div>
+
+<div th:if="${errorDeleteMessage}" class="alert alert-danger">
+    <p th:text="${errorDeleteMessage}"></p>
+</div>
+<div th:if="${successEditMessage}" class="alert alert-success">
+    <p th:text="${successEditMessage}"></p>
+</div>
+
+<div th:if="${errorEditMessage}" class="alert alert-danger">
+    <p th:text="${errorEditMessage}"></p>
+</div>
+
 <a th:href="@{/adminscab}" class="btn btn-primary">Go to Admin Panel</a>
 
 

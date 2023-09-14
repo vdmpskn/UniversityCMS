@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
 
@@ -31,18 +31,13 @@ public class CreateUserController {
 
     @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/adminscab/create-user")
-    public String createUser(@ModelAttribute("userForm") User user, int groupId) {
-        if (user.getRole().equals("admin")){
-            userService.saveAdmin(user);
+    public String createUser(@ModelAttribute("userForm") User user, int groupId, RedirectAttributes redirectAttributes) {
+        try {
+            userService.createUserWithRole(user, groupId);
+            redirectAttributes.addFlashAttribute("successMessage", "User created successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create user: " + e.getMessage());
         }
-        if (user.getRole().equals("student")){
-            userService.saveStudent(user, groupId);
-        }
-        if (user.getRole().equals("professor")){
-            userService.saveProfessor(user);
-        }
-
         return "redirect:/adminscab";
     }
-
 }

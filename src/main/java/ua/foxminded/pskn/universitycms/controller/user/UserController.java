@@ -43,16 +43,24 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public String deleteUser(@ModelAttribute("userDTO") UserDTO userDTO) {
-           userService.deleteUser(userDTO);
+    public String deleteUser(@ModelAttribute("userDTO") UserDTO userDTO, RedirectAttributes redirectAttributes) {
+        try {
+            userService.deleteUser(userDTO);
+            redirectAttributes.addFlashAttribute("successDeleteMessage", "User deleted successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorDeleteMessage", "Failed to delete user: " + e.getMessage());
+        }
         return "redirect:/user";
     }
 
     @PostMapping("/edit")
     public String editUser(@ModelAttribute("userDTO") UserDTO userDTO, RedirectAttributes redirectAttributes) {
-
-        userService.updateUser(userDTO);
-
+        try {
+            userService.updateUser(userDTO);
+            redirectAttributes.addFlashAttribute("successEditMessage", "User updated successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorEditMessage", "Failed to update user: " + e.getMessage());
+        }
         return "redirect:/user";
     }
 }
