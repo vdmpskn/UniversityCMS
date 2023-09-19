@@ -73,7 +73,7 @@ public class UserService {
         log.info("Saving student: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
-        if ("student".equals(user.getRole())) {
+        if (2 == user.getRoleId()) {
 
             Student student = Student.builder()
                 .userId(savedUser.getUserId())
@@ -90,7 +90,7 @@ public class UserService {
         log.info("Saving professor: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
-        if ("professor".equals(user.getRole())) {
+        if (3 == user.getRoleId()) {
             Professor professor = new Professor();
             professor.setUserId(savedUser.getUserId());
             professorRepository.save(professor);
@@ -106,7 +106,7 @@ public class UserService {
             .userId(savedUser.getUserId())
             .username(savedUser.getUsername())
             .password(savedUser.getPassword())
-            .role(savedUser.getRole())
+            .roleId(savedUser.getRoleId())
             .facultyId(savedUser.getFacultyId())
             .build();
         userRepository.save(admin);
@@ -136,13 +136,13 @@ public class UserService {
 
     @Transactional
     public void deleteUser(UserDTO userDTO) {
-        switch (userDTO.getRole()) {
-            case "professor" -> professorRepository.deleteProfessorByUserId(userDTO.getUserId());
-            case "student" -> studentRepository.deleteById(userDTO.getUserId());
-            default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRole());
+        switch (userDTO.getRoleId()) {
+            case 1 -> userRepository.deleteById(userDTO.getUserId());
+            case 3 -> professorRepository.deleteProfessorByUserId(userDTO.getUserId());
+            case 2 -> studentRepository.deleteById(userDTO.getUserId());
+            default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRoleId());
         }
         log.info("Deleting user with ID: {}", userDTO.getUserId());
-        userRepository.deleteById(userDTO.getUserId());
     }
 
 
@@ -153,7 +153,7 @@ public class UserService {
             User existingUser = userOptional.get();
 
             existingUser.setUsername(userDTO.getUsername());
-            existingUser.setRole(userDTO.getRole());
+            existingUser.setRoleId(userDTO.getRoleId());
             existingUser.setFacultyId(userDTO.getFacultyId());
             existingUser.setUserId(userDTO.getUserId());
 
@@ -162,11 +162,11 @@ public class UserService {
     }
 
     public void createUserWithRole(User user, int groupId) {
-        switch (user.getRole()) {
-            case "admin" -> saveAdmin(user);
-            case "student" -> saveStudent(user, groupId);
-            case "professor" -> saveProfessor(user);
-            default -> throw new IllegalArgumentException("Invalid role: " + user.getRole());
+        switch (user.getRoleId()) {
+            case 1 -> saveAdmin(user);
+            case 2 -> saveStudent(user, groupId);
+            case 3 -> saveProfessor(user);
+            default -> throw new IllegalArgumentException("Invalid role: " + user.getRoleId());
         }
     }
 }

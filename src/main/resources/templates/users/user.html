@@ -56,7 +56,7 @@
         <th>User ID</th>
         <th>Username</th>
         <th>Password</th>
-        <th>Role</th>
+        <th>RoleId</th>
         <th>Faculty ID</th>
         <th>Delete</th>
         <th>Edit</th>
@@ -66,13 +66,13 @@
         <td th:text="${user.userId}"></td>
         <td th:text="${user.username}"></td>
         <td th:text="${user.password}"></td>
-        <td th:text="${user.role}"></td>
+        <td th:text="${user.roleId}"></td>
         <td th:text="${user.facultyId}"></td>
 
         <td>
             <form th:action="@{/user/delete}" method="post">
                 <input type="hidden" name="username" th:value="${user.username}" />
-                <input type="hidden" name="role" th:value="${user.role}" />
+                <input type="hidden" name="roleId" th:value="${user.roleId}" />
                 <input type="hidden" name="userId" th:value="${user.userId}" />
                 <input type="hidden" name="facultyId" th:value="${user.facultyId}" />
                 <button type="submit">Delete User</button>
@@ -92,7 +92,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -105,8 +105,8 @@
                     </div>
                     <div class="form-group">
                         <label for="editRole">Role:</label>
-                        <select class="form-control" id="editRole" name="role" required>
-                            <option th:each="role : ${roles}" th:value="${role}" th:text="${role}"></option>
+                        <select class="form-control" id="editRole" name="roleId" required>
+                            <option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.name}"></option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -164,12 +164,15 @@
                 e.preventDefault();
                 var userId = this.getAttribute('data-userid');
                 var username = this.closest('tr').querySelector('td:nth-child(2)').textContent;
-                var role = this.closest('tr').querySelector('td:nth-child(4)').textContent;
+                var roleId = parseInt(this.closest('tr').querySelector('td:nth-child(4)').getAttribute('data-roleid')); // Преобразовать в int
                 var facultyId = this.closest('tr').querySelector('td:nth-child(5)').textContent;
 
                 document.querySelector('#editUserId').value = userId;
                 document.querySelector('#editUsername').value = username;
-                document.querySelector('#editRole').value = role;
+
+                // Установить числовое значение roleId
+                document.querySelector('#editRole').value = roleId;
+
                 document.querySelector('#editFacultyId').value = facultyId;
 
                 var modal = new bootstrap.Modal(document.querySelector('#editUserModal'));
@@ -178,6 +181,7 @@
         });
     });
 </script>
+
 
 
 

@@ -11,19 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "role")
+public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long userId;
-
-    private String username;
-
-    private String password;
-
+    @Column(name = "role_id")
     private int roleId;
 
-    private int facultyId;
-
+    private String name;
 }

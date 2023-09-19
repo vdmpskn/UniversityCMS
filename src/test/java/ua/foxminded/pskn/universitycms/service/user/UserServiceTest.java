@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
@@ -28,6 +29,7 @@ class UserServiceTest {
 
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
+
     @Mock
     private UserRepository userRepository;
 
@@ -88,10 +90,15 @@ class UserServiceTest {
 
     @Test
     void shouldDeleteUser() {
-        Long userId = 1L;
+        UserDTO userDTO = UserDTO.builder()
+            .userId(1L)
+            .roleId(1)
+            .facultyId(1)
+            .username("testUser")
+            .build();
 
-        userService.deleteUser(userId);
+        userService.deleteUser(userDTO);
 
-        verify(userRepository).deleteById(userId);
+        verify(userRepository).deleteById(userDTO.getUserId());
     }
 }

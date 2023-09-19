@@ -35,7 +35,7 @@ class UserRepositoryTest {
             .username("testUser")
             .password("pass")
             .facultyId(1)
-            .role("student")
+            .roleId(2)
             .userId(25L)
             .build();
         userRepository.save(user);
