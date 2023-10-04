@@ -22,7 +22,9 @@ public class User {
 
     private String password;
 
-    private int roleId;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     private int facultyId;
 

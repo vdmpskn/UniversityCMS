@@ -4,21 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
+import ua.foxminded.pskn.universitycms.model.user.Role;
 
 @Data
 @Builder
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class RoleDTO {
 
-    private Long userId;
+    private Role role;
 
-    private String username;
-
-    private String password;
-
-    private RoleDTO roleDTO;
-
-    private int facultyId;
-
+    private String roleName;
 }

@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 @Service
-
 public class SecureUserDetailsService implements UserDetailsService {
 
     private final UserService userService;
@@ -31,7 +30,7 @@ public class SecureUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Bad username!");
         }
 
-        String roleName = "ROLE_" + user.get().getRoleId();
+        String roleName = "ROLE_" + user.get().getRole().getName();
 
         Collection<GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(roleName));
 
@@ -39,4 +38,4 @@ public class SecureUserDetailsService implements UserDetailsService {
             user.get().getUsername(), user.get().getPassword(), authorities
         );
     }
-    }
+}

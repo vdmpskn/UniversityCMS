@@ -44,16 +44,23 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(StudentGroupEditException.class)
-    public ModelAndView handleUniversityEditException(StudentGroupEditException ex) {
+    public ModelAndView handleStudentGroupEditException(StudentGroupEditException ex) {
         ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("errorMessage", "UniversityEditException: " + ex.getMessage());
+        modelAndView.addObject("errorMessage", "StudentGroupEditException: " + ex.getMessage());
         return modelAndView;
     }
 
     @ExceptionHandler(StudentGroupNotFoundException.class)
-    public ModelAndView handleUniversityEditException(StudentGroupNotFoundException ex) {
+    public ModelAndView handleStudentGroupNotFoundException(StudentGroupNotFoundException ex) {
         ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("errorMessage", "UniversityEditException: " + ex.getMessage());
+        modelAndView.addObject("errorMessage", "StudentGroupNotFoundException: " + ex.getMessage());
+        return modelAndView;
+    }
+
+    @ExceptionHandler(UserUpdateException.class)
+    public ModelAndView handleUserUpdateException(UserUpdateException ex) {
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("errorMessage", "UserUpdateException: " + ex.getMessage());
         return modelAndView;
     }
 

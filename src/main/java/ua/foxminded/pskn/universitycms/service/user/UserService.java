@@ -7,8 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import ua.foxminded.pskn.universitycms.converter.user.UserConverter;
+import ua.foxminded.pskn.universitycms.dto.RoleDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
+import ua.foxminded.pskn.universitycms.model.user.Role;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
@@ -27,10 +31,14 @@ public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private final UserConverter userConverter;
+
     private final UserRepository userRepository;
     private final FacultyRepository facultyRepository;
     private final StudentRepository studentRepository;
     private final ProfessorRepository professorRepository;
+
+    private final RoleService roleService;
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -69,11 +77,12 @@ public class UserService {
         return userRepository.findStudentByUsername(username);
     }
 
-    public User saveStudent(User user, int groupId) {
+    public User saveStudent(UserDTO userDTO, int groupId) {
+        User user = userConverter.convertToEntity(userDTO);
         log.info("Saving student: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
-        if (2 == user.getRoleId()) {
+        if (2 == user.getRole().getRoleId()) {
 
             Student student = Student.builder()
                 .userId(savedUser.getUserId())
@@ -86,11 +95,12 @@ public class UserService {
         return savedUser;
     }
 
-    public User saveProfessor(User user) {
+    public User saveProfessor(UserDTO userDTO) {
+        User user = userConverter.convertToEntity(userDTO);
         log.info("Saving professor: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
-        if (3 == user.getRoleId()) {
+        if (3 == user.getRole().getRoleId()) {
             Professor professor = new Professor();
             professor.setUserId(savedUser.getUserId());
             professorRepository.save(professor);
@@ -98,7 +108,8 @@ public class UserService {
         return savedUser;
     }
 
-    public User saveAdmin(User user) {
+    public User saveAdmin(UserDTO userDTO) {
+        User user = userConverter.convertToEntity(userDTO);
         log.info("Saving admin: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
@@ -106,7 +117,7 @@ public class UserService {
             .userId(savedUser.getUserId())
             .username(savedUser.getUsername())
             .password(savedUser.getPassword())
-            .roleId(savedUser.getRoleId())
+            .role(savedUser.getRole())
             .facultyId(savedUser.getFacultyId())
             .build();
         userRepository.save(admin);
@@ -136,37 +147,58 @@ public class UserService {
 
     @Transactional
     public void deleteUser(UserDTO userDTO) {
-        switch (userDTO.getRoleId()) {
-            case 1 -> userRepository.deleteById(userDTO.getUserId());
-            case 3 -> professorRepository.deleteProfessorByUserId(userDTO.getUserId());
-            case 2 -> studentRepository.deleteById(userDTO.getUserId());
-            default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRoleId());
+        Optional<User> userOptional = userRepository.findById(userDTO.getUserId());
+
+        if(userOptional.isPresent()) {
+            switch (userDTO.getRoleDTO().getRole().getRoleId()) {
+                case 1 -> userRepository.deleteById(userDTO.getUserId());
+                case 3 -> professorRepository.deleteProfessorByUserId(userDTO.getUserId());
+                case 2 -> studentRepository.deleteById(userDTO.getUserId());
+                default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRoleDTO().getRole().getRoleId());
+            }
+        } else {
+            log.warn("User with ID {} not found.", userDTO.getUserId());
         }
         log.info("Deleting user with ID: {}", userDTO.getUserId());
     }
 
 
-    public void updateUser(UserDTO userDTO) {
+    public void updateUser(UserDTO userDTO, int roleId) {
+
+        Optional<Role> role = roleService.findRoleById(roleId);
+        userDTO.setRoleDTO(RoleDTO.builder()
+            .role(role.get())
+            .build());
+
         Optional<User> userOptional = userRepository.findById(userDTO.getUserId());
 
         if (userOptional.isPresent()) {
             User existingUser = userOptional.get();
 
             existingUser.setUsername(userDTO.getUsername());
-            existingUser.setRoleId(userDTO.getRoleId());
+            existingUser.setRole(userDTO.getRoleDTO().getRole());
             existingUser.setFacultyId(userDTO.getFacultyId());
             existingUser.setUserId(userDTO.getUserId());
 
             userRepository.save(existingUser);
+
+            log.info("User updated: {}", existingUser);
+        } else {
+            log.warn("User with ID {} not found.", userDTO.getUserId());
         }
     }
 
-    public void createUserWithRole(User user, int groupId) {
-        switch (user.getRoleId()) {
-            case 1 -> saveAdmin(user);
-            case 2 -> saveStudent(user, groupId);
-            case 3 -> saveProfessor(user);
-            default -> throw new IllegalArgumentException("Invalid role: " + user.getRoleId());
+    public void createUserWithRole(UserDTO userDTO, int groupId, int roleId) {
+        Optional<Role> role = roleService.findRoleById(roleId);
+        userDTO.setRoleDTO(RoleDTO.builder()
+            .role(role.get())
+            .build());
+
+        switch (userDTO.getRoleDTO().getRole().getRoleId()) {
+            case 1 -> saveAdmin(userDTO);
+            case 2 -> saveStudent(userDTO, groupId);
+            case 3 -> saveProfessor(userDTO);
+            default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRoleDTO().getRole().getRoleId());
         }
     }
 }

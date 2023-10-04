@@ -66,13 +66,13 @@
         <td th:text="${user.userId}"></td>
         <td th:text="${user.username}"></td>
         <td th:text="${user.password}"></td>
-        <td th:text="${user.roleId}"></td>
+        <td th:text="${user.role.roleId}"></td>
         <td th:text="${user.facultyId}"></td>
 
         <td>
             <form th:action="@{/user/delete}" method="post">
                 <input type="hidden" name="username" th:value="${user.username}" />
-                <input type="hidden" name="roleId" th:value="${user.roleId}" />
+                <input type="hidden" name="roleId" th:value="${user.role.roleId}" />
                 <input type="hidden" name="userId" th:value="${user.userId}" />
                 <input type="hidden" name="facultyId" th:value="${user.facultyId}" />
                 <button type="submit">Delete User</button>
@@ -164,13 +164,12 @@
                 e.preventDefault();
                 var userId = this.getAttribute('data-userid');
                 var username = this.closest('tr').querySelector('td:nth-child(2)').textContent;
-                var roleId = parseInt(this.closest('tr').querySelector('td:nth-child(4)').getAttribute('data-roleid')); // Преобразовать в int
+                var roleId = parseInt(this.closest('tr').querySelector('td:nth-child(4)').getAttribute('data-roleid'));
                 var facultyId = this.closest('tr').querySelector('td:nth-child(5)').textContent;
 
                 document.querySelector('#editUserId').value = userId;
                 document.querySelector('#editUsername').value = username;
 
-                // Установить числовое значение roleId
                 document.querySelector('#editRole').value = roleId;
 
                 document.querySelector('#editFacultyId').value = facultyId;

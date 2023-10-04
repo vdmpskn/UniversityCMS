@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import ua.foxminded.pskn.universitycms.customexception.UserUpdateException;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.user.Role;
 import ua.foxminded.pskn.universitycms.model.user.User;
@@ -48,18 +50,18 @@ public class UserController {
         try {
             userService.deleteUser(userDTO);
             redirectAttributes.addFlashAttribute("successDeleteMessage", "User deleted successfully");
-        } catch (Exception e) {
+        } catch (UserUpdateException e) {
             redirectAttributes.addFlashAttribute("errorDeleteMessage", "Failed to delete user: " + e.getMessage());
         }
         return "redirect:/user";
     }
 
     @PostMapping("/edit")
-    public String editUser(@ModelAttribute("userDTO") UserDTO userDTO, RedirectAttributes redirectAttributes) {
+    public String editUser(@ModelAttribute("userDTO") UserDTO userDTO,@RequestParam("roleId") int roleId, RedirectAttributes redirectAttributes) {
         try {
-            userService.updateUser(userDTO);
+            userService.updateUser(userDTO, roleId);
             redirectAttributes.addFlashAttribute("successEditMessage", "User updated successfully");
-        } catch (Exception e) {
+        } catch (UserUpdateException e) {
             redirectAttributes.addFlashAttribute("errorEditMessage", "Failed to update user: " + e.getMessage());
         }
         return "redirect:/user";
