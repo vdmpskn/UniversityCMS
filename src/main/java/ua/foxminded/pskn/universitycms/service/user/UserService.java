@@ -53,6 +53,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    @Transactional
     public Page<UserDTO> getAllUsers(Pageable pageable) {
         log.debug("Retrieving all users with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Page<User> userPage = userRepository.findAll(pageable);

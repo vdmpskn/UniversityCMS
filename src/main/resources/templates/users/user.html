@@ -66,13 +66,13 @@
         <td th:text="${user.userId}"></td>
         <td th:text="${user.username}"></td>
         <td th:text="${user.password}"></td>
-        <td th:text="${user.role.roleId}"></td>
+        <td th:text="${user.roleDTO.role.roleId}"></td>
         <td th:text="${user.facultyId}"></td>
 
         <td>
             <form th:action="@{/user/delete}" method="post">
                 <input type="hidden" name="username" th:value="${user.username}" />
-                <input type="hidden" name="roleId" th:value="${user.role.roleId}" />
+                <input type="hidden" name="roleId" th:value="${user.roleDTO.role.roleId}" />
                 <input type="hidden" name="userId" th:value="${user.userId}" />
                 <input type="hidden" name="facultyId" th:value="${user.facultyId}" />
                 <button type="submit">Delete User</button>
@@ -106,7 +106,7 @@
                     <div class="form-group">
                         <label for="editRole">Role:</label>
                         <select class="form-control" id="editRole" name="roleId" required>
-                            <option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.name}"></option>
+                            <option th:each="role : ${roles}" th:value="${role.role.roleId}" th:text="${role.role.name}"></option>
                         </select>
                     </div>
                     <div class="form-group">
