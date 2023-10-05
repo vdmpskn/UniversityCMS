@@ -27,6 +27,8 @@ public class SecureAuthenticationSuccessHandler implements AuthenticationSuccess
         if (role.equals("ROLE_PROFESSOR")) {
             response.sendRedirect("/studentscab?username=" + username);
         }
-        request.getSession().setAttribute("successMessage", "You have successfully logged in as " + " " + username);
+
+        String successMessage = String.format("You have successfully logged in as %s", username);
+        request.getSession().setAttribute("successMessage", successMessage);
     }
 }

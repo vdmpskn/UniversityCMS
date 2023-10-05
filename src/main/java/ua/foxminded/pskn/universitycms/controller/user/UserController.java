@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ua.foxminded.pskn.universitycms.customexception.UserUpdateException;
+import ua.foxminded.pskn.universitycms.dto.RoleDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.user.Role;
 import ua.foxminded.pskn.universitycms.model.user.User;
@@ -30,8 +31,8 @@ public class UserController {
     @GetMapping
     public String userPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<User> userPage = userService.getAllUsers(pageable);
-        List<Role> roles = roleService.getAllRoles();
+        Page<UserDTO> userPage = userService.getAllUsers(pageable);
+        List<RoleDTO> roles = roleService.getAllRoles();
 
 
         model.addAttribute("users", userPage.getContent());

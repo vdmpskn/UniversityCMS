@@ -2,6 +2,7 @@ package ua.foxminded.pskn.universitycms.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -52,9 +53,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Page<User> getAllUsers(Pageable pageable) {
+    public Page<UserDTO> getAllUsers(Pageable pageable) {
         log.debug("Retrieving all users with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
-        return userRepository.findAll(pageable);
+        Page<User> userPage = userRepository.findAll(pageable);
+        return userPage.map(userConverter::convertToDTO);
     }
 
     public Optional<User> getUserByUsername(String username) {
@@ -82,16 +84,13 @@ public class UserService {
         log.info("Saving student: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
-        if (2 == user.getRole().getRoleId()) {
-
-            Student student = Student.builder()
-                .userId(savedUser.getUserId())
-                .groupId(groupId)
-                .build();
-            student.setUserId(savedUser.getUserId());
-            student.setGroupId(groupId);
-            studentRepository.save(student);
-        }
+        Student student = Student.builder()
+            .userId(savedUser.getUserId())
+            .groupId(groupId)
+            .build();
+        student.setUserId(savedUser.getUserId());
+        student.setGroupId(groupId);
+        studentRepository.save(student);
         return savedUser;
     }
 
@@ -100,11 +99,9 @@ public class UserService {
         log.info("Saving professor: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
-        if (3 == user.getRole().getRoleId()) {
-            Professor professor = new Professor();
-            professor.setUserId(savedUser.getUserId());
-            professorRepository.save(professor);
-        }
+        Professor professor = new Professor();
+        professor.setUserId(savedUser.getUserId());
+        professorRepository.save(professor);
         return savedUser;
     }
 
@@ -149,14 +146,15 @@ public class UserService {
     public void deleteUser(UserDTO userDTO) {
         Optional<User> userOptional = userRepository.findById(userDTO.getUserId());
 
-        if(userOptional.isPresent()) {
+        if (userOptional.isPresent()) {
             switch (userDTO.getRoleDTO().getRole().getRoleId()) {
                 case 1 -> userRepository.deleteById(userDTO.getUserId());
                 case 3 -> professorRepository.deleteProfessorByUserId(userDTO.getUserId());
                 case 2 -> studentRepository.deleteById(userDTO.getUserId());
                 default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRoleDTO().getRole().getRoleId());
             }
-        } else {
+        }
+        else {
             log.warn("User with ID {} not found.", userDTO.getUserId());
         }
         log.info("Deleting user with ID: {}", userDTO.getUserId());
@@ -165,9 +163,9 @@ public class UserService {
 
     public void updateUser(UserDTO userDTO, int roleId) {
 
-        Optional<Role> role = roleService.findRoleById(roleId);
+        Optional<RoleDTO> role = roleService.findRoleById(roleId);
         userDTO.setRoleDTO(RoleDTO.builder()
-            .role(role.get())
+            .role(role.get().getRole())
             .build());
 
         Optional<User> userOptional = userRepository.findById(userDTO.getUserId());
@@ -183,22 +181,28 @@ public class UserService {
             userRepository.save(existingUser);
 
             log.info("User updated: {}", existingUser);
-        } else {
+        }
+        else {
             log.warn("User with ID {} not found.", userDTO.getUserId());
         }
     }
 
     public void createUserWithRole(UserDTO userDTO, int groupId, int roleId) {
-        Optional<Role> role = roleService.findRoleById(roleId);
+        Optional<RoleDTO> role = roleService.findRoleById(roleId);
         userDTO.setRoleDTO(RoleDTO.builder()
-            .role(role.get())
+            .role(role.get().getRole())
             .build());
 
-        switch (userDTO.getRoleDTO().getRole().getRoleId()) {
-            case 1 -> saveAdmin(userDTO);
-            case 2 -> saveStudent(userDTO, groupId);
-            case 3 -> saveProfessor(userDTO);
-            default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRoleDTO().getRole().getRoleId());
+        if(role.isPresent()){
+            switch (userDTO.getRoleDTO().getRole().getRoleId()) {
+                case 1 -> saveAdmin(userDTO);
+                case 2 -> saveStudent(userDTO, groupId);
+                case 3 -> saveProfessor(userDTO);
+                default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRoleDTO().getRole().getRoleId());
+            }
+        } else {
+            log.warn("Role with ID {} not found.", role.get().getRole().getRoleId());
         }
+
     }
 }

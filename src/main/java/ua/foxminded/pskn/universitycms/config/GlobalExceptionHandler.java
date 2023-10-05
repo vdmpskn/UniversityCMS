@@ -64,5 +64,12 @@ public class GlobalExceptionHandler {
         return modelAndView;
     }
 
+    @ExceptionHandler(UserCreateException.class)
+    public ModelAndView handleUserCreateException(UserCreateException ex) {
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("errorMessage", "UserCreateException: " + ex.getMessage());
+        return modelAndView;
+    }
+
 }
 
