@@ -17,7 +17,10 @@ public class ChangeGroupController {
     private final StudentService studentService;
 
     @PostMapping("/studentscab/changeGroup")
-    public String changeStudentGroup(@RequestParam Long studentId, @RequestParam int groupId, RedirectAttributes redirectAttributes, Principal principal) {
+    public String changeStudentGroup(@RequestParam Long studentId,
+                                     @RequestParam Long groupId,
+                                     RedirectAttributes redirectAttributes,
+                                     Principal principal) {
         String username = principal.getName();
         studentService.changeMyGroup(studentId, groupId);
         String successMessage = "Student group changed successfully to " + groupId;

@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ua.foxminded.pskn.universitycms.converter.user.UserConverter;
+import ua.foxminded.pskn.universitycms.customexception.RoleNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.RoleDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
-import ua.foxminded.pskn.universitycms.model.user.Role;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
@@ -23,7 +23,9 @@ import ua.foxminded.pskn.universitycms.repository.user.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
+
+
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -41,8 +43,6 @@ public class UserService {
 
     private final RoleService roleService;
 
-    private final Scanner scanner = new Scanner(System.in);
-
     public User getUserById(Long id) {
         log.debug("Getting user by ID: {}", id);
         return userRepository.findById(id).orElse(null);
@@ -55,7 +55,9 @@ public class UserService {
 
     @Transactional
     public Page<UserDTO> getAllUsers(Pageable pageable) {
-        log.debug("Retrieving all users with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
+        log.debug("Retrieving all users with page number: {} and page size: {}",
+            pageable.getPageNumber(),
+            pageable.getPageSize());
         Page<User> userPage = userRepository.findAll(pageable);
         return userPage.map(userConverter::convertToDTO);
     }
@@ -70,9 +72,10 @@ public class UserService {
         return userRepository.findAdminByUsername(username);
     }
 
-    public Optional<User> findProfessorByUsername(String username) {
+    public Optional<UserDTO> findProfessorByUsername(String username) {
         log.debug("Getting admin by username: {}", username);
-        return userRepository.findProfessorByUsername(username);
+          Optional<User> professor = userRepository.findProfessorByUsername(username);
+          return professor.map(userConverter::convertToDTO);
     }
 
     public Optional<User> findStudentByUsername(String username) {
@@ -122,24 +125,20 @@ public class UserService {
         return savedUser;
     }
 
-    public void changeMyName(User user) {
+    public void changeMyName(User user, String newUsername) {
         String username = user.getUsername();
         log.info("Your actual username is: {}", username);
         log.info("Write your new username: ");
-        String changedUsername = scanner.nextLine();
-        user.setUsername(changedUsername);
-        userRepository.save(user);
+        userRepository.save(user.withUsername(newUsername));
         log.info("Username changed successfully.");
     }
 
-    public void changeMyFaculty(User user) {
+    public void changeMyFaculty(User user, int newFaculty) {
         log.info(facultyRepository.findAll().toString());
         int facultyId = user.getFacultyId();
         log.info("Your actual faculty ID is: {}", facultyId);
         log.info("Write your new faculty ID: ");
-        int changedFacultyId = scanner.nextInt();
-        user.setFacultyId(changedFacultyId);
-        userRepository.save(user);
+        userRepository.save(user.withFacultyId(newFaculty));
         log.info("Faculty ID changed successfully.");
     }
 
@@ -188,11 +187,12 @@ public class UserService {
         }
     }
 
-    public void createUserWithRole(UserDTO userDTO, int groupId, int roleId) {
+    public void createUserWithRole(UserDTO userDTO, int groupId, int roleId)  {
         Optional<RoleDTO> role = roleService.findRoleById(roleId);
-        userDTO.setRoleDTO(RoleDTO.builder()
-            .role(role.get().getRole())
-            .build());
+
+        role.ifPresent(roleDTO -> userDTO.setRoleDTO(RoleDTO.builder()
+            .role(roleDTO.getRole())
+            .build()));
 
         if(role.isPresent()){
             switch (userDTO.getRoleDTO().getRole().getRoleId()) {
@@ -202,7 +202,8 @@ public class UserService {
                 default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRoleDTO().getRole().getRoleId());
             }
         } else {
-            log.warn("Role with ID {} not found.", role.get().getRole().getRoleId());
+            log.warn("Role with ID not found.");
+            throw new RoleNotFoundException("Role not found.");
         }
 
     }

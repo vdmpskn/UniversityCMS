@@ -54,7 +54,7 @@ class StudentGroupControllerTest {
     @Test
     void shouldAddStudentGroup_Success() throws Exception {
         StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
-        studentGroupDTO.setStudentGroupName("Group A");
+        studentGroupDTO.setGroupName("Group A");
 
         mockMvc.perform(post("/studentgroup/add")
                 .param("studentGroupName", "Group A")
@@ -83,8 +83,8 @@ class StudentGroupControllerTest {
     @Test
     void shouldEditStudentGroup_Success() throws Exception {
         StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
-        studentGroupDTO.setStudentGroupId(1L);
-        studentGroupDTO.setStudentGroupName("Updated Group Name");
+        studentGroupDTO.setGroupId(1L);
+        studentGroupDTO.setGroupName("Updated Group Name");
 
         mockMvc.perform(post("/studentgroup/edit")
                 .param("studentGroupId", "1")

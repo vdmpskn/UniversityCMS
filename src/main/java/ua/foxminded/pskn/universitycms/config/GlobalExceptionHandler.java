@@ -3,7 +3,14 @@ package ua.foxminded.pskn.universitycms.config;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
-import ua.foxminded.pskn.universitycms.customexception.*;
+
+import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.StudentGroupEditException;
+import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.UniversityEditException;
+import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.UserCreateException;
+import ua.foxminded.pskn.universitycms.customexception.UserUpdateException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

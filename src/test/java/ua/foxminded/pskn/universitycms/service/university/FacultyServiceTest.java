@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import ua.foxminded.pskn.universitycms.converter.faculty.FacultyDTOToFacultyConverter;
-import ua.foxminded.pskn.universitycms.converter.faculty.FacultyToFacultyDTOConverter;
+
 import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
 import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;

@@ -55,8 +55,8 @@
         <td th:text="${studentGroup.facultyId}"></td>
         <td th:text="${studentGroup.groupName}"></td>
         <td>
-            <form th:action="@{/studentgroup/delete}" th:object="${studentGroupDTO}" method="post">
-                <input type="hidden" name="studentGroupId" th:value="${studentGroup.groupId}" />
+            <form th:action="@{/studentgroup/delete}" th:object="${studentGroup}" method="post">
+                <input type="hidden" name="groupId" th:value="${studentGroup.groupId}" />
                 <button type="submit">Delete Student Group</button>
             </form>
             <button type="button" class="btn btn-primary edit-btn" th:data-group-id="${studentGroup.groupId}" data-toggle="modal" data-target="#editGroupModal">Edit</button>
@@ -74,8 +74,8 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/studentgroup/edit}" method="post">
-                        <input type="hidden" name="studentGroupId" th:value="${group.groupId}" />
-                        <input type="text" name="studentGroupName" th:value="${group.groupName}" placeholder="Group Name"/>
+                        <input type="hidden" name="groupId" th:value="${group.groupId}" />
+                        <input type="text" name="groupName" th:value="${group.groupName}" placeholder="Group Name"/>
                         <button type="submit">Edit Student Group</button>
                     </form>
                 </div>
@@ -86,8 +86,8 @@
 
 
 <form th:action="@{/studentgroup/add}" th:object="${studentGroupDTO}" method="post">
-    <input type="text" th:field="*{studentGroupName}" placeholder="Group Name"/>
-    <input type="number" th:field="*{facultyID}" placeholder="Faculty ID"/>
+    <input type="text" th:field="*{groupName}" placeholder="Group Name"/>
+    <input type="number" th:field="*{facultyId}" placeholder="Faculty ID"/>
     <button type="submit">Add Group</button>
 </form>
 

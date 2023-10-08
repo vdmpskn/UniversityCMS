@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StudentGroupDTO {
 
-    private Long studentGroupId;
+    private Long groupId;
 
-    private int facultyID;
+    private int facultyId;
 
-    private String studentGroupName;
+    private String groupName;
 
 }

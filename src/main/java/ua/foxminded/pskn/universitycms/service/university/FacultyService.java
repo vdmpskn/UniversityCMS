@@ -8,8 +8,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ua.foxminded.pskn.universitycms.converter.faculty.FacultyDTOToFacultyConverter;
-import ua.foxminded.pskn.universitycms.converter.faculty.FacultyToFacultyDTOConverter;
+
+import ua.foxminded.pskn.universitycms.converter.faculty.FacultyConverter;
 import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
 import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
@@ -24,16 +24,13 @@ import java.util.List;
 public class FacultyService {
     private final FacultyRepository facultyRepository;
 
-    private final FacultyDTOToFacultyConverter toFacultyConverter;
-
-    private final FacultyToFacultyDTOConverter toFacultyDTOConverter;
+    private final FacultyConverter facultyConverter;
 
     public FacultyDTO saveFaculty(FacultyDTO facultyDTO) {
         if (StringUtils.isNotBlank(facultyDTO.getFacultyName())) {
             try {
-                Faculty faculty = toFacultyConverter.convert(facultyDTO);
-                faculty = facultyRepository.save(faculty);
-                return toFacultyDTOConverter.convert(faculty);
+                 facultyRepository.save(facultyConverter.convertToEntity(facultyDTO));
+                 return facultyDTO;
             } catch (DataAccessException e) {
                 throw new FacultyEditException("Faculty with name " + facultyDTO.getFacultyName() + " already exists.");
             }
@@ -96,9 +93,11 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
 
-    public Page<Faculty> getAllFaculties(Pageable pageable) {
+    @Transactional
+    public Page<FacultyDTO> getAllFaculties(Pageable pageable) {
         log.debug("Retrieving all faculties with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
-        return facultyRepository.findAll(pageable);
+       Page<Faculty> facultyPage = facultyRepository.findAll(pageable);
+        return facultyPage.map(facultyConverter::convertToDTO);
     }
 
     public void deleteFaculty(Long id) {

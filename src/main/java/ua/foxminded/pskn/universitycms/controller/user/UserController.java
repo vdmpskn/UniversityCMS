@@ -29,7 +29,9 @@ public class UserController {
     private final RoleService roleService;
 
     @GetMapping
-    public String userPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+    public String userPage(Model model,
+                           @RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "5") int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<UserDTO> userPage = userService.getAllUsers(pageable);
         List<RoleDTO> roles = roleService.getAllRoles();
@@ -47,7 +49,8 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public String deleteUser(@ModelAttribute("userDTO") UserDTO userDTO, RedirectAttributes redirectAttributes) {
+    public String deleteUser(@ModelAttribute("userDTO") UserDTO userDTO,
+                             RedirectAttributes redirectAttributes) {
         try {
             userService.deleteUser(userDTO);
             redirectAttributes.addFlashAttribute("successDeleteMessage", "User deleted successfully");
@@ -58,7 +61,9 @@ public class UserController {
     }
 
     @PostMapping("/edit")
-    public String editUser(@ModelAttribute("userDTO") UserDTO userDTO,@RequestParam("roleId") int roleId, RedirectAttributes redirectAttributes) {
+    public String editUser(@ModelAttribute("userDTO") UserDTO userDTO,
+                           @RequestParam("roleId") int roleId,
+                           RedirectAttributes redirectAttributes) {
         try {
             userService.updateUser(userDTO, roleId);
             redirectAttributes.addFlashAttribute("successEditMessage", "User updated successfully");

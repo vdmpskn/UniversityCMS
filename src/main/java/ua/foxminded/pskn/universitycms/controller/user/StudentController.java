@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import ua.foxminded.pskn.universitycms.dto.StudentDTO;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.service.user.StudentService;
 
@@ -21,9 +23,10 @@ public class StudentController {
 
 
     @GetMapping
-    public String studentPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+    public String studentPage(Model model, @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "5") int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Student> studentPage = studentService.getAllStudents(pageable);
+        Page<StudentDTO> studentPage = studentService.getAllStudents(pageable);
 
         model.addAttribute("students", studentPage.getContent());
         model.addAttribute("currentPage", page);

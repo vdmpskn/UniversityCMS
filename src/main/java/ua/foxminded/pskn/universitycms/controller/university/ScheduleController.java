@@ -9,7 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ua.foxminded.pskn.universitycms.model.university.Schedule;
+
+import ua.foxminded.pskn.universitycms.dto.ScheduleDTO;
 import ua.foxminded.pskn.universitycms.service.university.ScheduleService;
 
 @Controller
@@ -20,9 +21,11 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @GetMapping
-    public String schedulePage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+    public String schedulePage(Model model,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "5") int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Schedule> schedulePage = scheduleService.getAllSchedule(pageable);
+        Page<ScheduleDTO> schedulePage = scheduleService.getAllSchedule(pageable);
 
         model.addAttribute("schedule", schedulePage.getContent());
         model.addAttribute("currentPage", page);
