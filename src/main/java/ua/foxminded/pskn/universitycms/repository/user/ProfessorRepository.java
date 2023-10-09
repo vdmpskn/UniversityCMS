@@ -13,4 +13,6 @@ public interface ProfessorRepository extends JpaRepository<Professor, Long> {
 
     @Query("SELECT MAX(p.professorId) FROM Professor p")
     Long findMaxProfessorId();
+
+    void deleteProfessorByUserId(Long userId);
 }

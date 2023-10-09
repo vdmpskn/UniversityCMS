@@ -29,14 +29,21 @@ CREATE TABLE course
     FOREIGN KEY (faculty_id) REFERENCES faculty (faculty_id)
 );
 
+CREATE TABLE role
+(
+    role_id SERIAL PRIMARY KEY ,
+    name VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE users
 (
     user_id    SERIAL PRIMARY KEY,
     username   VARCHAR(255) NOT NULL UNIQUE,
     password   VARCHAR(255) NOT NULL,
-    role       VARCHAR(20)  NOT NULL,
-    faculty_id INTEGER      NOT NULL,
-    FOREIGN KEY (faculty_id) REFERENCES faculty (faculty_id)
+    role_id    INTEGER NOT NULL,
+    faculty_id INTEGER,
+    FOREIGN KEY (faculty_id) REFERENCES faculty (faculty_id),
+    FOREIGN KEY (role_id) REFERENCES role (role_id)
 );
 
 CREATE TABLE students

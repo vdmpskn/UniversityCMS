@@ -1,15 +1,19 @@
 package ua.foxminded.pskn.universitycms.controller.university;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import lombok.RequiredArgsConstructor;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
-import ua.foxminded.pskn.universitycms.model.university.Faculty;
 import ua.foxminded.pskn.universitycms.service.university.FacultyService;
 import ua.foxminded.pskn.universitycms.service.university.UniversityService;
 
@@ -23,9 +27,11 @@ public class FacultyController {
     private final UniversityService universityService;
 
     @GetMapping
-    public String facultyPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+    public String facultyPage(Model model,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "5") int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Faculty> facultyPage = facultyService.getAllFaculties(pageable);
+        Page<FacultyDTO> facultyPage = facultyService.getAllFaculties(pageable);
 
         model.addAttribute("faculty", facultyPage.getContent());
         model.addAttribute("currentPage", page);
@@ -36,7 +42,8 @@ public class FacultyController {
     }
 
     @PostMapping("/add")
-    public String addFaculty(@ModelAttribute("facultyDTO") FacultyDTO facultyDTO, RedirectAttributes redirectAttributes) {
+    public String addFaculty(@ModelAttribute("facultyDTO") FacultyDTO facultyDTO,
+                             RedirectAttributes redirectAttributes) {
         if (universityService.isUniversityExistByUniversityId(facultyDTO.getUniversityId())) {
             facultyService.saveFaculty(facultyDTO);
             redirectAttributes.addFlashAttribute("successFacultyMessage", "Faculty added successfully!");
@@ -47,7 +54,8 @@ public class FacultyController {
     }
 
     @PostMapping("/delete")
-    public String deleteFaculty(@ModelAttribute("facultyDTO") FacultyDTO facultyDTO, RedirectAttributes redirectAttributes) {
+    public String deleteFaculty(@ModelAttribute("facultyDTO") FacultyDTO facultyDTO,
+                                RedirectAttributes redirectAttributes) {
         if (facultyDTO != null) {
             facultyService.deleteFacultyById(facultyDTO.getFacultyId());
             redirectAttributes.addFlashAttribute("deleteFacultyMessage", "Faculty deleted successfully!");
@@ -58,7 +66,8 @@ public class FacultyController {
     }
 
     @PostMapping("/edit")
-    public String editFaculty(@ModelAttribute("facultyDTO") FacultyDTO facultyDTO, RedirectAttributes redirectAttributes) {
+    public String editFaculty(@ModelAttribute("facultyDTO") FacultyDTO facultyDTO,
+                              RedirectAttributes redirectAttributes) {
         if (facultyDTO.getFacultyId() != null && facultyDTO.getFacultyName() != null) {
             facultyService.updateFacultyName(facultyDTO);
             redirectAttributes.addFlashAttribute("editFacultyMessage", "Faculty edited successfully!");

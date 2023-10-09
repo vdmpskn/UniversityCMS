@@ -16,6 +16,6 @@ public class FacultyDTO {
 
     private String facultyName;
 
-    private int universityId;
+    private Long universityId;
 
 }

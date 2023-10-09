@@ -8,8 +8,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupDTOToStudentGroupConverter;
-import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupToStudentGroupDTOConverter;
+
+import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupConverter;
 import ua.foxminded.pskn.universitycms.customexception.StudentGroupEditException;
 import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.StudentGroupDTO;
@@ -24,19 +24,16 @@ import java.util.List;
 public class StudentGroupService {
     private final StudentGroupRepository studentGroupRepository;
 
-    private final StudentGroupDTOToStudentGroupConverter toStudentGroupConverter;
-
-    private final StudentGroupToStudentGroupDTOConverter toStudentGroupDTOConverter;
+    private final StudentGroupConverter studentGroupConverter;
 
     public StudentGroupDTO saveStudentGroup(StudentGroupDTO studentGroupDTO) {
-        log.info("Saving university: {}", studentGroupDTO.getStudentGroupName());
-        if (StringUtils.isNotBlank(studentGroupDTO.getStudentGroupName())) {
+        log.info("Saving university: {}", studentGroupDTO.getGroupName());
+        if (StringUtils.isNotBlank(studentGroupDTO.getGroupName())) {
             try {
-                StudentGroup studentGroup = toStudentGroupConverter.convert(studentGroupDTO);
-                studentGroup = studentGroupRepository.save(studentGroup);
-                return toStudentGroupDTOConverter.convert(studentGroup);
+                studentGroupRepository.save(studentGroupConverter.convertToEntity(studentGroupDTO));
+                return studentGroupDTO;
             } catch (DataAccessException ex) {
-                throw new StudentGroupEditException("Student Group with name " + studentGroupDTO.getStudentGroupName() + " already exists.");
+                throw new StudentGroupEditException("Student Group with name " + studentGroupDTO.getGroupName() + " already exists.");
             }
         } else {
             throw new IllegalArgumentException("Student Group name cannot be blank.");
@@ -45,11 +42,11 @@ public class StudentGroupService {
 
     @Transactional
     public void updateStudentGroupName(StudentGroupDTO studentGroupDTO) {
-        if (StringUtils.isNotBlank(studentGroupDTO.getStudentGroupName())) {
-            log.info("Update student group: {}", studentGroupDTO.getStudentGroupName());
-            studentGroupRepository.updateStudentGroupName(studentGroupDTO.getStudentGroupId(), studentGroupDTO.getStudentGroupName());
-            if (!studentGroupRepository.existsById(studentGroupDTO.getStudentGroupId())) {
-                throw new StudentGroupNotFoundException("Student Group not found with ID: " + studentGroupDTO.getStudentGroupId());
+        if (StringUtils.isNotBlank(studentGroupDTO.getGroupName())) {
+            log.info("Update student group: {}", studentGroupDTO.getGroupName());
+            studentGroupRepository.updateStudentGroupName(studentGroupDTO.getGroupId(), studentGroupDTO.getGroupName());
+            if (!studentGroupRepository.existsById(studentGroupDTO.getGroupId())) {
+                throw new StudentGroupNotFoundException("Student Group not found with ID: " + studentGroupDTO.getGroupId());
             }
         } else {
             throw new IllegalArgumentException("Student Group name cannot be blank.");
@@ -66,9 +63,10 @@ public class StudentGroupService {
         return studentGroupRepository.findAll();
     }
 
-    public Page<StudentGroup> getAllStudentGroups(Pageable pageable) {
+    public Page<StudentGroupDTO> getAllStudentGroups(Pageable pageable) {
         log.debug("Retrieving all students group with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
-        return studentGroupRepository.findAll(pageable);
+        Page<StudentGroup> studentGroupPage = studentGroupRepository.findAll(pageable);
+        return studentGroupPage.map(studentGroupConverter::convertToDTO);
     }
 
     public void deleteStudentGroup(Long id) {

@@ -5,8 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+
+import ua.foxminded.pskn.universitycms.converter.student.StudentConverter;
+import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.StudentNotFoundException;
+import ua.foxminded.pskn.universitycms.dto.StudentDTO;
+import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
 import ua.foxminded.pskn.universitycms.model.user.Student;
+import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -17,20 +26,31 @@ import java.util.Optional;
 public class StudentService {
     private final StudentRepository studentRepository;
 
+    private final StudentGroupRepository studentGroupRepository;
+
+    private final StudentConverter studentConverter;
+
     public Optional<Student> getStudentByUserId(Long userId) {
         log.debug("Getting student by userId: {}", userId);
         return studentRepository.getStudentByUserId(userId);
     }
 
-    public void changeMyGroup(Long studentID, int newGroupId) {
+    public void changeMyGroup(Long studentID, Long newGroupId) {
+        Optional<StudentGroup> groupOptional = studentGroupRepository.findById(newGroupId);
+        if (groupOptional.isEmpty()) {
+            log.error("Group with ID {} not found.", newGroupId);
+            throw new StudentGroupNotFoundException(String.format("Group with ID %d not found.", newGroupId));
+        }
         Optional<Student> studentOptional = studentRepository.findById(studentID);
         if (studentOptional.isPresent()) {
             Student student = studentOptional.get();
-            student.setGroupId(newGroupId);
+            student.setGroupId(Math.toIntExact(newGroupId));
             studentRepository.save(student);
             log.info("Updated student with ID {} to new group ID: {}", student.getUserId(), newGroupId);
         } else {
             log.error("Student with ID {} not found.", studentID);
+            throw new StudentNotFoundException(String.format("Student with ID %d not found.", studentID));
+
         }
     }
 
@@ -39,9 +59,12 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public Page<Student> getAllStudents(Pageable pageable) {
-        log.debug("Retrieving all students with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
-        return studentRepository.findAll(pageable);
+    public Page<StudentDTO> getAllStudents(Pageable pageable) {
+        log.debug("Retrieving all students with page number: {} and page size: {}",
+            pageable.getPageNumber(),
+            pageable.getPageSize());
+        Page<Student> studentPage = studentRepository.findAll(pageable);
+        return studentPage.map(studentConverter::convertToDTO);
     }
 
 }

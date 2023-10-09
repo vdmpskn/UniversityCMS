@@ -1,14 +1,20 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
-import io.micrometer.common.util.StringUtils;
+import java.util.List;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import io.micrometer.common.util.StringUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ua.foxminded.pskn.universitycms.converter.university.UniversityConverter;
 import ua.foxminded.pskn.universitycms.converter.university.UniversityDTOToUniversityConverter;
 import ua.foxminded.pskn.universitycms.converter.university.UniversityToUniversityDTOConverter;
 import ua.foxminded.pskn.universitycms.customexception.UniversityEditException;
@@ -17,9 +23,6 @@ import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -27,21 +30,20 @@ public class UniversityService {
 
     private final UniversityRepository universityRepository;
 
-    private final UniversityDTOToUniversityConverter toUniversityConverter;
-
-    private final UniversityToUniversityDTOConverter toUniversityDTOConverter;
+    private final UniversityConverter universityConverter;
 
     public UniversityDTO saveUniversity(UniversityDTO universityDTO) {
         log.info("Saving university: {}", universityDTO.getUniversityName());
         if (StringUtils.isNotBlank(universityDTO.getUniversityName())) {
             try {
-                University university = toUniversityConverter.convert(universityDTO);
-                university = universityRepository.save(university);
-                return toUniversityDTOConverter.convert(university);
-            } catch (DataAccessException ex) {
+                universityRepository.save(universityConverter.convertToEntity(universityDTO));
+                return universityDTO;
+            }
+            catch (DataAccessException ex) {
                 throw new UniversityEditException("University with name " + universityDTO.getUniversityName() + " already exists.");
             }
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("University name cannot be blank.");
         }
     }
@@ -53,7 +55,7 @@ public class UniversityService {
         return universityRepository.save(newUniversity);
     }
 
-    public boolean isUniversityExistByUniversityId(int universityId) {
+    public boolean isUniversityExistByUniversityId(Long universityId) {
         return universityRepository.existsByUniversityId(universityId);
     }
 
@@ -69,16 +71,18 @@ public class UniversityService {
             if (!universityRepository.existsById(universityDTO.getUniversityId())) {
                 throw new UniversityNotFoundException("University not found with ID: " + universityDTO.getUniversityId());
             }
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("University name cannot be blank.");
         }
     }
 
     @Transactional
     public boolean deleteUniversityByName(UniversityDTO universityDTO) {
-        University university = toUniversityConverter.convert(universityDTO);
-        log.info("Deleting university with ID: {}", university.getUniversityId());
+        University university = universityConverter.convertToEntity(universityDTO);
+
         if (university != null) {
+            log.info("Deleting university with ID: {}", university.getUniversityId());
             universityRepository.delete(university);
             return true;
         }
@@ -95,9 +99,16 @@ public class UniversityService {
         return universityRepository.findAll();
     }
 
-    public Page<University> getAllUniversities(Pageable pageable) {
-        log.debug("Retrieving all universities with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
-        return universityRepository.findAll(pageable);
+    public Page<UniversityDTO> getAllUniversities(Pageable pageable) {
+        log.debug
+            (
+                "Retrieving all universities with page number: {} and page size: {}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+            );
+        Page<University> universityPage = universityRepository.findAll(pageable);
+
+        return universityPage.map(universityConverter::convertToDTO);
     }
 
     @Transactional
@@ -108,7 +119,8 @@ public class UniversityService {
         }
         try {
             universityRepository.deleteById(id);
-        } catch (DataIntegrityViolationException ex) {
+        }
+        catch (DataIntegrityViolationException ex) {
             log.error("Unable to delete university with ID " + id + ". Data integrity violation.");
             throw ex;
         }

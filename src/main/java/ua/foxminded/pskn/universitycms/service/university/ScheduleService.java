@@ -1,20 +1,25 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ua.foxminded.pskn.universitycms.converter.schedule.ScheduleConverter;
+import ua.foxminded.pskn.universitycms.dto.ScheduleDTO;
 import ua.foxminded.pskn.universitycms.model.university.Schedule;
 import ua.foxminded.pskn.universitycms.repository.university.ScheduleRepository;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
+
+    private final ScheduleConverter scheduleConverter;
 
     public List<Schedule> getScheduleById(Long groupId) {
         log.debug("Retrieving schedule for group ID: {}", groupId);
@@ -31,8 +36,14 @@ public class ScheduleService {
         return scheduleRepository.findAll();
     }
 
-    public Page<Schedule> getAllSchedule(Pageable pageable) {
-        log.debug("Retrieving all schedules with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
-        return scheduleRepository.findAll(pageable);
+    public Page<ScheduleDTO> getAllSchedule(Pageable pageable) {
+        log.debug(
+            "Retrieving all schedules with page number: {} and page size: {}",
+            pageable.getPageNumber(),
+            pageable.getPageSize()
+        );
+
+        Page<Schedule> schedulePage = scheduleRepository.findAll(pageable);
+        return schedulePage.map(scheduleConverter::convertToDTO);
     }
 }

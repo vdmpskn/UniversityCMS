@@ -11,11 +11,16 @@ INSERT INTO course (name, description, faculty_id) VALUES ('Physics','Teory of P
 INSERT INTO course (name, description,  faculty_id) VALUES ('Chemistry','Teory of Physics', 1);
 INSERT INTO course (name, description,  faculty_id) VALUES ('Literature','Teory of Physics', 2);
 
-INSERT INTO users (username, password, role, faculty_id) VALUES ('admin', 'adminpass98', 'admin',1);
-INSERT INTO users (username, password, role, faculty_id) VALUES ('vdm.pskn', 'password123', 'student', 1);
-INSERT INTO users (username, password, role, faculty_id) VALUES ('jane.smith', 'pass987', 'student', 1);
-INSERT INTO users (username, password, role, faculty_id) VALUES ('professormath', 'secret456', 'professor', 1);
-INSERT INTO users (username, password, role, faculty_id) VALUES ('professorsupercool', 'confidential', 'professor', 2);
+INSERT INTO role(role_id, name) VALUES  (1,'ADMIN');
+INSERT INTO role(role_id, name) VALUES  (2,'STUDENT');
+INSERT INTO role(role_id, name) VALUES  (3,'PROFESSOR');
+
+
+INSERT INTO users (username, password, role_id, faculty_id) VALUES ('admin', 'adminpass98', 1 ,1);
+INSERT INTO users (username, password, role_id, faculty_id) VALUES ('vdm.pskn', 'password123', 2, 1);
+INSERT INTO users (username, password, role_id, faculty_id) VALUES ('jane.smith', 'pass987', 2, 1);
+INSERT INTO users (username, password, role_id, faculty_id) VALUES ('professormath', 'secret456', 3, 1);
+INSERT INTO users (username, password, role_id, faculty_id) VALUES ('professorsupercool', 'confidential', 3, 2);
 
 INSERT INTO students (user_id, group_id)
 SELECT user_id,
@@ -25,12 +30,12 @@ SELECT user_id,
            ELSE NULL
            END AS group_id
 FROM users
-WHERE role = 'student';
+WHERE role_id = 2;
 
 INSERT INTO professors (user_id)
 SELECT user_id
 FROM users
-WHERE role = 'professor';
+WHERE role_id = 3;
 
 
 INSERT INTO schedule (course_id, group_id, professor_id,start_time, end_time, date) VALUES (1, 1,1, '2023-07-07 09:00:00', '2023-07-07 11:00:00', '2023-07-07');

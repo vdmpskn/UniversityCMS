@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupDTOToStudentGroupConverter;
-import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupToStudentGroupDTOConverter;
+
 import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.StudentGroupDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
@@ -46,7 +45,7 @@ class StudentGroupServiceTest {
     @Test
     void shouldSaveStudentGroup_ValidStudentGroup() {
         StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
-        studentGroupDTO.setStudentGroupName("Test Group");
+        studentGroupDTO.setGroupName("Test Group");
 
         StudentGroup studentGroup = new StudentGroup();
         studentGroup.setGroupId(1L);
@@ -59,7 +58,7 @@ class StudentGroupServiceTest {
         StudentGroupDTO savedStudentGroupDTO = studentGroupService.saveStudentGroup(studentGroupDTO);
 
         assertNotNull(savedStudentGroupDTO);
-        assertEquals("Test Group", savedStudentGroupDTO.getStudentGroupName());
+        assertEquals("Test Group", savedStudentGroupDTO.getGroupName());
 
         verify(toStudentGroupConverter).convert(studentGroupDTO);
         verify(studentGroupRepository).save(studentGroup);
@@ -69,7 +68,7 @@ class StudentGroupServiceTest {
     @Test
     void shouldFailToSaveStudentGroup_BlankName() {
         StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
-        studentGroupDTO.setStudentGroupName("");
+        studentGroupDTO.setGroupName("");
 
         assertThrows(IllegalArgumentException.class, () -> studentGroupService.saveStudentGroup(studentGroupDTO));
     }
@@ -77,23 +76,23 @@ class StudentGroupServiceTest {
     @Test
     void shouldUpdateStudentGroupName_Success() {
         StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
-        studentGroupDTO.setStudentGroupId(1L);
-        studentGroupDTO.setStudentGroupName("Group B");
+        studentGroupDTO.setGroupId(1L);
+        studentGroupDTO.setGroupName("Group B");
 
-        when(studentGroupRepository.existsById(eq(studentGroupDTO.getStudentGroupId()))).thenReturn(true);
+        when(studentGroupRepository.existsById(eq(studentGroupDTO.getGroupId()))).thenReturn(true);
 
         assertDoesNotThrow(() -> studentGroupService.updateStudentGroupName(studentGroupDTO));
 
-        verify(studentGroupRepository).updateStudentGroupName(eq(studentGroupDTO.getStudentGroupId()), eq(studentGroupDTO.getStudentGroupName()));
+        verify(studentGroupRepository).updateStudentGroupName(eq(studentGroupDTO.getGroupId()), eq(studentGroupDTO.getGroupName()));
     }
 
     @Test
     void shouldFailToUpdateStudentGroupName_StudentGroupNotFound() {
         StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
-        studentGroupDTO.setStudentGroupId(1L);
-        studentGroupDTO.setStudentGroupName("Group B");
+        studentGroupDTO.setGroupId(1L);
+        studentGroupDTO.setGroupName("Group B");
 
-        when(studentGroupRepository.existsById(eq(studentGroupDTO.getStudentGroupId()))).thenReturn(false);
+        when(studentGroupRepository.existsById(eq(studentGroupDTO.getGroupId()))).thenReturn(false);
 
         assertThrows(StudentGroupNotFoundException.class, () -> studentGroupService.updateStudentGroupName(studentGroupDTO));
     }
@@ -101,8 +100,8 @@ class StudentGroupServiceTest {
     @Test
     void shouldFailToUpdateStudentGroupName_BlankName() {
         StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
-        studentGroupDTO.setStudentGroupId(1L);
-        studentGroupDTO.setStudentGroupName("");
+        studentGroupDTO.setGroupId(1L);
+        studentGroupDTO.setGroupName("");
 
         assertThrows(IllegalArgumentException.class, () -> studentGroupService.updateStudentGroupName(studentGroupDTO));
     }

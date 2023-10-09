@@ -3,7 +3,14 @@ package ua.foxminded.pskn.universitycms.config;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
-import ua.foxminded.pskn.universitycms.customexception.*;
+
+import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.StudentGroupEditException;
+import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.UniversityEditException;
+import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.UserCreateException;
+import ua.foxminded.pskn.universitycms.customexception.UserUpdateException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,16 +51,30 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(StudentGroupEditException.class)
-    public ModelAndView handleUniversityEditException(StudentGroupEditException ex) {
+    public ModelAndView handleStudentGroupEditException(StudentGroupEditException ex) {
         ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("errorMessage", "UniversityEditException: " + ex.getMessage());
+        modelAndView.addObject("errorMessage", "StudentGroupEditException: " + ex.getMessage());
         return modelAndView;
     }
 
     @ExceptionHandler(StudentGroupNotFoundException.class)
-    public ModelAndView handleUniversityEditException(StudentGroupNotFoundException ex) {
+    public ModelAndView handleStudentGroupNotFoundException(StudentGroupNotFoundException ex) {
         ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("errorMessage", "UniversityEditException: " + ex.getMessage());
+        modelAndView.addObject("errorMessage", "StudentGroupNotFoundException: " + ex.getMessage());
+        return modelAndView;
+    }
+
+    @ExceptionHandler(UserUpdateException.class)
+    public ModelAndView handleUserUpdateException(UserUpdateException ex) {
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("errorMessage", "UserUpdateException: " + ex.getMessage());
+        return modelAndView;
+    }
+
+    @ExceptionHandler(UserCreateException.class)
+    public ModelAndView handleUserCreateException(UserCreateException ex) {
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("errorMessage", "UserCreateException: " + ex.getMessage());
         return modelAndView;
     }
 

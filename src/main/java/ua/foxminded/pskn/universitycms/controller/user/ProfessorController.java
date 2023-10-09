@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import ua.foxminded.pskn.universitycms.dto.ProfessorDTO;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.service.user.ProfessorService;
 
@@ -21,9 +23,12 @@ public class ProfessorController {
     private final ProfessorService professorService;
 
     @GetMapping
-    public String professorPage(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+    public String professorPage(Model model,
+                                @RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "5") int pageSize
+    ) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Professor> professorPage = professorService.getAllProfessors(pageable);
+        Page<ProfessorDTO> professorPage = professorService.getAllProfessors(pageable);
 
         model.addAttribute("professors", professorPage.getContent());
         model.addAttribute("currentPage", page);

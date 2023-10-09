@@ -26,6 +26,8 @@ public class SecurityConfig {
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/home").permitAll()
 
+            )
+            .authorizeHttpRequests((requests) -> requests
                 .anyRequest().authenticated()
             )
             .formLogin((form) -> form
@@ -43,7 +45,6 @@ public class SecurityConfig {
                 .clearAuthentication(true)
                 .permitAll()
             );
-
 
         return http.build();
     }
