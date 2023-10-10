@@ -25,7 +25,7 @@ public class RoleService {
         return roleRepository.findAll()
             .stream()
             .map(roleConverter::convertToDTO)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public Optional<RoleDTO> findRoleById(int id){

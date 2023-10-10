@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 
 import ua.foxminded.pskn.universitycms.converter.student.StudentConverter;
+import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.StudentNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.StudentDTO;
@@ -30,9 +31,18 @@ public class StudentService {
 
     private final StudentConverter studentConverter;
 
-    public Optional<Student> getStudentByUserId(Long userId) {
+    public Optional<StudentDTO> getStudentByUserId(Long userId) {
+        if (userId == null || userId <= 0) {
+            throw new IllegalArgumentException("Wrong value of 'userId'");
+        }
+
+        Optional<Student> student = studentRepository.getStudentByUserId(userId);
+
+        if (student.isEmpty()) {
+            throw new ProfessorNotFoundException("Student not found.");
+        }
         log.debug("Getting student by userId: {}", userId);
-        return studentRepository.getStudentByUserId(userId);
+        return student.map(studentConverter::convertToDTO);
     }
 
     public void changeMyGroup(Long studentID, Long newGroupId) {

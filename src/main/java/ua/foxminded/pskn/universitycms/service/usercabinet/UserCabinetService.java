@@ -4,6 +4,9 @@ import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import ua.foxminded.pskn.universitycms.dto.StudentDTO;
+import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.model.user.User;
@@ -31,10 +34,10 @@ public class UserCabinetService {
             throw new IllegalArgumentException("Username can't be blank");
         }
 
-        User user = userService.findStudentByUsername(username)
+        UserDTO user = userService.findStudentByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("Student with username " + username + " not found"));
 
-        Student student = studentService.getStudentByUserId(user.getUserId())
+        StudentDTO student = studentService.getStudentByUserId(user.getUserId())
             .orElseThrow(() -> new IllegalArgumentException("Student with username " + username + " not found"));
 
         StudentGroup groupName = studentGroupService.getStudentGroupById((long) student.getGroupId());

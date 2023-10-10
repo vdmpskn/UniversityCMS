@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import ua.foxminded.pskn.universitycms.dto.StudentDTO;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.service.user.StudentService;
 
@@ -30,11 +32,11 @@ class StudentControllerTest {
 
     @Test
     void shouldGetStudentPage() throws Exception {
-        Student student = new Student();
+        StudentDTO student = new StudentDTO();
         student.setUserId(1L);
         student.setGroupId(3);
 
-        Page<Student> studentPage = new PageImpl<>(Collections.singletonList(student));
+        Page<StudentDTO> studentPage = new PageImpl<>(Collections.singletonList(student));
         when(studentService.getAllStudents(any())).thenReturn(studentPage);
 
         mockMvc.perform(get("/students"))

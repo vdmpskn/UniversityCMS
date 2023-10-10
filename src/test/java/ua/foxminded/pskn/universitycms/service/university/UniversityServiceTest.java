@@ -1,29 +1,35 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.dao.DataIntegrityViolationException;
-import ua.foxminded.pskn.universitycms.converter.university.UniversityDTOToUniversityConverter;
-import ua.foxminded.pskn.universitycms.converter.university.UniversityToUniversityDTOConverter;
+
+import ua.foxminded.pskn.universitycms.converter.university.UniversityConverter;
 import ua.foxminded.pskn.universitycms.customexception.UniversityNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.UniversityDTO;
 import ua.foxminded.pskn.universitycms.model.university.University;
 import ua.foxminded.pskn.universitycms.repository.university.UniversityRepository;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.Mockito.*;
 
 
 class UniversityServiceTest {
@@ -32,10 +38,7 @@ class UniversityServiceTest {
     private UniversityService universityService;
 
     @Mock
-    private UniversityDTOToUniversityConverter toUniversityConverter;
-
-    @Mock
-    private UniversityToUniversityDTOConverter toUniversityDTOConverter;
+    private UniversityConverter universityConverter;
 
     @Mock
     private UniversityRepository universityRepository;
@@ -46,26 +49,37 @@ class UniversityServiceTest {
     }
 
     @Test
-    void shouldSaveUniversity_ValidUniversity() {
-        UniversityDTO universityDTO = new UniversityDTO();
-        universityDTO.setUniversityName("Test University");
+     void shouldSaveUniversity_Success() {
+        UniversityDTO universityDTO = UniversityDTO.builder()
+            .universityName("Test University")
+            .build();
 
-        University university = new University();
-        university.setUniversityId(1L);
-        university.setUniversityName("Test University");
+        University mockUniversity = new University();
 
-        when(toUniversityConverter.convert(universityDTO)).thenReturn(university);
-        when(universityRepository.save(university)).thenReturn(university);
-        when(toUniversityDTOConverter.convert(university)).thenReturn(universityDTO);
+        when(universityConverter.convertToEntity(universityDTO)).thenReturn(mockUniversity);
+
+        when(universityRepository.save(mockUniversity)).thenReturn(mockUniversity);
 
         UniversityDTO savedUniversityDTO = universityService.saveUniversity(universityDTO);
 
-        Assertions.assertNotNull(savedUniversityDTO);
-        assertEquals("Test University", savedUniversityDTO.getUniversityName());
+        assertNotNull(savedUniversityDTO);
 
-        verify(toUniversityConverter).convert(universityDTO);
-        verify(universityRepository).save(university);
-        verify(toUniversityDTOConverter).convert(university);
+        verify(universityConverter).convertToEntity(universityDTO);
+
+        verify(universityRepository).save(mockUniversity);
+    }
+
+    @Test
+    void shouldSaveUniversity_BlankName() {
+        UniversityDTO universityDTO = UniversityDTO.builder()
+            .universityName("")
+            .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            universityService.saveUniversity(universityDTO);
+        });
+
+        assertEquals("University name cannot be blank.", exception.getMessage());
     }
 
     @Test
@@ -136,23 +150,39 @@ class UniversityServiceTest {
     }
 
     @Test
-    void shouldDeleteUniversityByName() {
-        UniversityDTO universityDTO = new UniversityDTO();
-        universityDTO.setUniversityName("Test University");
+    void shouldDeleteUniversityByName_Success() {
+        UniversityDTO universityDTO = UniversityDTO.builder()
+            .universityName("Test University")
+            .build();
 
-        University university = new University();
-        university.setUniversityId(1L);
+        University mockUniversity = new University(); // Mock University entity
 
-        when(toUniversityConverter.convert(universityDTO)).thenReturn(university);
-        when(universityRepository.existsById(1L)).thenReturn(true);
-        doNothing().when(universityRepository).delete(university);
+        when(universityConverter.convertToEntity(universityDTO)).thenReturn(mockUniversity);
 
-        boolean result = universityService.deleteUniversityByName(universityDTO);
+        boolean deleted = universityService.deleteUniversityByName(universityDTO);
 
-        assertTrue(result);
+        assertTrue(deleted);
 
-        verify(toUniversityConverter).convert(universityDTO);
-        verify(universityRepository).delete(university);
+        verify(universityConverter).convertToEntity(universityDTO);
+
+        verify(universityRepository).delete(mockUniversity);
+    }
+
+    @Test
+     void shouldDeleteUniversityByName_NullEntity() {
+        UniversityDTO universityDTO = UniversityDTO.builder()
+            .universityName("Test University")
+            .build();
+
+        when(universityConverter.convertToEntity(universityDTO)).thenReturn(null);
+
+        boolean deleted = universityService.deleteUniversityByName(universityDTO);
+
+        assertFalse(deleted);
+
+        verify(universityConverter).convertToEntity(universityDTO);
+
+        verifyNoInteractions(universityRepository);
     }
 
     @Test

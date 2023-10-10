@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import ua.foxminded.pskn.universitycms.converter.faculty.FacultyConverter;
 import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
 import ua.foxminded.pskn.universitycms.customexception.FacultyNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
@@ -29,11 +30,8 @@ class FacultyServiceTest {
     @Mock
     private FacultyRepository facultyRepository;
 
-    @Mock
-    private FacultyDTOToFacultyConverter toFacultyConverter;
-
-    @Mock
-    private FacultyToFacultyDTOConverter toFacultyDTOConverter;
+   @Mock
+   private FacultyConverter facultyConverter;
 
     @BeforeEach
     public void setUp() {
@@ -49,7 +47,7 @@ class FacultyServiceTest {
         faculty.setFacultyName("Computer Science");
 
         when(facultyRepository.save(any())).thenReturn(faculty);
-        when(toFacultyDTOConverter.convert(any())).thenReturn(facultyDTO);
+        when(facultyConverter.convertToDTO(any())).thenReturn(facultyDTO);
 
         FacultyDTO savedFacultyDTO = facultyService.saveFaculty(facultyDTO);
 

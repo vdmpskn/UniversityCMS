@@ -41,7 +41,7 @@ class ScheduleRepositoryTest {
             .build();
         scheduleRepository.save(schedule);
 
-        List<Schedule> schedules = scheduleRepository.findScheduleByGroupId((long) groupId);
+        List<Schedule> schedules = scheduleRepository.findScheduleByGroupId(groupId);
 
         assertEquals(4, schedules.size());
         assertEquals(groupId, schedules.get(0).getGroupId());

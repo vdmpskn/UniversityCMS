@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import ua.foxminded.pskn.universitycms.dto.ScheduleDTO;
 import ua.foxminded.pskn.universitycms.model.university.Schedule;
 import ua.foxminded.pskn.universitycms.service.university.ScheduleService;
 
@@ -32,7 +34,7 @@ class ScheduleControllerTest {
 
     @Test
     void shouldGetSchedulePage() throws Exception {
-        Schedule schedule = Schedule.builder()
+        ScheduleDTO schedule = ScheduleDTO.builder()
             .scheduleId(1L)
             .courseId(1)
             .groupId(1)
@@ -43,7 +45,7 @@ class ScheduleControllerTest {
             .build();
 
 
-        Page<Schedule> schedulePage = new PageImpl<>(Collections.singletonList(schedule));
+        Page<ScheduleDTO> schedulePage = new PageImpl<>(Collections.singletonList(schedule));
         when(scheduleService.getAllSchedule(any())).thenReturn(schedulePage);
 
         mockMvc.perform(get("/schedule"))

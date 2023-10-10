@@ -44,7 +44,7 @@ class FacultyControllerTest {
 
     @Test
     void shouldShowFacultyPage() throws Exception {
-        Page<Faculty> facultyPage = new PageImpl<>(Collections.singletonList(new Faculty()));
+        Page<FacultyDTO> facultyPage = new PageImpl<>(Collections.singletonList(new FacultyDTO()));
         when(facultyService.getAllFaculties(any(Pageable.class))).thenReturn(facultyPage);
 
         mockMvc.perform(get("/faculty"))
@@ -55,7 +55,7 @@ class FacultyControllerTest {
 
     @Test
     void shouldAddFaculty_FacultyNotFound() throws Exception {
-        when(universityService.isUniversityExistByUniversityId(anyInt())).thenReturn(false);
+        when(universityService.isUniversityExistByUniversityId(anyLong())).thenReturn(false);
 
         mockMvc.perform(post("/faculty/add")
                 .param("universityId", "1")
@@ -71,7 +71,7 @@ class FacultyControllerTest {
 
     @Test
     void shouldAddFaculty_Success() throws Exception {
-        when(universityService.isUniversityExistByUniversityId(anyInt())).thenReturn(true);
+        when(universityService.isUniversityExistByUniversityId(anyLong())).thenReturn(true);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/faculty/add")
                 .param("universityId", "1")

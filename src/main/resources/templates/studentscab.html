@@ -111,10 +111,37 @@
         </div>
 
         <h2 class="text-center">Manage my profile</h2>
+        <h2 class="text-center">Мое имя</h2>
+        <p>Мое имя: <span th:text="${username}"></span></p>
         <ul class="list-unstyled">
-            <li><button onclick="getStudentSchedule()">Get my schedule</button></li>
-            <li><button onclick="changeUsername()">Change my username</button></li>
-            <li><button onclick="changeFaculty()">Change my faculty</button></li>
+            <li><form th:action="@{/studentscab/schedule}" method="get">
+                <input type="hidden" name="username" th:value="${username}" />
+                <button type="submit">Get my schedule</button>
+            </form></li>
+            <form th:action="@{/studentscab/changeusername}" method="post">
+                <input type="text" name="username" placeholder="Текущее имя" required />
+
+                <input type="text" name="newUsername" placeholder="Новое имя" required />
+
+                <button type="submit">Изменить имя</button>
+            </form>
+            <li>
+                <form th:action="@{/studentscab/changefaculty}" method="post">
+                    <!-- Поле для выбора нового факультета -->
+                    <label for="newFacultyId">Выберите новый факультет:</label>
+                    <select name="newFacultyId" id="newFacultyId">
+                        <option th:each="faculty : ${availableFaculties}"
+                                th:value="${faculty.facultyId}"
+                                th:text="${faculty.facultyName}"></option>
+                    </select>
+
+                    <!-- Поле для передачи имени пользователя -->
+                    <input type="hidden" name="username" th:value="${username}" />
+
+                    <!-- Кнопка для отправки формы -->
+                    <button type="submit">Изменить факультет</button>
+                </form>
+            </li>
         </ul>
         <a href="/logout">Logout</a>
     </main>

@@ -17,6 +17,7 @@ import ua.foxminded.pskn.universitycms.model.university.Faculty;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,12 +40,12 @@ public class FacultyService {
         }
     }
 
-    public Faculty saveFacultyByName(String facultyName, int universityId) {
-        Faculty newFaculty = new Faculty();
-        newFaculty.setFacultyName(facultyName);
-        newFaculty.setUniversityId(universityId);
-        log.info("Saving faculty: {}", newFaculty);
-        return facultyRepository.save(newFaculty);
+    public List<FacultyDTO> findAll(){
+        List<Faculty> facultyList = facultyRepository.findAll();
+        return facultyList
+            .stream()
+            .map(facultyConverter::convertToDTO)
+            .toList();
     }
 
     @Transactional

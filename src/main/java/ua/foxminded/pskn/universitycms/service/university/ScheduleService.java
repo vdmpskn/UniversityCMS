@@ -1,6 +1,7 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,14 +22,24 @@ public class ScheduleService {
 
     private final ScheduleConverter scheduleConverter;
 
-    public List<Schedule> getScheduleById(Long groupId) {
+    public List<ScheduleDTO> getScheduleById(int groupId) {
         log.debug("Retrieving schedule for group ID: {}", groupId);
-        return scheduleRepository.findScheduleByGroupId(groupId);
+
+        return scheduleRepository.findScheduleByGroupId(groupId)
+            .stream()
+            .map(scheduleConverter::convertToDTO)
+            .collect(Collectors.toList());
     }
 
-    public List<Schedule> getScheduleByProfessorId(int professorId) {
+    public List<ScheduleDTO> getScheduleByProfessorId(int professorId) {
+        if (professorId <= 0) {
+            throw new IllegalArgumentException("Wrong value of 'userId'");
+        }
         log.debug("Retrieving schedule for professor ID: {}", professorId);
-        return scheduleRepository.findScheduleByProfessorId(professorId);
+        return scheduleRepository.findScheduleByProfessorId(professorId)
+            .stream()
+            .map(scheduleConverter::convertToDTO)
+            .toList();
     }
 
     public List<Schedule> getAllSchedule() {

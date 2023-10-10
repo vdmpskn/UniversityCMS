@@ -1,5 +1,6 @@
 package ua.foxminded.pskn.universitycms.service.user;
 
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,7 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ua.foxminded.pskn.universitycms.converter.user.UserConverter;
+import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
 import ua.foxminded.pskn.universitycms.customexception.RoleNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.UserNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.UserUpdateException;
+import ua.foxminded.pskn.universitycms.dto.ProfessorDTO;
 import ua.foxminded.pskn.universitycms.dto.RoleDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
@@ -73,14 +78,32 @@ public class UserService {
     }
 
     public Optional<UserDTO> findProfessorByUsername(String username) {
+        if (StringUtils.isBlank(username)) {
+            throw new IllegalArgumentException("Wrong value of 'username' ");
+        }
         log.debug("Getting admin by username: {}", username);
           Optional<User> professor = userRepository.findProfessorByUsername(username);
+
+        if (professor.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
           return professor.map(userConverter::convertToDTO);
     }
 
-    public Optional<User> findStudentByUsername(String username) {
-        log.debug("Getting admin by username: {}", username);
-        return userRepository.findStudentByUsername(username);
+    public Optional<UserDTO> findStudentByUsername(String username) {
+        if (StringUtils.isBlank(username)) {
+            throw new IllegalArgumentException("Wrong value of 'username' ");
+        }
+
+        log.debug("Getting student by username: {}", username);
+
+        Optional<User> student = userRepository.findStudentByUsername(username);
+
+        if (student.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        return student.map(userConverter::convertToDTO);
     }
 
     public User saveStudent(UserDTO userDTO, int groupId) {
@@ -125,20 +148,31 @@ public class UserService {
         return savedUser;
     }
 
-    public void changeMyName(User user, String newUsername) {
-        String username = user.getUsername();
-        log.info("Your actual username is: {}", username);
-        log.info("Write your new username: ");
-        userRepository.save(user.withUsername(newUsername));
+    public void changeMyName(UserDTO userDTO, String newUsername) {
+        if (StringUtils.isBlank(newUsername)) {
+            throw new IllegalArgumentException("New username couldn't be blank.");
+        }
+
+        String currentUsername = userDTO.getUsername();
+        log.info("Your current username is: {}", currentUsername);
+
+        if (currentUsername.equals(newUsername)) {
+            log.info("New username is equals to your current.");
+            throw new UserUpdateException("New username is equals to your current.");
+        }
+        userRepository.save(userConverter.convertToEntity(userDTO.withUsername(newUsername)));
         log.info("Username changed successfully.");
     }
 
-    public void changeMyFaculty(User user, int newFaculty) {
-        log.info(facultyRepository.findAll().toString());
-        int facultyId = user.getFacultyId();
-        log.info("Your actual faculty ID is: {}", facultyId);
-        log.info("Write your new faculty ID: ");
-        userRepository.save(user.withFacultyId(newFaculty));
+    public void changeMyFaculty(UserDTO userDTO, int newFaculty) {
+        int currentFacultyId = userDTO.getFacultyId();
+        log.info("Your current faculty ID is: {}", currentFacultyId);
+
+        if (currentFacultyId == newFaculty) {
+            log.info("New faculty is the same as your current faculty.");
+            throw new FacultyEditException("New faculty is the same as your current faculty.");
+        }
+        userRepository.save(userConverter.convertToEntity(userDTO.withFacultyId(newFaculty)));
         log.info("Faculty ID changed successfully.");
     }
 

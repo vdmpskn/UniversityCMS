@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import ua.foxminded.pskn.universitycms.converter.studentgroup.StudentGroupConverter;
 import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.StudentGroupDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
@@ -32,10 +33,7 @@ class StudentGroupServiceTest {
     private StudentGroupRepository studentGroupRepository;
 
     @Mock
-    private StudentGroupDTOToStudentGroupConverter toStudentGroupConverter;
-
-    @Mock
-    private StudentGroupToStudentGroupDTOConverter toStudentGroupDTOConverter;
+    private StudentGroupConverter studentGroupConverter;
 
     @BeforeEach
     public void setUp() {
@@ -47,23 +45,24 @@ class StudentGroupServiceTest {
         StudentGroupDTO studentGroupDTO = new StudentGroupDTO();
         studentGroupDTO.setGroupName("Test Group");
 
-        StudentGroup studentGroup = new StudentGroup();
-        studentGroup.setGroupId(1L);
-        studentGroup.setGroupName("Test Group");
+        StudentGroup mockStudentGroup = new StudentGroup();
+        mockStudentGroup.setGroupId(1L);
+        mockStudentGroup.setGroupName("Test Group");
 
-        when(toStudentGroupConverter.convert(studentGroupDTO)).thenReturn(studentGroup);
-        when(studentGroupRepository.save(studentGroup)).thenReturn(studentGroup);
-        when(toStudentGroupDTOConverter.convert(studentGroup)).thenReturn(studentGroupDTO);
+        when(studentGroupConverter.convertToEntity(studentGroupDTO)).thenReturn(mockStudentGroup);
+
+        when(studentGroupRepository.save(mockStudentGroup)).thenReturn(mockStudentGroup);
 
         StudentGroupDTO savedStudentGroupDTO = studentGroupService.saveStudentGroup(studentGroupDTO);
 
         assertNotNull(savedStudentGroupDTO);
         assertEquals("Test Group", savedStudentGroupDTO.getGroupName());
 
-        verify(toStudentGroupConverter).convert(studentGroupDTO);
-        verify(studentGroupRepository).save(studentGroup);
-        verify(toStudentGroupDTOConverter).convert(studentGroup);
+        verify(studentGroupConverter).convertToEntity(studentGroupDTO);
+
+        verify(studentGroupRepository).save(mockStudentGroup);
     }
+
 
     @Test
     void shouldFailToSaveStudentGroup_BlankName() {

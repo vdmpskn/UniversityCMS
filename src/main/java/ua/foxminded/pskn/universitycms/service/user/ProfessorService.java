@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ua.foxminded.pskn.universitycms.converter.professor.ProfessorConverter;
+import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.ProfessorDTO;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
@@ -23,9 +24,19 @@ public class ProfessorService {
 
     private final ProfessorConverter professorConverter;
 
-    public Optional<Professor> getProfessorByUserId(Long userId) {
+    public Optional<ProfessorDTO> getProfessorByUserId(Long userId) {
+        if (userId == null || userId <= 0) {
+            throw new IllegalArgumentException("Wrong value of 'userId'");
+        }
+
         log.debug("Getting professor by user ID: {}", userId);
-        return professorRepository.getProfessorByUserId(userId);
+        Optional<Professor> professor = professorRepository.getProfessorByUserId(userId);
+
+        if (professor.isEmpty()) {
+            throw new ProfessorNotFoundException("Professor not found.");
+        }
+
+        return professor.map(professorConverter::convertToDTO);
     }
 
     public List<ProfessorDTO> getAllProfessors() {
@@ -42,4 +53,6 @@ public class ProfessorService {
         Page<Professor> professorPage = professorRepository.findAll(pageable);
         return professorPage.map(professorConverter::convertToDTO);
     }
+
+
 }

@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import ua.foxminded.pskn.universitycms.model.user.Role;
 import ua.foxminded.pskn.universitycms.model.user.User;
 
 import java.util.Optional;
@@ -35,7 +37,7 @@ class UserRepositoryTest {
             .username("testUser")
             .password("pass")
             .facultyId(1)
-            .roleId(2)
+            .role(Role.builder().roleId(2).name("testRole").build())
             .userId(25L)
             .build();
         userRepository.save(user);

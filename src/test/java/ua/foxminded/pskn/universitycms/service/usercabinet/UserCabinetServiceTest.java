@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import ua.foxminded.pskn.universitycms.dto.StudentDTO;
+import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.model.user.User;
@@ -42,11 +45,11 @@ class UserCabinetServiceTest {
 
     @Test
     void shouldGetStudentCabinetData_StudentFound() {
-        User user = new User();
+        UserDTO user = new UserDTO();
         user.setUserId(1L);
         user.setUsername("testUser");
 
-        Student student = new Student();
+        StudentDTO student = new StudentDTO();
         student.setUserId(1L);
         student.setGroupId(2);
 
@@ -83,7 +86,7 @@ class UserCabinetServiceTest {
 
     @Test
     void shouldGetStudentCabinetData_StudentNotFound() {
-        User user = new User();
+        UserDTO user = new UserDTO();
         user.setUserId(1L);
         user.setUsername("testUser");
 

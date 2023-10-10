@@ -40,12 +40,12 @@ class UniversityControllerTest {
 
     @Test
     void shouldUniversityPage() throws Exception {
-        List<University> universityList = new ArrayList<>();
-        universityList.add(new University(1L, "University 1"));
-        universityList.add(new University(2L, "University 2"));
+        List<UniversityDTO> universityList = new ArrayList<>();
+        universityList.add(new UniversityDTO(1L, "University 1"));
+        universityList.add(new UniversityDTO(2L, "University 2"));
 
         Pageable pageable = PageRequest.of(0, 5);
-        Page<University> universityPage = new PageImpl<>(universityList, pageable, universityList.size());
+        Page<UniversityDTO> universityPage = new PageImpl<>(universityList, pageable, universityList.size());
 
         when(universityService.getAllUniversities(any(Pageable.class))).thenReturn(universityPage);
 
