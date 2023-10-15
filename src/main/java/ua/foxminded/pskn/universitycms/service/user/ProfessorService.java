@@ -45,7 +45,7 @@ public class ProfessorService {
         return professorRepository.findAll()
             .stream()
             .map(professorConverter::convertToDTO)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public Page<ProfessorDTO> getAllProfessors(Pageable pageable) {

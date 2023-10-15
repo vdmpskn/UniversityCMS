@@ -105,13 +105,10 @@
                 <input type="text" name="newUsername" placeholder="New name" required />
 
                 <button type="submit">Change name</button>
-                <div th:if="${successfulChangeProfessorName}" class="alert alert-success" role="alert">
-                    <p th:text="${successfulChangeProfessorName}"></p>
-                </div>
-                <div th:if="${professorIsEmpty}" class="alert alert-fail" role="alert">
+            </form>
+                <div th:if="${professorIsEmpty}" class="alert alert-danger" role="alert">
                     <p th:text="${professorIsEmpty}"></p>
-                </div>
-            </form></li>
+                </div></li>
             <li>
                 <form th:action="@{/professorscab/changefaculty}" method="post">
                     <label for="newFacultyId">Choose new faculty:</label>
@@ -120,12 +117,12 @@
                                 th:value="${faculty.facultyId}"
                                 th:text="${faculty.facultyName}"></option>
                     </select>
-                    <input type="hidden" name="username" th:value="${username}" />
+                    <input type="hidden" name="username" th:value="${professor.username}" />
                     <button type="submit">Change faculty</button>
                     <div th:if="${successChangeFaculty}" class="alert alert-success" role="alert">
                         <p th:text="${successChangeFaculty}"></p>
                     </div>
-                    <div th:if="${failChangeFaculty}" class="alert alert-fail" role="alert">
+                    <div th:if="${failChangeFaculty}" class="alert alert-danger" role="alert">
                         <p th:text="${failChangeFaculty}"></p>
                     </div>
                 </form>

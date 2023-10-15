@@ -1,8 +1,9 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -10,9 +11,17 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.foxminded.pskn.universitycms.converter.schedule.ScheduleConverter;
+import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.StudentNotFoundException;
+import ua.foxminded.pskn.universitycms.dto.ProfessorDTO;
 import ua.foxminded.pskn.universitycms.dto.ScheduleDTO;
+import ua.foxminded.pskn.universitycms.dto.StudentDTO;
+import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.university.Schedule;
 import ua.foxminded.pskn.universitycms.repository.university.ScheduleRepository;
+import ua.foxminded.pskn.universitycms.service.user.ProfessorService;
+import ua.foxminded.pskn.universitycms.service.user.StudentService;
+import ua.foxminded.pskn.universitycms.service.user.UserService;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,13 +31,41 @@ public class ScheduleService {
 
     private final ScheduleConverter scheduleConverter;
 
-    public List<ScheduleDTO> getScheduleById(int groupId) {
+    private final UserService userService;
+
+    private final ProfessorService professorService;
+
+    private final StudentService studentService;
+
+    public List<ScheduleDTO> getScheduleByGroupId(int groupId) {
         log.debug("Retrieving schedule for group ID: {}", groupId);
 
         return scheduleRepository.findScheduleByGroupId(groupId)
             .stream()
             .map(scheduleConverter::convertToDTO)
-            .collect(Collectors.toList());
+            .toList();
+    }
+
+    public List<ScheduleDTO> getProfessorSchedule(String username) {
+        Optional<UserDTO> professorByUsername = userService.findProfessorByUsername(username);
+
+        if (professorByUsername.isPresent()) {
+            Optional<ProfessorDTO> professor = professorService.getProfessorByUserId(professorByUsername.get().getUserId());
+            if (professor.isPresent()) {
+                return getScheduleByProfessorId(professor.get().getProfessorId());
+            }
+        } throw new ProfessorNotFoundException("Professor not found.");
+    }
+
+    public List<ScheduleDTO> getStudentSchedule(String username) {
+        Optional<UserDTO> studentByUsername = userService.findStudentByUsername(username);
+
+        if (studentByUsername.isPresent()) {
+            Optional<StudentDTO> student = studentService.getStudentByUserId(studentByUsername.get().getUserId());
+            if (student.isPresent()) {
+                return getScheduleByGroupId(student.get().getGroupId());
+            }
+        } throw new StudentNotFoundException("Student not found. ");
     }
 
     public List<ScheduleDTO> getScheduleByProfessorId(int professorId) {

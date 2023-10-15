@@ -3,13 +3,12 @@ package ua.foxminded.pskn.universitycms.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
-import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.usercabinetdata.StudentCabinetData;
@@ -29,16 +28,12 @@ public class CabinetController {
     private final FacultyService facultyService;
 
     @GetMapping("/professorscab")
-    public String professorCabinetPage(@RequestParam(name = "username", required = true) String name, Model model) {
+    public String professorCabinetPage(Authentication authentication, Model model) {
 
-        Optional<UserDTO> professor = userService.findProfessorByUsername(name);
+        Optional<UserDTO> professor = userService.findProfessorByUsername(authentication.getName());
 
-        if(professor.isEmpty()){
-            throw new ProfessorNotFoundException("Professor not found.");
-        }
         List<FacultyDTO> facultyDTOList = facultyService.findAll();
         model.addAttribute("professor", professor.get());
-        model.addAttribute("username", professor.get().getUsername());
         model.addAttribute("availableFaculties", facultyDTOList);
         return "professorscab";
     }
@@ -50,8 +45,8 @@ public class CabinetController {
     }
 
     @GetMapping("/studentscab")
-    public String studentCabinetPage(@RequestParam(name = "username", required = true) String name, Model model) {
-        StudentCabinetData cabinetData = userCabinetService.getStudentCabinetData(name);
+    public String studentCabinetPage(Authentication authentication, Model model) {
+        StudentCabinetData cabinetData = userCabinetService.getStudentCabinetData(authentication.getName());
 
         List<FacultyDTO> facultyDTOList = facultyService.findAll();
 

@@ -75,7 +75,6 @@
             text-align: center;
         }
 
-
         #header h1 {
             color: #fff;
         }
@@ -111,36 +110,42 @@
         </div>
 
         <h2 class="text-center">Manage my profile</h2>
-        <h2 class="text-center">Мое имя</h2>
-        <p>Мое имя: <span th:text="${username}"></span></p>
+        <h2 class="text-center">My Name</h2>
+        <p>My Name: <span th:text="${username}"></span></p>
         <ul class="list-unstyled">
             <li><form th:action="@{/studentscab/schedule}" method="get">
                 <input type="hidden" name="username" th:value="${username}" />
                 <button type="submit">Get my schedule</button>
             </form></li>
             <form th:action="@{/studentscab/changeusername}" method="post">
-                <input type="text" name="username" placeholder="Текущее имя" required />
+                <input type="text" name="username" th:value="${username}" placeholder="Current Name" required />
 
-                <input type="text" name="newUsername" placeholder="Новое имя" required />
+                <input type="text" name="newUsername" placeholder="New Name" required />
 
-                <button type="submit">Изменить имя</button>
+                <button type="submit">Change Name</button>
             </form>
+            <div th:if="${studentIsEmpty}" class="alert alert-danger" role="alert">
+                <p th:text="${studentIsEmpty}"></p>
+            </div>
             <li>
                 <form th:action="@{/studentscab/changefaculty}" method="post">
-                    <!-- Поле для выбора нового факультета -->
-                    <label for="newFacultyId">Выберите новый факультет:</label>
+                    <label for="newFacultyId">Choose a new faculty:</label>
                     <select name="newFacultyId" id="newFacultyId">
                         <option th:each="faculty : ${availableFaculties}"
                                 th:value="${faculty.facultyId}"
                                 th:text="${faculty.facultyName}"></option>
                     </select>
 
-                    <!-- Поле для передачи имени пользователя -->
                     <input type="hidden" name="username" th:value="${username}" />
 
-                    <!-- Кнопка для отправки формы -->
-                    <button type="submit">Изменить факультет</button>
+                    <button type="submit">Change Faculty</button>
                 </form>
+                <div th:if="${successChangeFaculty}" class="alert alert-success" role="alert">
+                    <p th:text="${successChangeFaculty}"></p>
+                </div>
+                <div th:if="${failChangeFaculty}" class="alert alert-danger" role="alert">
+                    <p th:text="${failChangeFaculty}"></p>
+                </div>
             </li>
         </ul>
         <a href="/logout">Logout</a>
@@ -150,4 +155,5 @@
         <p>&copy; 2023 University of California, Berkeley</p>
     </footer>
 </div>
-
+</body>
+</html>

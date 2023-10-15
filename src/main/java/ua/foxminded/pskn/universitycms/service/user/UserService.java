@@ -1,8 +1,7 @@
 package ua.foxminded.pskn.universitycms.service.user;
 
-import io.micrometer.common.util.StringUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,26 +9,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micrometer.common.util.StringUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ua.foxminded.pskn.universitycms.converter.user.UserConverter;
 import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
+import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.RoleNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.UserNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.UserUpdateException;
-import ua.foxminded.pskn.universitycms.dto.ProfessorDTO;
 import ua.foxminded.pskn.universitycms.dto.RoleDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.model.user.User;
-import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
 import ua.foxminded.pskn.universitycms.repository.user.UserRepository;
-
-import java.util.List;
-import java.util.Optional;
-
-
 
 
 @RequiredArgsConstructor
@@ -42,7 +38,6 @@ public class UserService {
     private final UserConverter userConverter;
 
     private final UserRepository userRepository;
-    private final FacultyRepository facultyRepository;
     private final StudentRepository studentRepository;
     private final ProfessorRepository professorRepository;
 
@@ -82,12 +77,12 @@ public class UserService {
             throw new IllegalArgumentException("Wrong value of 'username' ");
         }
         log.debug("Getting admin by username: {}", username);
-          Optional<User> professor = userRepository.findProfessorByUsername(username);
+        Optional<User> professor = userRepository.findProfessorByUsername(username);
 
         if (professor.isEmpty()) {
-            throw new UserNotFoundException("User not found");
+            throw new ProfessorNotFoundException("User not found");
         }
-          return professor.map(userConverter::convertToDTO);
+        return professor.map(userConverter::convertToDTO);
     }
 
     public Optional<UserDTO> findStudentByUsername(String username) {
@@ -176,6 +171,53 @@ public class UserService {
         log.info("Faculty ID changed successfully.");
     }
 
+    public boolean changeStudentFaculty(String username, int newFacultyId) {
+        Optional<UserDTO> userDTO = findStudentByUsername(username);
+
+        if (userDTO.isPresent()) {
+            try {
+                changeMyFaculty(userDTO.get(), newFacultyId);
+                return true;
+            } catch (FacultyEditException e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean changeProfessorFaculty(String username, int newFacultyId) {
+        Optional<UserDTO> userDTO = findProfessorByUsername(username);
+
+        if (userDTO.isPresent()) {
+            try {
+                changeMyFaculty(userDTO.get(), newFacultyId);
+                return true;
+            } catch (FacultyEditException e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean changeUsername(String username, String newUsername) {
+        Optional<UserDTO> userDTO = userRepository.findByUsername(username)
+            .map(userConverter::convertToDTO);
+
+        if (userDTO.isPresent()) {
+            try{
+                changeMyName(userDTO.get(), newUsername);
+            }catch (IllegalArgumentException | UserUpdateException e){
+                return false;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     @Transactional
     public void deleteUser(UserDTO userDTO) {
         Optional<User> userOptional = userRepository.findById(userDTO.getUserId());
@@ -221,21 +263,22 @@ public class UserService {
         }
     }
 
-    public void createUserWithRole(UserDTO userDTO, int groupId, int roleId)  {
+    public void createUserWithRole(UserDTO userDTO, int groupId, int roleId) {
         Optional<RoleDTO> role = roleService.findRoleById(roleId);
 
         role.ifPresent(roleDTO -> userDTO.setRoleDTO(RoleDTO.builder()
             .role(roleDTO.getRole())
             .build()));
 
-        if(role.isPresent()){
+        if (role.isPresent()) {
             switch (userDTO.getRoleDTO().getRole().getRoleId()) {
                 case 1 -> saveAdmin(userDTO);
                 case 2 -> saveStudent(userDTO, groupId);
                 case 3 -> saveProfessor(userDTO);
                 default -> throw new IllegalArgumentException("Invalid role: " + userDTO.getRoleDTO().getRole().getRoleId());
             }
-        } else {
+        }
+        else {
             log.warn("Role with ID not found.");
             throw new RoleNotFoundException("Role not found.");
         }

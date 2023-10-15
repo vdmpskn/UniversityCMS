@@ -50,7 +50,7 @@ class ScheduleServiceTest {
                 return new ScheduleDTO();
             });
 
-        List<ScheduleDTO> scheduleDTOList = scheduleService.getScheduleById(groupId);
+        List<ScheduleDTO> scheduleDTOList = scheduleService.getScheduleByGroupId(groupId);
 
         verify(scheduleRepository, times(1)).findScheduleByGroupId(groupId);
         verify(scheduleConverter, times(mockScheduleList.size())).convertToDTO(any(Schedule.class));
