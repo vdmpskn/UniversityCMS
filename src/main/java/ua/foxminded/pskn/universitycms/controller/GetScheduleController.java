@@ -19,10 +19,10 @@ public class GetScheduleController {
     private final ScheduleService scheduleService;
 
     @GetMapping("/professorscab/schedule")
-    public String getProfessorsSchedule(@RequestParam(name = "username") String username,
+    public String getProfessorsSchedule(@RequestParam(name = "userId") Long userId,
                                         Model model,
                                         RedirectAttributes redirectAttributes) {
-        List<ScheduleDTO> professorsSchedule = scheduleService.getProfessorSchedule(username);
+        List<ScheduleDTO> professorsSchedule = scheduleService.getProfessorSchedule(userId);
 
         if (professorsSchedule != null) {
             model.addAttribute("professorsSchedule", professorsSchedule);
@@ -33,11 +33,11 @@ public class GetScheduleController {
     }
 
     @GetMapping("/studentscab/schedule")
-    public String getStudentSchedule(@RequestParam(name = "username") String username,
+    public String getStudentSchedule(@RequestParam(name = "userId") Long userId,
                                      Model model,
                                      RedirectAttributes redirectAttributes) {
 
-        List<ScheduleDTO> studentSchedule = scheduleService.getStudentSchedule(username);
+        List<ScheduleDTO> studentSchedule = scheduleService.getStudentSchedule(userId);
 
         if (studentSchedule != null) {
             model.addAttribute("studentSchedule", studentSchedule);

@@ -30,13 +30,10 @@ public class ProfessorService {
         }
 
         log.debug("Getting professor by user ID: {}", userId);
-        Optional<Professor> professor = professorRepository.getProfessorByUserId(userId);
 
-        if (professor.isEmpty()) {
-            throw new ProfessorNotFoundException("Professor not found.");
-        }
-
-        return professor.map(professorConverter::convertToDTO);
+        return Optional.ofNullable(professorRepository.getProfessorByUserId(userId)
+            .map(professorConverter::convertToDTO)
+            .orElseThrow(() -> new ProfessorNotFoundException("Professor not found.")));
     }
 
     public List<ProfessorDTO> getAllProfessors() {

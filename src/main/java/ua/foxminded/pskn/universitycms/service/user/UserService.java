@@ -16,6 +16,7 @@ import ua.foxminded.pskn.universitycms.converter.user.UserConverter;
 import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
 import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.RoleNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.StudentNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.UserNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.UserUpdateException;
 import ua.foxminded.pskn.universitycms.dto.RoleDTO;
@@ -72,6 +73,21 @@ public class UserService {
         return userRepository.findAdminByUsername(username);
     }
 
+    public Optional<UserDTO> findAdminById(Long userId){
+        if(userId==null){
+            throw new IllegalArgumentException("Wrong value of userId");
+        }
+        log.debug("Getting admin by ID: {}", userId);
+
+        Optional<User> admin = userRepository.findAdminByUserId(userId);
+
+        if(admin.isEmpty()){
+            throw new StudentNotFoundException("Admin not found!");
+        }
+        return admin.map(userConverter::convertToDTO);
+    }
+
+
     public Optional<UserDTO> findProfessorByUsername(String username) {
         if (StringUtils.isBlank(username)) {
             throw new IllegalArgumentException("Wrong value of 'username' ");
@@ -85,19 +101,43 @@ public class UserService {
         return professor.map(userConverter::convertToDTO);
     }
 
+    public Optional<UserDTO> findProfessorById(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Wrong value of userId");
+        }
+
+        log.debug("Getting professor by ID: {}", userId);
+
+        return Optional.ofNullable(userRepository.findProfessorByUserId(userId))
+            .map(professor -> professor.map(userConverter::convertToDTO))
+            .orElseThrow(() -> new ProfessorNotFoundException("Professor not found"));
+    }
+
+
     public Optional<UserDTO> findStudentByUsername(String username) {
         if (StringUtils.isBlank(username)) {
-            throw new IllegalArgumentException("Wrong value of 'username' ");
+            throw new IllegalArgumentException("Wrong value of 'username'");
         }
 
         log.debug("Getting student by username: {}", username);
 
-        Optional<User> student = userRepository.findStudentByUsername(username);
+        return Optional.ofNullable(userRepository.findStudentByUsername(username))
+            .map(student -> student.map(userConverter::convertToDTO))
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
 
-        if (student.isEmpty()) {
-            throw new UserNotFoundException("User not found");
+
+    public Optional<UserDTO> findStudentById(Long userId){
+        if(userId==null){
+            throw new IllegalArgumentException("Wrong value of userId");
         }
+        log.debug("Getting student by ID: {}", userId);
 
+        Optional<User> student = userRepository.findStudentByUserId(userId);
+
+        if(student.isEmpty()){
+            throw new StudentNotFoundException("Student not found!");
+        }
         return student.map(userConverter::convertToDTO);
     }
 
@@ -171,8 +211,8 @@ public class UserService {
         log.info("Faculty ID changed successfully.");
     }
 
-    public boolean changeStudentFaculty(String username, int newFacultyId) {
-        Optional<UserDTO> userDTO = findStudentByUsername(username);
+    public boolean changeStudentFaculty(Long userId, int newFacultyId) {
+        Optional<UserDTO> userDTO = findStudentById(userId);
 
         if (userDTO.isPresent()) {
             try {
@@ -186,8 +226,8 @@ public class UserService {
         }
     }
 
-    public boolean changeProfessorFaculty(String username, int newFacultyId) {
-        Optional<UserDTO> userDTO = findProfessorByUsername(username);
+    public boolean changeProfessorFaculty(Long userId, int newFacultyId) {
+        Optional<UserDTO> userDTO = findProfessorById(userId);
 
         if (userDTO.isPresent()) {
             try {
@@ -201,8 +241,8 @@ public class UserService {
         }
     }
 
-    public boolean changeUsername(String username, String newUsername) {
-        Optional<UserDTO> userDTO = userRepository.findByUsername(username)
+    public boolean changeUsername(Long userId, String newUsername) {
+        Optional<UserDTO> userDTO = userRepository.findById(userId)
             .map(userConverter::convertToDTO);
 
         if (userDTO.isPresent()) {

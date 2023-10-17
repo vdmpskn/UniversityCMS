@@ -96,14 +96,12 @@
         <h2 class="text-center">Manage my profile</h2>
         <ul class="list-unstyled">
             <li><form th:action="@{/professorscab/schedule}" method="get">
-                <input type="hidden" name="username" th:value="${professor.username}" />
+                <input type="hidden" name="userId" th:value="${professor.userId}" />
                 <button type="submit">Get my schedule</button>
             </form></li>
             <li><form th:action="@{/professorscab/changeusername}" method="post">
-                <input type="text" name="username" placeholder="Current name" required />
-
+                <input type="hidden" name="userId" th:value="${professor.userId}" />
                 <input type="text" name="newUsername" placeholder="New name" required />
-
                 <button type="submit">Change name</button>
             </form>
                 <div th:if="${professorIsEmpty}" class="alert alert-danger" role="alert">
@@ -117,7 +115,7 @@
                                 th:value="${faculty.facultyId}"
                                 th:text="${faculty.facultyName}"></option>
                     </select>
-                    <input type="hidden" name="username" th:value="${professor.username}" />
+                    <input type="hidden" name="userId" th:value="${professor.userId}" />
                     <button type="submit">Change faculty</button>
                     <div th:if="${successChangeFaculty}" class="alert alert-success" role="alert">
                         <p th:text="${successChangeFaculty}"></p>

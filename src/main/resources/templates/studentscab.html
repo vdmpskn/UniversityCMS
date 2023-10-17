@@ -114,14 +114,12 @@
         <p>My Name: <span th:text="${username}"></span></p>
         <ul class="list-unstyled">
             <li><form th:action="@{/studentscab/schedule}" method="get">
-                <input type="hidden" name="username" th:value="${username}" />
+                <input type="hidden" name="userId" th:value="${userId}" />
                 <button type="submit">Get my schedule</button>
             </form></li>
             <form th:action="@{/studentscab/changeusername}" method="post">
-                <input type="text" name="username" th:value="${username}" placeholder="Current Name" required />
-
+                <input type="hidden" name="userId" th:value="${userId}" />
                 <input type="text" name="newUsername" placeholder="New Name" required />
-
                 <button type="submit">Change Name</button>
             </form>
             <div th:if="${studentIsEmpty}" class="alert alert-danger" role="alert">
@@ -136,7 +134,7 @@
                                 th:text="${faculty.facultyName}"></option>
                     </select>
 
-                    <input type="hidden" name="username" th:value="${username}" />
+                    <input type="hidden" name="userId" th:value="${userId}" />
 
                     <button type="submit">Change Faculty</button>
                 </form>

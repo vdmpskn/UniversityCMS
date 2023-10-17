@@ -17,11 +17,11 @@ public class ChangeUsernameController {
     private final UserService userService;
 
     @PostMapping("/studentscab/changeusername")
-    public String changeStudentUsername(@RequestParam(name = "username") String username,
+    public String changeStudentUsername(@RequestParam(name = "userId") Long userId,
                                         @RequestParam(name = "newUsername", required = true) String newUsername,
                                         RedirectAttributes redirectAttributes) {
 
-        boolean changedUsername = userService.changeUsername(username, newUsername);
+        boolean changedUsername = userService.changeUsername(userId, newUsername);
         if (changedUsername) {
             redirectAttributes.addFlashAttribute("successfulChangeStudentName", "Your username changed successfully! Login with new username.");
         } else {
@@ -31,10 +31,10 @@ public class ChangeUsernameController {
     }
 
     @PostMapping("/professorscab/changeusername")
-    public String changeProfessorUsername(@RequestParam(name = "username") String username,
+    public String changeProfessorUsername(@RequestParam(name = "userId") Long userId,
                                           @RequestParam(name = "newUsername", required = true) String newUsername,
                                           RedirectAttributes redirectAttributes) {
-        boolean changedUsername = userService.changeUsername(username, newUsername);
+        boolean changedUsername = userService.changeUsername(userId, newUsername);
 
         if (changedUsername) {
             redirectAttributes.addAttribute("successfulChangeProfessorName", "Your username changed successfully! Login with new username.");

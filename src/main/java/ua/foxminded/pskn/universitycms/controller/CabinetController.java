@@ -51,6 +51,7 @@ public class CabinetController {
         List<FacultyDTO> facultyDTOList = facultyService.findAll();
 
         model.addAttribute("username", cabinetData.getUsername());
+        model.addAttribute("userId", cabinetData.getUserID());
         model.addAttribute("studentId", cabinetData.getStudentId());
         model.addAttribute("studentGroup", cabinetData.getStudentGroup());
         model.addAttribute("availableGroups", cabinetData.getAvailableGroups());

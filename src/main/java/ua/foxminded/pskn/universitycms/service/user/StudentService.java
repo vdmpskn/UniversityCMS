@@ -36,14 +36,14 @@ public class StudentService {
             throw new IllegalArgumentException("Wrong value of 'userId'");
         }
 
-        Optional<Student> student = studentRepository.getStudentByUserId(userId);
-
-        if (student.isEmpty()) {
-            throw new ProfessorNotFoundException("Student not found.");
-        }
         log.debug("Getting student by userId: {}", userId);
-        return student.map(studentConverter::convertToDTO);
+
+        return Optional.ofNullable(studentRepository.getStudentByUserId(userId))
+            .map(student -> student.map(studentConverter::convertToDTO))
+            .orElseThrow(() -> new StudentNotFoundException("Student not found"));
     }
+
+
 
     public void changeMyGroup(Long studentID, Long newGroupId) {
         Optional<StudentGroup> groupOptional = studentGroupRepository.findById(newGroupId);

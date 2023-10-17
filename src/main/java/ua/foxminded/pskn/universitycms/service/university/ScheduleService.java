@@ -46,26 +46,18 @@ public class ScheduleService {
             .toList();
     }
 
-    public List<ScheduleDTO> getProfessorSchedule(String username) {
-        Optional<UserDTO> professorByUsername = userService.findProfessorByUsername(username);
-
-        if (professorByUsername.isPresent()) {
-            Optional<ProfessorDTO> professor = professorService.getProfessorByUserId(professorByUsername.get().getUserId());
-            if (professor.isPresent()) {
-                return getScheduleByProfessorId(professor.get().getProfessorId());
-            }
-        } throw new ProfessorNotFoundException("Professor not found.");
+    public List<ScheduleDTO> getProfessorSchedule(Long userId) {
+        return userService.findProfessorById(userId)
+            .map(userDTO -> professorService.getProfessorByUserId(userDTO.getUserId()))
+            .map(professorDTO -> getScheduleByProfessorId(professorDTO.get().getProfessorId()))
+            .orElseThrow(() -> new ProfessorNotFoundException("Professor not found."));
     }
 
-    public List<ScheduleDTO> getStudentSchedule(String username) {
-        Optional<UserDTO> studentByUsername = userService.findStudentByUsername(username);
-
-        if (studentByUsername.isPresent()) {
-            Optional<StudentDTO> student = studentService.getStudentByUserId(studentByUsername.get().getUserId());
-            if (student.isPresent()) {
-                return getScheduleByGroupId(student.get().getGroupId());
-            }
-        } throw new StudentNotFoundException("Student not found. ");
+    public List<ScheduleDTO> getStudentSchedule(Long userId) {
+        return userService.findStudentById(userId)
+            .map(userDTO -> studentService.getStudentByUserId(userId))
+            .map(studentDTO -> getStudentSchedule(studentDTO.get().getUserId()))
+            .orElseThrow(() -> new StudentNotFoundException("Student not found. "));
     }
 
     public List<ScheduleDTO> getScheduleByProfessorId(int professorId) {

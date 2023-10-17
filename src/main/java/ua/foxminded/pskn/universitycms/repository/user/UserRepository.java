@@ -19,4 +19,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.username = :username AND u.role.roleId = 2")
     Optional<User> findStudentByUsername(String username);
+
+    @Query("SELECT u FROM User u WHERE u.userId = :userId AND u.role.roleId = 2")
+    Optional<User> findStudentByUserId(Long userId);
+
+    @Query("SELECT u FROM User u WHERE u.userId = :userId AND u.role.roleId = 3")
+    Optional<User> findProfessorByUserId(Long userId);
+
+    @Query("SELECT u FROM User u WHERE u.userId = :userId AND u.role.roleId = 1")
+    Optional<User> findAdminByUserId(Long userId);
 }

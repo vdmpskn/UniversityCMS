@@ -48,6 +48,7 @@ public class UserCabinetService {
         cabinetData.setStudentId(student.getUserId());
         cabinetData.setStudentGroup(groupName.getGroupName());
         cabinetData.setAvailableGroups(availableGroups);
+        cabinetData.setUserID(student.getUserId());
 
         log.info("Retrieved student cabinet data for username: {}", username);
         return cabinetData;
