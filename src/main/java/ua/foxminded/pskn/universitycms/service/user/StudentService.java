@@ -31,15 +31,15 @@ public class StudentService {
 
     private final StudentConverter studentConverter;
 
-    public Optional<StudentDTO> getStudentByUserId(Long userId) {
+    public StudentDTO getStudentByUserId(Long userId) {
         if (userId == null || userId <= 0) {
             throw new IllegalArgumentException("Wrong value of 'userId'");
         }
 
         log.debug("Getting student by userId: {}", userId);
 
-        return Optional.ofNullable(studentRepository.getStudentByUserId(userId))
-            .map(student -> student.map(studentConverter::convertToDTO))
+        return (studentRepository.getStudentByUserId(userId))
+            .map(studentConverter::convertToDTO)
             .orElseThrow(() -> new StudentNotFoundException("Student not found"));
     }
 
@@ -54,7 +54,7 @@ public class StudentService {
         Optional<Student> studentOptional = studentRepository.findById(studentID);
         if (studentOptional.isPresent()) {
             Student student = studentOptional.get();
-            student.setGroupId(Math.toIntExact(newGroupId));
+            student.setGroupId(newGroupId);
             studentRepository.save(student);
             log.info("Updated student with ID {} to new group ID: {}", student.getUserId(), newGroupId);
         } else {

@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ua.foxminded.pskn.universitycms.model.user.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 }

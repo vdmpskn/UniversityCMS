@@ -21,6 +21,6 @@ public class UserDTO {
 
     private RoleDTO roleDTO;
 
-    private int facultyId;
+    private Long facultyId;
 
 }

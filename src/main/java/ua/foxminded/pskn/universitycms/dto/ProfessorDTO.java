@@ -13,7 +13,7 @@ public class ProfessorDTO {
 
     private Long userId;
 
-    private int professorId;
+    private Long professorId;
 
 
 }

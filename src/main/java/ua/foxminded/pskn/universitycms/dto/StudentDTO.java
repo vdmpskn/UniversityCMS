@@ -15,5 +15,5 @@ public class StudentDTO {
 
     private Long userId;
 
-    private int groupId;
+    private Long groupId;
 }

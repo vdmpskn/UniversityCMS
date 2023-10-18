@@ -37,8 +37,8 @@ public class UserCabinetService {
         UserDTO user = userService.findStudentByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("Student with username " + username + " not found"));
 
-        StudentDTO student = studentService.getStudentByUserId(user.getUserId())
-            .orElseThrow(() -> new IllegalArgumentException("Student with username " + username + " not found"));
+
+        StudentDTO student = studentService.getStudentByUserId(user.getUserId());
 
         StudentGroup groupName = studentGroupService.getStudentGroupById((long) student.getGroupId());
         List<StudentGroup> availableGroups = studentGroupService.getAllStudentGroups();

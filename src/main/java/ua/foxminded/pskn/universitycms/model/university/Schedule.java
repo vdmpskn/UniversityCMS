@@ -27,13 +27,13 @@ public class Schedule {
     private Long scheduleId;
 
     @Column(name = "group_id")
-    private int groupId;
+    private Long groupId;
 
     @Column(name = "professor_id")
-    private int professorId;
+    private Long professorId;
 
     @Column(name = "course_id")
-    private int courseId;
+    private Long courseId;
 
     @Column(name = "start_time")
     private Timestamp startTime;

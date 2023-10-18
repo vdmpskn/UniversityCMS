@@ -62,7 +62,7 @@ public class UserController {
 
     @PostMapping("/edit")
     public String editUser(@ModelAttribute("userDTO") UserDTO userDTO,
-                           @RequestParam("roleId") int roleId,
+                           @RequestParam("roleId") Long roleId,
                            RedirectAttributes redirectAttributes) {
         try {
             userService.updateUser(userDTO, roleId);

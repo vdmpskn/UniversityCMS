@@ -36,6 +36,6 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    private int facultyId;
+    private Long facultyId;
 
 }

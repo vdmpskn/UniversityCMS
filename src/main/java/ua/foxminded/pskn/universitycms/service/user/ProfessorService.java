@@ -24,14 +24,14 @@ public class ProfessorService {
 
     private final ProfessorConverter professorConverter;
 
-    public Optional<ProfessorDTO> getProfessorByUserId(Long userId) {
+    public ProfessorDTO getProfessorByUserId(Long userId) {
         if (userId == null || userId <= 0) {
             throw new IllegalArgumentException("Wrong value of 'userId'");
         }
 
         log.debug("Getting professor by user ID: {}", userId);
 
-        return Optional.ofNullable(professorRepository.getProfessorByUserId(userId)
+        return (professorRepository.getProfessorByUserId(userId)
             .map(professorConverter::convertToDTO)
             .orElseThrow(() -> new ProfessorNotFoundException("Professor not found.")));
     }

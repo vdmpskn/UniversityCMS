@@ -28,7 +28,7 @@ public class RoleService {
             .toList();
     }
 
-    public Optional<RoleDTO> findRoleById(int id){
+    public Optional<RoleDTO> findRoleById(Long id){
          Optional<Role> roleOptional = roleRepository.findById(id);
          return roleOptional.map(roleConverter::convertToDTO);
     }

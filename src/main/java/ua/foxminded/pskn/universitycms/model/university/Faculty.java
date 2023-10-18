@@ -23,7 +23,7 @@ public class Faculty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long facultyId;
 
-    private int universityId;
+    private Long universityId;
 
     @Column(name = "name")
     private String facultyName;

@@ -18,6 +18,6 @@ public class Student {
     @Id
     private Long userId;
 
-    private int groupId;
+    private Long groupId;
 
 }

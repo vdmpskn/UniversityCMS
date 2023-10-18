@@ -41,8 +41,8 @@ public class CreateUserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/adminscab/create-user")
     public String createUser(@ModelAttribute("userForm") UserDTO userDTO,
-                             @RequestParam("roleId") int roleId,
-                             int groupId,
+                             @RequestParam("roleId") Long roleId,
+                             Long groupId,
                              RedirectAttributes redirectAttributes) {
 
             userService.createUserWithRole(userDTO, groupId, roleId);

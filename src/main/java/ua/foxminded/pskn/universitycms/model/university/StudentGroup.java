@@ -23,7 +23,7 @@ public class StudentGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long groupId;
 
-    private int facultyId;
+    private Long facultyId;
 
     @Column(name = "name")
     private String groupName;

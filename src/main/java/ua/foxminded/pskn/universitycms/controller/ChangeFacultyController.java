@@ -18,7 +18,7 @@ public class ChangeFacultyController {
 
     @PostMapping("/studentscab/changefaculty")
     public String changeStudentFaculty(@RequestParam(name = "userId") Long userId,
-                                       @RequestParam(value = "newFacultyId") int newFacultyId,
+                                       @RequestParam(value = "newFacultyId") Long newFacultyId,
                                        RedirectAttributes redirectAttributes
     ) {
         boolean facultyChanged = userService.changeStudentFaculty(userId, newFacultyId);
@@ -33,7 +33,7 @@ public class ChangeFacultyController {
 
     @PostMapping("/professorscab/changefaculty")
     public String changeProfessorFaculty(@RequestParam(name = "userId") Long userId,
-                                         @RequestParam(value = "newFacultyId") int newFacultyId,
+                                         @RequestParam(value = "newFacultyId") Long newFacultyId,
                                          RedirectAttributes redirectAttributes
     ) {
         boolean facultyChanged = userService.changeProfessorFaculty(userId, newFacultyId);

@@ -37,7 +37,7 @@ public class ScheduleService {
 
     private final StudentService studentService;
 
-    public List<ScheduleDTO> getScheduleByGroupId(int groupId) {
+    public List<ScheduleDTO> getScheduleByGroupId(Long groupId) {
         log.debug("Retrieving schedule for group ID: {}", groupId);
 
         return scheduleRepository.findScheduleByGroupId(groupId)
@@ -49,18 +49,18 @@ public class ScheduleService {
     public List<ScheduleDTO> getProfessorSchedule(Long userId) {
         return userService.findProfessorById(userId)
             .map(userDTO -> professorService.getProfessorByUserId(userDTO.getUserId()))
-            .map(professorDTO -> getScheduleByProfessorId(professorDTO.get().getProfessorId()))
+            .map(professorDTO -> getScheduleByProfessorId(professorDTO.getProfessorId()))
             .orElseThrow(() -> new ProfessorNotFoundException("Professor not found."));
     }
 
     public List<ScheduleDTO> getStudentSchedule(Long userId) {
         return userService.findStudentById(userId)
             .map(userDTO -> studentService.getStudentByUserId(userId))
-            .map(studentDTO -> getStudentSchedule(studentDTO.get().getUserId()))
+            .map(studentDTO -> getStudentSchedule(studentDTO.getUserId()))
             .orElseThrow(() -> new StudentNotFoundException("Student not found. "));
     }
 
-    public List<ScheduleDTO> getScheduleByProfessorId(int professorId) {
+    public List<ScheduleDTO> getScheduleByProfessorId(Long professorId) {
         if (professorId <= 0) {
             throw new IllegalArgumentException("Wrong value of 'userId'");
         }

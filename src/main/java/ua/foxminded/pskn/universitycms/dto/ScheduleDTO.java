@@ -18,11 +18,11 @@ public class ScheduleDTO {
 
     private Long scheduleId;
 
-    private int groupId;
+    private Long groupId;
 
-    private int professorId;
+    private Long professorId;
 
-    private int courseId;
+    private Long courseId;
 
     private Timestamp startTime;
 

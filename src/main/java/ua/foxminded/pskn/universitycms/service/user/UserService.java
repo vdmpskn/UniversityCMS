@@ -68,11 +68,6 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public Optional<User> findAdminByUsername(String username) {
-        log.debug("Getting admin by username: {}", username);
-        return userRepository.findAdminByUsername(username);
-    }
-
     public Optional<UserDTO> findAdminById(Long userId){
         if(userId==null){
             throw new IllegalArgumentException("Wrong value of userId");
@@ -141,7 +136,7 @@ public class UserService {
         return student.map(userConverter::convertToDTO);
     }
 
-    public User saveStudent(UserDTO userDTO, int groupId) {
+    public User saveStudent(UserDTO userDTO, Long groupId) {
         User user = userConverter.convertToEntity(userDTO);
         log.info("Saving student: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -199,11 +194,11 @@ public class UserService {
         log.info("Username changed successfully.");
     }
 
-    public void changeMyFaculty(UserDTO userDTO, int newFaculty) {
-        int currentFacultyId = userDTO.getFacultyId();
+    public void changeMyFaculty(UserDTO userDTO, Long newFaculty) {
+        Long currentFacultyId = userDTO.getFacultyId();
         log.info("Your current faculty ID is: {}", currentFacultyId);
 
-        if (currentFacultyId == newFaculty) {
+        if (currentFacultyId.equals(newFaculty)) {
             log.info("New faculty is the same as your current faculty.");
             throw new FacultyEditException("New faculty is the same as your current faculty.");
         }
@@ -211,7 +206,7 @@ public class UserService {
         log.info("Faculty ID changed successfully.");
     }
 
-    public boolean changeStudentFaculty(Long userId, int newFacultyId) {
+    public boolean changeStudentFaculty(Long userId, Long newFacultyId) {
         Optional<UserDTO> userDTO = findStudentById(userId);
 
         if (userDTO.isPresent()) {
@@ -226,7 +221,7 @@ public class UserService {
         }
     }
 
-    public boolean changeProfessorFaculty(Long userId, int newFacultyId) {
+    public boolean changeProfessorFaculty(Long userId, Long newFacultyId) {
         Optional<UserDTO> userDTO = findProfessorById(userId);
 
         if (userDTO.isPresent()) {
@@ -277,7 +272,7 @@ public class UserService {
     }
 
 
-    public void updateUser(UserDTO userDTO, int roleId) {
+    public void updateUser(UserDTO userDTO, Long roleId) {
 
         Optional<RoleDTO> role = roleService.findRoleById(roleId);
         userDTO.setRoleDTO(RoleDTO.builder()
@@ -303,7 +298,7 @@ public class UserService {
         }
     }
 
-    public void createUserWithRole(UserDTO userDTO, int groupId, int roleId) {
+    public void createUserWithRole(UserDTO userDTO, Long groupId, Long roleId) {
         Optional<RoleDTO> role = roleService.findRoleById(roleId);
 
         role.ifPresent(roleDTO -> userDTO.setRoleDTO(RoleDTO.builder()
