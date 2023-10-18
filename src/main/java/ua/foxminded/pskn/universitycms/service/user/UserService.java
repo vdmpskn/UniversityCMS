@@ -108,32 +108,28 @@ public class UserService {
             .orElseThrow(() -> new ProfessorNotFoundException("Professor not found"));
     }
 
-
-    public Optional<UserDTO> findStudentByUsername(String username) {
-        if (StringUtils.isBlank(username)) {
-            throw new IllegalArgumentException("Wrong value of 'username'");
-        }
-
-        log.debug("Getting student by username: {}", username);
-
-        return Optional.ofNullable(userRepository.findStudentByUsername(username))
-            .map(student -> student.map(userConverter::convertToDTO))
-            .orElseThrow(() -> new UserNotFoundException("User not found"));
-    }
-
-
     public Optional<UserDTO> findStudentById(Long userId){
         if(userId==null){
             throw new IllegalArgumentException("Wrong value of userId");
         }
         log.debug("Getting student by ID: {}", userId);
 
-        Optional<User> student = userRepository.findStudentByUserId(userId);
+        return Optional.ofNullable(userRepository.findStudentByUserId(userId))
+            .map(student -> student.map(userConverter::convertToDTO))
+            .orElseThrow(() -> new StudentNotFoundException("Student not found"));
+    }
 
-        if(student.isEmpty()){
-            throw new StudentNotFoundException("Student not found!");
+
+    public UserDTO findStudentByUsername(String username) {
+        if (StringUtils.isBlank(username)) {
+            throw new IllegalArgumentException("Wrong value of 'username'");
         }
-        return student.map(userConverter::convertToDTO);
+
+        log.debug("Getting student by username: {}", username);
+
+        return (userRepository.findStudentByUsername(username))
+            .map(userConverter::convertToDTO)
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     public User saveStudent(UserDTO userDTO, Long groupId) {

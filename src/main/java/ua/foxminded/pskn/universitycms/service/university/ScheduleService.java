@@ -55,8 +55,8 @@ public class ScheduleService {
 
     public List<ScheduleDTO> getStudentSchedule(Long userId) {
         return userService.findStudentById(userId)
-            .map(userDTO -> studentService.getStudentByUserId(userId))
-            .map(studentDTO -> getStudentSchedule(studentDTO.getUserId()))
+            .map(userDTO -> studentService.getStudentByUserId(userDTO.getUserId()))
+            .map(studentDTO -> getScheduleByGroupId(studentDTO.getGroupId()))
             .orElseThrow(() -> new StudentNotFoundException("Student not found. "));
     }
 

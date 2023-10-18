@@ -34,9 +34,7 @@ public class UserCabinetService {
             throw new IllegalArgumentException("Username can't be blank");
         }
 
-        UserDTO user = userService.findStudentByUsername(username)
-            .orElseThrow(() -> new IllegalArgumentException("Student with username " + username + " not found"));
-
+        UserDTO user = userService.findStudentByUsername(username);
 
         StudentDTO student = studentService.getStudentByUserId(user.getUserId());
 
