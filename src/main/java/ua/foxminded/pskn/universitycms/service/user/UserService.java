@@ -315,4 +315,12 @@ public class UserService {
         }
 
     }
+
+    public boolean isOwnerOrAdmin(Long userId, Long requestUserId) {
+        Optional<UserDTO> admin = findAdminById(userId);
+
+        return admin.map(user -> user.getUserId().equals(requestUserId) || user.getUserId().equals(userId))
+            .orElse(false);
+    }
+
 }

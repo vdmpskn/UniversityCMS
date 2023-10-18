@@ -29,7 +29,6 @@ public class CabinetController {
 
     @GetMapping("/professorscab")
     public String professorCabinetPage(Authentication authentication, Model model) {
-
         Optional<UserDTO> professor = userService.findProfessorByUsername(authentication.getName());
 
         List<FacultyDTO> facultyDTOList = facultyService.findAll();

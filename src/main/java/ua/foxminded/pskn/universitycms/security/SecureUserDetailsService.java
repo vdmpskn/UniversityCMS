@@ -32,10 +32,12 @@ public class SecureUserDetailsService implements UserDetailsService {
 
         String roleName = "ROLE_" + user.get().getRole().getName();
 
+        Long userId = user.get().getUserId();
+
         Collection<GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(roleName));
 
-        return new org.springframework.security.core.userdetails.User(
-            user.get().getUsername(), user.get().getPassword(), authorities
+        return new CustomUserDetailsService(
+            user.get().getUsername(), user.get().getPassword(), authorities, userId
         );
     }
 }

@@ -1,6 +1,6 @@
 package ua.foxminded.pskn.universitycms.controller;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,8 +15,8 @@ public class ChangeFacultyController {
 
     private final UserService userService;
 
-
     @PostMapping("/studentscab/changefaculty")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or #userId == authentication.principal.userId")
     public String changeStudentFaculty(@RequestParam(name = "userId") Long userId,
                                        @RequestParam(value = "newFacultyId") Long newFacultyId,
                                        RedirectAttributes redirectAttributes
@@ -25,22 +25,24 @@ public class ChangeFacultyController {
 
         if (facultyChanged) {
             redirectAttributes.addFlashAttribute("successChangeFaculty", "Faculty changed successfully");
-        } else {
+        }
+        else {
             redirectAttributes.addFlashAttribute("failChangeFaculty", "Faculty couldn't be changed");
         }
         return "redirect:/studentscab";
     }
 
     @PostMapping("/professorscab/changefaculty")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or #userId == authentication.principal.userId")
     public String changeProfessorFaculty(@RequestParam(name = "userId") Long userId,
                                          @RequestParam(value = "newFacultyId") Long newFacultyId,
                                          RedirectAttributes redirectAttributes
     ) {
         boolean facultyChanged = userService.changeProfessorFaculty(userId, newFacultyId);
-
         if (facultyChanged) {
             redirectAttributes.addFlashAttribute("successChangeFaculty", "Faculty changed successfully");
-        } else {
+        }
+        else {
             redirectAttributes.addFlashAttribute("failChangeFaculty", "Faculty couldn't be changed");
         }
         return "redirect:/professorscab";

@@ -1,5 +1,6 @@
 package ua.foxminded.pskn.universitycms.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,12 +17,14 @@ public class ChangeGroupController {
     private final StudentService studentService;
 
     @PostMapping("/studentscab/changeGroup")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or #studentId == authentication.principal.userId")
     public String changeStudentGroup(@RequestParam Long studentId,
                                      @RequestParam Long groupId,
-                                     RedirectAttributes redirectAttributes) {
-        studentService.changeMyGroup(studentId, groupId);
-        String successMessage = "Student group changed successfully to " + groupId;
-        redirectAttributes.addFlashAttribute("successMessage", successMessage);
+                                     RedirectAttributes redirectAttributes
+    ) {
+            studentService.changeMyGroup(studentId, groupId);
+            String successMessage = "Student group changed successfully to " + groupId;
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
         return "redirect:/studentscab";
     }
 }
