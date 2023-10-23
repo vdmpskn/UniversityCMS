@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 
 @Data
 @Builder
+@With
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
@@ -19,6 +21,6 @@ public class UserDTO {
 
     private RoleDTO roleDTO;
 
-    private int facultyId;
+    private Long facultyId;
 
 }

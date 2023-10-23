@@ -1,50 +1,65 @@
 package ua.foxminded.pskn.universitycms.controller.user;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import ua.foxminded.pskn.universitycms.model.user.Professor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.ui.Model;
+
+import ua.foxminded.pskn.universitycms.dto.ProfessorDTO;
 import ua.foxminded.pskn.universitycms.service.user.ProfessorService;
 
-import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@WebMvcTest(ProfessorController.class)
-@WithMockUser(authorities = "ROLE_ADMIN")
 class ProfessorControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private ProfessorController professorController;
 
-    @MockBean
+    @Mock
     private ProfessorService professorService;
 
+    @Mock
+    private Model model;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+
     @Test
-    void shouldGetProfessorPage() throws Exception {
-        Professor professor = new Professor();
-        professor.setProfessorId(1);
-        professor.setUserId(1L);
+    void shouldGetProfessorPage() {
+        int page = 0;
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(page, pageSize);
 
-        Page<Professor> professorPage = new PageImpl<>(Collections.singletonList(professor));
-        when(professorService.getAllProfessors(any())).thenReturn(professorPage);
+        Page<ProfessorDTO> mockProfessorPage = mock(Page.class);
 
-        mockMvc.perform(get("/professors"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("/users/professors"))
-            .andExpect(model().attributeExists("professors"))
-            .andExpect(model().attribute("professors", professorPage.getContent()))
-            .andExpect(model().attributeExists("currentPage"))
-            .andExpect(model().attribute("currentPage", 0))
-            .andExpect(model().attributeExists("totalPages"))
-            .andExpect(model().attribute("totalPages", professorPage.getTotalPages()));
+        List<ProfessorDTO> mockProfessors = new ArrayList<>();
+        mockProfessors.add(new ProfessorDTO());
+        mockProfessors.add(new ProfessorDTO());
+
+        when(professorService.getAllProfessors(pageable)).thenReturn(mockProfessorPage);
+        when(mockProfessorPage.getContent()).thenReturn(mockProfessors);
+        when(mockProfessorPage.getTotalPages()).thenReturn(3);
+
+        String viewName = professorController.professorPage(model, page, pageSize);
+
+        assertEquals("/users/professors", viewName);
+        verify(model).addAttribute("professors", mockProfessorPage.getContent());
+        verify(model).addAttribute("currentPage", page);
+        verify(model).addAttribute("totalPages", mockProfessorPage.getTotalPages());
     }
 }

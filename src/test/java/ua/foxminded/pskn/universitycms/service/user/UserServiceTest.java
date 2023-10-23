@@ -6,7 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import ua.foxminded.pskn.universitycms.dto.RoleDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
+import ua.foxminded.pskn.universitycms.model.user.Role;
 import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.repository.university.FacultyRepository;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
@@ -89,16 +92,31 @@ class UserServiceTest {
 
 
     @Test
-    void shouldDeleteUser() {
-        UserDTO userDTO = UserDTO.builder()
-            .userId(1L)
+     void shouldDeleteUser_Success() {
+        Role role = Role.builder()
             .roleId(1)
+            .name("ADMIN")
+            .build();
+
+        RoleDTO roleDTO = RoleDTO.builder()
+            .role(role)
+            .roleName("ADMIN").build();
+
+        long userId = 1L;
+
+        UserDTO userDTO = UserDTO.builder()
+            .userId(userId)
+            .roleDTO(roleDTO)
             .facultyId(1)
             .username("testUser")
             .build();
 
+        when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
+
         userService.deleteUser(userDTO);
 
-        verify(userRepository).deleteById(userDTO.getUserId());
+        verify(userRepository).findById(userId);
+
+        verify(userRepository).deleteById(userId);
     }
 }

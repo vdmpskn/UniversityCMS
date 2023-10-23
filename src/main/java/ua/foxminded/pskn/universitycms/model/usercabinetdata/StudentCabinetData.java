@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class StudentCabinetData {
+    private Long userID;
     private String username;
     private Long studentId;
     private String studentGroup;

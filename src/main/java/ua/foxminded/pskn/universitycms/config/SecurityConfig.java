@@ -28,10 +28,12 @@ public class SecurityConfig {
 
             )
             .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/adminscab").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/studentscab").hasAuthority("ROLE_STUDENT")
+                .requestMatchers("/professorscab").hasAuthority("ROLE_PROFESSOR")
                 .anyRequest().authenticated()
             )
             .formLogin((form) -> form
-                .defaultSuccessUrl("/cabinet")
                 .successHandler(myAuthenticationSuccessHandler())
                 .loginPage("/login")
                 .permitAll()

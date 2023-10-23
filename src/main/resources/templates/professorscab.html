@@ -95,9 +95,37 @@
         </div>
         <h2 class="text-center">Manage my profile</h2>
         <ul class="list-unstyled">
-            <li><button onclick="getStudentSchedule()">Get my schedule</button></li>
-            <li><button onclick="changeUsername()">Change my username</button></li>
-            <li><button onclick="changeFaculty()">Change my faculty</button></li>
+            <li><form th:action="@{/professorscab/schedule}" method="get">
+                <input type="hidden" name="userId" th:value="${professor.userId}" />
+                <button type="submit">Get my schedule</button>
+            </form></li>
+            <li><form th:action="@{/professorscab/changeusername}" method="post">
+                <input type="hidden" name="userId" th:value="${professor.userId}" />
+                <input type="text" name="newUsername" placeholder="New name" required />
+                <button type="submit">Change name</button>
+            </form>
+                <div th:if="${professorIsEmpty}" class="alert alert-danger" role="alert">
+                    <p th:text="${professorIsEmpty}"></p>
+                </div></li>
+            <li>
+                <form th:action="@{/professorscab/changefaculty}" method="post">
+                    <label for="newFacultyId">Choose new faculty:</label>
+                    <select name="newFacultyId" id="newFacultyId">
+                        <option th:each="faculty : ${availableFaculties}"
+                                th:value="${faculty.facultyId}"
+                                th:text="${faculty.facultyName}"></option>
+                    </select>
+                    <input type="hidden" name="userId" th:value="${professor.userId}" />
+                    <button type="submit">Change faculty</button>
+                    <div th:if="${successChangeFaculty}" class="alert alert-success" role="alert">
+                        <p th:text="${successChangeFaculty}"></p>
+                    </div>
+                    <div th:if="${failChangeFaculty}" class="alert alert-danger" role="alert">
+                        <p th:text="${failChangeFaculty}"></p>
+                    </div>
+                </form>
+            </li>
+
         </ul>
         <a href="/logout">Logout</a>
     </main>

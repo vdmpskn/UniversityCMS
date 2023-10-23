@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 
 import ua.foxminded.pskn.universitycms.converter.student.StudentConverter;
+import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.StudentNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.StudentDTO;
@@ -30,10 +31,19 @@ public class StudentService {
 
     private final StudentConverter studentConverter;
 
-    public Optional<Student> getStudentByUserId(Long userId) {
+    public StudentDTO getStudentByUserId(Long userId) {
+        if (userId == null || userId <= 0) {
+            throw new IllegalArgumentException("Wrong value of 'userId'");
+        }
+
         log.debug("Getting student by userId: {}", userId);
-        return studentRepository.getStudentByUserId(userId);
+
+        return (studentRepository.getStudentByUserId(userId))
+            .map(studentConverter::convertToDTO)
+            .orElseThrow(() -> new StudentNotFoundException("Student not found"));
     }
+
+
 
     public void changeMyGroup(Long studentID, Long newGroupId) {
         Optional<StudentGroup> groupOptional = studentGroupRepository.findById(newGroupId);
@@ -44,7 +54,7 @@ public class StudentService {
         Optional<Student> studentOptional = studentRepository.findById(studentID);
         if (studentOptional.isPresent()) {
             Student student = studentOptional.get();
-            student.setGroupId(Math.toIntExact(newGroupId));
+            student.setGroupId(newGroupId);
             studentRepository.save(student);
             log.info("Updated student with ID {} to new group ID: {}", student.getUserId(), newGroupId);
         } else {

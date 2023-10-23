@@ -93,6 +93,12 @@
             <button type="submit" class="btn btn-primary">Sign In</button>
             <hr>
         </form>
+        <div th:if="${successfulChangeStudentName}" class="alert alert-success" role="alert">
+            <p th:text="${successfulChangeStudentName}"></p>
+        </div>
+        <div th:if="${successfulChangeProfessorName}" class="alert alert-success" role="alert">
+            <p th:text="${successfulChangeProfessorName}"></p>
+        </div>
         <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
             <p th:text="${errorMessage}"></p>
         </div>

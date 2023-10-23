@@ -1,30 +1,37 @@
 package ua.foxminded.pskn.universitycms.controller;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
-import ua.foxminded.pskn.universitycms.model.user.User;
+import org.springframework.ui.Model;
+
+import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
+import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.usercabinetdata.StudentCabinetData;
+import ua.foxminded.pskn.universitycms.service.university.FacultyService;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
 import ua.foxminded.pskn.universitycms.service.usercabinet.UserCabinetService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CabinetController.class)
 @WithMockUser(authorities = "ROLE_ADMIN")
 class CabinetControllerTest {
+    @Autowired
+    private CabinetController cabinetController;
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,9 +42,15 @@ class CabinetControllerTest {
     @MockBean
     private UserCabinetService userCabinetService;
 
+    @MockBean
+    private FacultyService facultyService;
+
+    @MockBean
+    private Model model;
+
     @Test
     void shouldGetProfessorCabinetPage() throws Exception {
-        User professor = new User();
+        UserDTO professor = new UserDTO();
         professor.setUsername("p");
         professor.setPassword("p");
 
@@ -52,51 +65,34 @@ class CabinetControllerTest {
 
     @Test
     void shouldGetAdminCabinetPage() throws Exception {
-        User admin = new User();
-        admin.setUsername("test_admin");
+        CabinetController adminController = new CabinetController(userService, userCabinetService, facultyService);
+        Model model = mock(Model.class);
 
-        when(userService.findAdminByUsername("test_admin")).thenReturn(Optional.of(admin));
+        String viewName = adminController.adminCabinetPage();
 
-        mockMvc.perform(get("/adminscab")
-                .param("username", "test_admin"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("adminscab"))
-            .andExpect(model().attribute("username", admin.getUsername()));
+        assertEquals("adminscab", viewName);
     }
 
     @Test
-    void shouldGetStudentCabinetPage() throws Exception {
-        CabinetController controller = new CabinetController(null, userCabinetService);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+    void shouldGetStudentCabinetPage() {
+        String studentName = "student123";
 
-        StudentCabinetData cabinetData = new StudentCabinetData();
-        cabinetData.setUsername("test_student");
-        cabinetData.setStudentId(1L);
-        cabinetData.setStudentGroup("Group 1");
-        List<StudentGroup> availableGroups = new ArrayList<>();
+        StudentCabinetData mockCabinetData = new StudentCabinetData();
 
-        StudentGroup group1 = new StudentGroup();
-        group1.setGroupName("Group 1");
-        availableGroups.add(group1);
+        List<FacultyDTO> mockFaculties = List.of(new FacultyDTO());
 
-        StudentGroup group2 = new StudentGroup();
-        group2.setGroupName("Group 2");
-        availableGroups.add(group2);
+        when(userCabinetService.getStudentCabinetData(studentName)).thenReturn(mockCabinetData);
 
-        cabinetData.setAvailableGroups(availableGroups);
+        when(facultyService.findAll()).thenReturn(mockFaculties);
 
-        when(userCabinetService.getStudentCabinetData("test_student")).thenReturn(cabinetData);
+        String viewName = cabinetController.studentCabinetPage(studentName, model);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/studentscab")
-                .param("username", "test_student"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("studentscabview"))
-            .andExpect(model().attribute("username", "test_student"))
-            .andExpect(model().attribute("studentId", 1L))
-            .andExpect(model().attribute("studentGroup", "Group 1"))
-            .andExpect(model().attribute("availableGroups", availableGroups));
-
-        verify(userCabinetService, times(1)).getStudentCabinetData("test_student");
+        assertEquals("studentscab", viewName);
+        verify(model).addAttribute("username", mockCabinetData.getUsername());
+        verify(model).addAttribute("studentId", mockCabinetData.getStudentId());
+        verify(model).addAttribute("studentGroup", mockCabinetData.getStudentGroup());
+        verify(model).addAttribute("availableGroups", mockCabinetData.getAvailableGroups());
+        verify(model).addAttribute("availableFaculties", mockFaculties);
     }
 
 }

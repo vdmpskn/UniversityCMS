@@ -32,11 +32,11 @@ class ChangeGroupControllerTest {
 
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 
-        String result = changeGroupController.changeStudentGroup(1L, 2, redirectAttributes, principal);
+        String result = changeGroupController.changeStudentGroup(1L, 2L, redirectAttributes, principal);
 
         assertEquals("redirect:/studentscab?username=testuser", result);
 
-        verify(studentService).changeMyGroup(1L, 2);
+        verify(studentService).changeMyGroup(1L, 2L);
 
         verify(redirectAttributes).addFlashAttribute("successMessage", "Student group changed successfully to 2");
     }

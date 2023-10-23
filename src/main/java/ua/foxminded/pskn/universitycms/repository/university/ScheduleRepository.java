@@ -10,5 +10,5 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findScheduleByGroupId(Long groupId);
 
-    List<Schedule> findScheduleByProfessorId(int professorId);
+    List<Schedule> findScheduleByProfessorId(Long professorId);
 }

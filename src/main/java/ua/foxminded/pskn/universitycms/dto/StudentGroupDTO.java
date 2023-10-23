@@ -13,7 +13,7 @@ public class StudentGroupDTO {
 
     private Long groupId;
 
-    private int facultyId;
+    private Long facultyId;
 
     private String groupName;
 

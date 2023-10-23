@@ -19,9 +19,9 @@ public class SecureAuthenticationSuccessHandler implements AuthenticationSuccess
         String role = (authentication.getAuthorities().iterator().next().getAuthority());
 
         switch (role){
-            case "ROLE_ADMIN" -> response.sendRedirect("/adminscab?username=" + username);
-            case "ROLE_STUDENT" -> response.sendRedirect("/studentscab?username=" + username);
-            case "ROLE_PROFESSOR" -> response.sendRedirect("/professorscab?username=" + username);
+            case "ROLE_ADMIN" -> response.sendRedirect("/adminscab");
+            case "ROLE_STUDENT" -> response.sendRedirect("/studentscab");
+            case "ROLE_PROFESSOR" -> response.sendRedirect("/professorscab");
         }
 
         String successMessage = String.format("You have successfully logged in as %s", username);

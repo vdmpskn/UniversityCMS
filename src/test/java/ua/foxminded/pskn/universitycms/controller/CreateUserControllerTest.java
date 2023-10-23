@@ -6,7 +6,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import ua.foxminded.pskn.universitycms.dto.RoleDTO;
+import ua.foxminded.pskn.universitycms.dto.UserDTO;
+import ua.foxminded.pskn.universitycms.model.user.Role;
 import ua.foxminded.pskn.universitycms.model.user.User;
+import ua.foxminded.pskn.universitycms.service.user.RoleService;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,16 +28,20 @@ class CreateUserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private RoleService roleService;
+
     @Test
     void shouldCreateUser_AdminAuthorization() {
-        User user = new User();
-        user.setRoleId(1);
+        UserDTO userDTO = new UserDTO();
+        userDTO.builder().roleDTO(RoleDTO.builder().roleName("testrole").role(Role.builder().roleId(2).name("testrole").build()).build());
         int groupId = 1;
+        int roleId = 2;
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 
-        doNothing().when(userService).createUserWithRole(user, groupId);
+        doNothing().when(userService).createUserWithRole(userDTO, groupId, roleId);
 
-        String result = createUserController.createUser(user, groupId, redirectAttributes);
+        String result = createUserController.createUser(userDTO, groupId, roleId, redirectAttributes);
 
         assertEquals("redirect:/adminscab", result);
 

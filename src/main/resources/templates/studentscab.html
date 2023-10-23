@@ -75,7 +75,6 @@
             text-align: center;
         }
 
-
         #header h1 {
             color: #fff;
         }
@@ -111,10 +110,41 @@
         </div>
 
         <h2 class="text-center">Manage my profile</h2>
+        <h2 class="text-center">My Name</h2>
+        <p>My Name: <span th:text="${username}"></span></p>
         <ul class="list-unstyled">
-            <li><button onclick="getStudentSchedule()">Get my schedule</button></li>
-            <li><button onclick="changeUsername()">Change my username</button></li>
-            <li><button onclick="changeFaculty()">Change my faculty</button></li>
+            <li><form th:action="@{/studentscab/schedule}" method="get">
+                <input type="hidden" name="userId" th:value="${userId}" />
+                <button type="submit">Get my schedule</button>
+            </form></li>
+            <form th:action="@{/studentscab/changeusername}" method="post">
+                <input type="hidden" name="userId" th:value="${userId}" />
+                <input type="text" name="newUsername" placeholder="New Name" required />
+                <button type="submit">Change Name</button>
+            </form>
+            <div th:if="${studentIsEmpty}" class="alert alert-danger" role="alert">
+                <p th:text="${studentIsEmpty}"></p>
+            </div>
+            <li>
+                <form th:action="@{/studentscab/changefaculty}" method="post">
+                    <label for="newFacultyId">Choose a new faculty:</label>
+                    <select name="newFacultyId" id="newFacultyId">
+                        <option th:each="faculty : ${availableFaculties}"
+                                th:value="${faculty.facultyId}"
+                                th:text="${faculty.facultyName}"></option>
+                    </select>
+
+                    <input type="hidden" name="userId" th:value="${userId}" />
+
+                    <button type="submit">Change Faculty</button>
+                </form>
+                <div th:if="${successChangeFaculty}" class="alert alert-success" role="alert">
+                    <p th:text="${successChangeFaculty}"></p>
+                </div>
+                <div th:if="${failChangeFaculty}" class="alert alert-danger" role="alert">
+                    <p th:text="${failChangeFaculty}"></p>
+                </div>
+            </li>
         </ul>
         <a href="/logout">Logout</a>
     </main>
@@ -123,4 +153,5 @@
         <p>&copy; 2023 University of California, Berkeley</p>
     </footer>
 </div>
-
+</body>
+</html>
