@@ -1,9 +1,9 @@
 package ua.foxminded.pskn.universitycms.service.university;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.context.annotation.Lazy;
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.foxminded.pskn.universitycms.converter.schedule.ScheduleConverter;
 import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
+import ua.foxminded.pskn.universitycms.customexception.ScheduleCreateException;
+import ua.foxminded.pskn.universitycms.customexception.ScheduleDeleteException;
+import ua.foxminded.pskn.universitycms.customexception.ScheduleUpdateException;
 import ua.foxminded.pskn.universitycms.customexception.StudentNotFoundException;
-import ua.foxminded.pskn.universitycms.dto.ProfessorDTO;
 import ua.foxminded.pskn.universitycms.dto.ScheduleDTO;
-import ua.foxminded.pskn.universitycms.dto.StudentDTO;
-import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.university.Schedule;
 import ua.foxminded.pskn.universitycms.repository.university.ScheduleRepository;
 import ua.foxminded.pskn.universitycms.service.user.ProfessorService;
@@ -74,6 +74,47 @@ public class ScheduleService {
     public List<Schedule> getAllSchedule() {
         log.debug("Retrieving all schedules");
         return scheduleRepository.findAll();
+    }
+
+    public void saveSchedule(ScheduleDTO scheduleDTO) {
+        if (scheduleDTO != null) {
+            scheduleRepository.save(scheduleConverter.convertToEntity(scheduleDTO));
+            log.info("Schedule with id {} saved successful", scheduleDTO.getScheduleId());
+        }
+        else
+            throw new ScheduleCreateException("Schedule cant be created");
+    }
+
+    @Transactional
+    public void deleteScheduleById(Long scheduleId) {
+        if (scheduleId != null) {
+            scheduleRepository.deleteById(scheduleId);
+            log.info("Schedule with id {} deleted successful", scheduleId);
+        }
+        else {
+            throw new ScheduleDeleteException("Schedule delete exception");
+        }
+    }
+
+    @Transactional
+    public void updateSchedule(ScheduleDTO scheduleDTO) {
+        if (scheduleDTO != null) {
+            ScheduleDTO newSchedule = ScheduleDTO.builder()
+                .scheduleId(scheduleDTO.getScheduleId())
+                .courseId(scheduleDTO.getCourseId())
+                .groupId(scheduleDTO.getGroupId())
+                .professorId(scheduleDTO.getProfessorId())
+                .startTime(scheduleDTO.getStartTime())
+                .endTime(scheduleDTO.getEndTime())
+                .date(scheduleDTO.getDate())
+                .build();
+
+            scheduleRepository.save(scheduleConverter.convertToEntity(newSchedule));
+            log.info("Schedule with ID {} updated successful", newSchedule.getScheduleId());
+        }
+        else {
+            throw new ScheduleUpdateException("Schedule cant be updated");
+        }
     }
 
     public Page<ScheduleDTO> getAllSchedule(Pageable pageable) {

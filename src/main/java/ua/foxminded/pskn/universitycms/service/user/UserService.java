@@ -291,6 +291,7 @@ public class UserService {
         }
         else {
             log.warn("User with ID {} not found.", userDTO.getUserId());
+            throw new UserUpdateException("User update exception!");
         }
     }
 
