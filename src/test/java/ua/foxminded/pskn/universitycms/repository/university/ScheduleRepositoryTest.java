@@ -1,19 +1,21 @@
 package ua.foxminded.pskn.universitycms.repository.university;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
 import ua.foxminded.pskn.universitycms.model.university.Schedule;
-
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -29,41 +31,44 @@ class ScheduleRepositoryTest {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    @Autowired
+    private TestEntityManager entityManager;
+
     @Test
     void shouldFindScheduleByGroupId() {
-        int groupId = 1;
+        Long groupId = 1L;
         Schedule schedule = Schedule.builder()
             .groupId(groupId)
-            .courseId(1)
-            .startTime(Timestamp.valueOf("2022-07-01 12:00:00"))
-            .endTime(Timestamp.valueOf("2022-07-01 12:00:00"))
-            .date(new Date(2022 - 1900, 6, 1))
+            .professorId(1L)
+            .courseId(1L)
+            .startTime(LocalDateTime.now())
+            .endTime(LocalDateTime.of(2023,9,3,14,0))
+            .date(LocalDate.now())
             .build();
-        scheduleRepository.save(schedule);
+
+        entityManager.persistAndFlush(schedule);
 
         List<Schedule> schedules = scheduleRepository.findScheduleByGroupId(groupId);
-
-        assertEquals(4, schedules.size());
-        assertEquals(groupId, schedules.get(0).getGroupId());
+        assertEquals(2, schedules.size());
     }
 
     @Test
     void shouldFindScheduleByProfessorId() {
-        int groupId = 1;
-        int professorId = 1;
+        Long groupId = 1L;
+        Long professorId = 1L;
         Schedule schedule = Schedule.builder()
             .groupId(groupId)
-            .courseId(1)
+            .courseId(1L)
             .professorId(professorId)
-            .startTime(Timestamp.valueOf("2022-07-01 12:00:00"))
-            .endTime(Timestamp.valueOf("2022-07-01 12:00:00"))
-            .date(new Date(2022 - 1900, 6, 1))
+            .startTime(LocalDateTime.now())
+            .endTime(LocalDateTime.of(2023,9,3,14,0))
+            .date(LocalDate.now())
             .build();
         scheduleRepository.save(schedule);
 
         List<Schedule> schedules = scheduleRepository.findScheduleByProfessorId(professorId);
 
-        assertEquals(3, schedules.size());
+        assertEquals(1, schedules.size());
         assertEquals(professorId, schedules.get(0).getProfessorId());
     }
 

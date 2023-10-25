@@ -77,27 +77,26 @@ public class ScheduleService {
     }
 
     public void saveSchedule(ScheduleDTO scheduleDTO) {
-        if (scheduleDTO != null) {
+        if(scheduleDTO!=null){
             scheduleRepository.save(scheduleConverter.convertToEntity(scheduleDTO));
             log.info("Schedule with id {} saved successful", scheduleDTO.getScheduleId());
-        }
-        else
-            throw new ScheduleCreateException("Schedule cant be created");
+        }else throw new ScheduleCreateException("Schedule cant be created");
+
     }
 
     @Transactional
     public void deleteScheduleById(Long scheduleId) {
-        if (scheduleId != null) {
+        if(scheduleId!=null){
             scheduleRepository.deleteById(scheduleId);
             log.info("Schedule with id {} deleted successful", scheduleId);
-        }
-        else {
+        } else {
             throw new ScheduleDeleteException("Schedule delete exception");
         }
     }
 
     @Transactional
     public void updateSchedule(ScheduleDTO scheduleDTO) {
+
         if (scheduleDTO != null) {
             ScheduleDTO newSchedule = ScheduleDTO.builder()
                 .scheduleId(scheduleDTO.getScheduleId())
@@ -111,8 +110,7 @@ public class ScheduleService {
 
             scheduleRepository.save(scheduleConverter.convertToEntity(newSchedule));
             log.info("Schedule with ID {} updated successful", newSchedule.getScheduleId());
-        }
-        else {
+        } else {
             throw new ScheduleUpdateException("Schedule cant be updated");
         }
     }

@@ -43,7 +43,7 @@ public class ChangeUsernameController {
         boolean changedUsername = userService.changeUsername(userId, newUsername);
 
         if (changedUsername) {
-            redirectAttributes.addAttribute("successfulChangeProfessorName", "Your username changed successfully! Login with new username.");
+            redirectAttributes.addFlashAttribute("successfulChangeProfessorName", "Your username changed successfully! Login with new username.");
         }
         else {
             redirectAttributes.addFlashAttribute("professorIsEmpty", "Professor is empty!");

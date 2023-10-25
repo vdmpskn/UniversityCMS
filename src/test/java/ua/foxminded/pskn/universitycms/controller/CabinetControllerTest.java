@@ -5,23 +5,24 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
 
 import ua.foxminded.pskn.universitycms.dto.FacultyDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
+import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
 import ua.foxminded.pskn.universitycms.model.usercabinetdata.StudentCabinetData;
 import ua.foxminded.pskn.universitycms.service.university.FacultyService;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
@@ -46,9 +47,13 @@ class CabinetControllerTest {
     private FacultyService facultyService;
 
     @MockBean
+    private Authentication authentication;
+
+    @MockBean
     private Model model;
 
     @Test
+    @WithMockUser(username = "test_professor", authorities = "ROLE_PROFESSOR")
     void shouldGetProfessorCabinetPage() throws Exception {
         UserDTO professor = new UserDTO();
         professor.setUsername("p");
@@ -56,11 +61,9 @@ class CabinetControllerTest {
 
         when(userService.findProfessorByUsername("test_professor")).thenReturn(Optional.of(professor));
 
-        mockMvc.perform(get("/professorscab")
-                .param("username", "test_professor"))
+        mockMvc.perform(get("/professorscab"))
             .andExpect(status().isOk())
-            .andExpect(view().name("professorscab"))
-            .andExpect(model().attribute("username", professor.getUsername()));
+            .andExpect(view().name("professorscab"));
     }
 
     @Test
@@ -75,24 +78,25 @@ class CabinetControllerTest {
 
     @Test
     void shouldGetStudentCabinetPage() {
-        String studentName = "student123";
-
         StudentCabinetData mockCabinetData = new StudentCabinetData();
+        mockCabinetData.setUsername("student123");
+        mockCabinetData.setUserID(1L);
+        mockCabinetData.setStudentId(1L);
+        mockCabinetData.setStudentGroup("IS-21");
+        mockCabinetData.setAvailableGroups(Collections.singletonList(new StudentGroup()));
+        when(authentication.getName()).thenReturn("student123");
+        when(userCabinetService.getStudentCabinetData("student123")).thenReturn(mockCabinetData);
+        when(facultyService.findAll()).thenReturn(Collections.singletonList(new FacultyDTO()));
 
-        List<FacultyDTO> mockFaculties = List.of(new FacultyDTO());
-
-        when(userCabinetService.getStudentCabinetData(studentName)).thenReturn(mockCabinetData);
-
-        when(facultyService.findAll()).thenReturn(mockFaculties);
-
-        String viewName = cabinetController.studentCabinetPage(studentName, model);
+        String viewName = cabinetController.studentCabinetPage(authentication, model);
 
         assertEquals("studentscab", viewName);
-        verify(model).addAttribute("username", mockCabinetData.getUsername());
-        verify(model).addAttribute("studentId", mockCabinetData.getStudentId());
-        verify(model).addAttribute("studentGroup", mockCabinetData.getStudentGroup());
+        verify(model).addAttribute("username", "student123");
+        verify(model).addAttribute("userId", 1L);
+        verify(model).addAttribute("studentId", 1L);
+        verify(model).addAttribute("studentGroup", "IS-21");
         verify(model).addAttribute("availableGroups", mockCabinetData.getAvailableGroups());
-        verify(model).addAttribute("availableFaculties", mockFaculties);
+        verify(model).addAttribute("availableFaculties", Collections.singletonList(new FacultyDTO()));
     }
 
 }

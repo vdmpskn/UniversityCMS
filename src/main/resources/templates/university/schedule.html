@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <head>
     <meta charset="UTF-8">
     <title>Schedule Page</title>
@@ -106,9 +107,9 @@
     <input type="text" th:field="*{groupId}" placeholder="Group ID" required/>
     <input type="text" th:field="*{professorId}" placeholder="Professor ID" required/>
     <input type="text" th:field="*{courseId}" placeholder="Course ID" required/>
-    <input type="text" th:field="*{startTime}" placeholder="Start Time" required/>
-    <input type="text" th:field="*{endTime}" placeholder="End Time" required/>
-    <input type="text" th:field="*{date}" placeholder="Date" required/>
+    <input type="datetime-local" th:field="*{startTime}" placeholder="Start Time" id="start-time" required/>
+    <input type="datetime-local" th:field="*{endTime}" placeholder="End Time" id="end-time" required/>
+    <input type="date" th:field="*{date}" placeholder="Date" id="date" required/>
     <button type="submit">Add Schedule</button>
 </form>
 <div th:if="${successAddSchedule}" class="alert alert-success" role="alert">
@@ -150,7 +151,7 @@
 
 <a th:href="@{/adminscab}" class="btn btn-primary">Go to Admin Panel</a>
 
-
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -169,6 +170,14 @@
         if ($(event.target).hasClass("modal")) {
             $(event.target).modal("hide");
         }
+    });
+
+    $(document).ready(function () {
+        $('#start-time').datetimepicker();
+        $('#end-time').datetimepicker();
+        $('#date').datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
     });
 </script>
 </body>

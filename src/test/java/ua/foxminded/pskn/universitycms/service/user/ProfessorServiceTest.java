@@ -1,5 +1,14 @@
 package ua.foxminded.pskn.universitycms.service.user;
 
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,15 +20,6 @@ import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundExceptio
 import ua.foxminded.pskn.universitycms.dto.ProfessorDTO;
 import ua.foxminded.pskn.universitycms.model.user.Professor;
 import ua.foxminded.pskn.universitycms.repository.user.ProfessorRepository;
-
-import java.util.Optional;
-
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
 
 class ProfessorServiceTest {
 
@@ -47,10 +47,10 @@ class ProfessorServiceTest {
 
         when(professorConverter.convertToDTO(expectedProfessor)).thenReturn(expectedProfessorDTO);
 
-        Optional<ProfessorDTO> resultProfessorDTO = professorService.getProfessorByUserId(userId);
+        ProfessorDTO resultProfessorDTO = professorService.getProfessorByUserId(userId);
 
-        assertTrue(resultProfessorDTO.isPresent());
-        assertEquals(expectedProfessorDTO, resultProfessorDTO.get());
+        Assertions.assertNotNull(resultProfessorDTO);
+        assertEquals(expectedProfessorDTO, resultProfessorDTO);
 
         verify(professorRepository).getProfessorByUserId(userId);
 

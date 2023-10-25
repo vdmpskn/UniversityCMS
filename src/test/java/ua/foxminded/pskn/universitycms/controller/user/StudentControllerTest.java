@@ -1,5 +1,14 @@
 package ua.foxminded.pskn.universitycms.controller.user;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,15 +19,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ua.foxminded.pskn.universitycms.dto.StudentDTO;
-import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.service.user.StudentService;
-
-import java.util.Collections;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StudentController.class)
 @WithMockUser(authorities = "ROLE_ADMIN")
@@ -34,7 +35,7 @@ class StudentControllerTest {
     void shouldGetStudentPage() throws Exception {
         StudentDTO student = new StudentDTO();
         student.setUserId(1L);
-        student.setGroupId(3);
+        student.setGroupId(3L);
 
         Page<StudentDTO> studentPage = new PageImpl<>(Collections.singletonList(student));
         when(studentService.getAllStudents(any())).thenReturn(studentPage);

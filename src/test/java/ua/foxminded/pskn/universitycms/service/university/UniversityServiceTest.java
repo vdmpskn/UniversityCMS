@@ -155,7 +155,7 @@ class UniversityServiceTest {
             .universityName("Test University")
             .build();
 
-        University mockUniversity = new University(); // Mock University entity
+        University mockUniversity = new University();
 
         when(universityConverter.convertToEntity(universityDTO)).thenReturn(mockUniversity);
 

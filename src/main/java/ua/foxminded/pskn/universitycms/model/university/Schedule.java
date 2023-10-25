@@ -1,7 +1,7 @@
 package ua.foxminded.pskn.universitycms.model.university;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,22 +28,28 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scheduleId;
 
+    @NotNull
     @Column(name = "group_id")
     private Long groupId;
 
+    @NotNull
     @Column(name = "professor_id")
     private Long professorId;
 
+    @NotNull
     @Column(name = "course_id")
     private Long courseId;
 
+    @NotNull
     @Column(name = "start_time")
-    private Timestamp startTime;
+    private LocalDateTime startTime;
 
+    @NotNull
     @Column(name = "end_time")
-    private Timestamp endTime;
+    private LocalDateTime endTime;
 
+    @FutureOrPresent
+    @NotNull
     @Column(name = "date")
-    private Date date;
-
+    private LocalDate date;
 }

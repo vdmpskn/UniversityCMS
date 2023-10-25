@@ -98,7 +98,7 @@ class UserControllerTest {
         ReflectionTestUtils.setField(userController, "userService", userService);
 
         UserDTO userDTO = new UserDTO();
-        int roleId = 2;
+        Long roleId = 2L;
         userDTO.setUserId(1L);
 
         doNothing().when(userService).updateUser(userDTO, roleId);

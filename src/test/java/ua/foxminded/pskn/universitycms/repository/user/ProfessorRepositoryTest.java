@@ -1,20 +1,21 @@
 package ua.foxminded.pskn.universitycms.repository.user;
 
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
 import ua.foxminded.pskn.universitycms.model.user.Professor;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -30,38 +31,39 @@ class ProfessorRepositoryTest {
     @Autowired
     private ProfessorRepository professorRepository;
 
-    @Autowired
-    private TestEntityManager entityManager;
-
     @Test
     void shouldGetProfessorByUserId() {
-        long userId = 10L;
         Professor professor = new Professor();
-        professor.setUserId(userId);
-        entityManager.persistAndFlush(professor);
+        professor.setUserId(1L);
+        professor.setProfessorId(10L);
+        professor = professorRepository.save(professor);
 
-        Optional<Professor> foundProfessor = professorRepository.getProfessorByUserId(userId);
+        Optional<Professor> foundProfessor = professorRepository.getProfessorByUserId(professor.getUserId());
 
-        assertNotNull(foundProfessor);
-        assertEquals(userId, foundProfessor.equals(userId));
+        assertTrue(foundProfessor.isPresent());
+
+        assertEquals(professor.getUserId(), foundProfessor.get().getUserId());
     }
 
     @Test
-    void shouldFindMaxProfessorId() {
-        Professor professor1 = Professor.builder()
-            .professorId(1)
-            .build();
-        professorRepository.save(professor1);
+    void shouldGetProfessorByUserId_NotFound() {
+        Optional<Professor> foundProfessor = professorRepository.getProfessorByUserId(999L);
 
-        Professor professor2 = Professor.builder()
-            .professorId(2)
-            .build();;
-        professorRepository.save(professor2);
+        assertFalse(foundProfessor.isPresent());
+    }
 
-        Long maxProfessorId = professorRepository.findMaxProfessorId();
+    @Test
+     void shouldDeleteProfessorByUserId() {
+        Professor professor = new Professor();
+        professor.setUserId(2L);
+        professor.setProfessorId(5L);
+        professor = professorRepository.save(professor);
 
-        assertNotNull(maxProfessorId);
-        assertEquals(5L, maxProfessorId);
+        professorRepository.deleteProfessorByUserId(professor.getUserId());
+
+        Optional<Professor> foundProfessor = professorRepository.getProfessorByUserId(professor.getUserId());
+
+        assertFalse(foundProfessor.isPresent());
     }
 
 }
