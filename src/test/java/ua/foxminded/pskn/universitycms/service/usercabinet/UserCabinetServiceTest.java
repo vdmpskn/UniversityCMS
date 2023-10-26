@@ -73,18 +73,16 @@ class UserCabinetServiceTest {
     }
 
     @Test
-    void shouldGetStudentCabinetData_StudentNotFound() {
-        UserDTO user = new UserDTO();
-        user.setUserId(1L);
-        user.setUsername("testUser");
+    void shouldGetStudentCabinetData_WithBlankUsername() {
+        String blankUsername = "";
 
-        when(userService.findStudentByUsername("testUser")).thenReturn(user);
-
-        when(studentService.getStudentByUserId(1L)).thenReturn(null);
-
-        assertThrows(NullPointerException.class, () -> {
-            userCabinetService.getStudentCabinetData("testUser");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userCabinetService.getStudentCabinetData(blankUsername);
         });
+
+        String expectedMessage = "Username can't be blank";
+        String actualMessage = exception.getMessage();
+        assert(actualMessage.contains(expectedMessage));
     }
 }
 

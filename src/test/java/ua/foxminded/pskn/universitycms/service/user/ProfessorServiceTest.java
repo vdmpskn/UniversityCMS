@@ -1,5 +1,6 @@
 package ua.foxminded.pskn.universitycms.service.user;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -8,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -49,7 +49,7 @@ class ProfessorServiceTest {
 
         ProfessorDTO resultProfessorDTO = professorService.getProfessorByUserId(userId);
 
-        Assertions.assertNotNull(resultProfessorDTO);
+        assertNotNull(resultProfessorDTO);
         assertEquals(expectedProfessorDTO, resultProfessorDTO);
 
         verify(professorRepository).getProfessorByUserId(userId);

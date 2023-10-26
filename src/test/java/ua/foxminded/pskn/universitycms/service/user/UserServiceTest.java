@@ -496,6 +496,6 @@ class UserServiceTest {
 
         Mockito.when(userRepository.findById(userDTO.getUserId())).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(UserUpdateException.class, () -> userService.updateUser(userDTO, roleId));
+        assertThrows(UserUpdateException.class, () -> userService.updateUser(userDTO, roleId));
     }
 }
