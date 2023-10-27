@@ -5,8 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import ua.foxminded.pskn.universitycms.converter.schedule.ScheduleConverter;
+import ua.foxminded.pskn.universitycms.customexception.ScheduleDeleteException;
+import ua.foxminded.pskn.universitycms.customexception.ScheduleUpdateException;
 import ua.foxminded.pskn.universitycms.dto.ScheduleDTO;
 import ua.foxminded.pskn.universitycms.model.university.Schedule;
 import ua.foxminded.pskn.universitycms.repository.university.ScheduleRepository;
@@ -14,7 +20,9 @@ import ua.foxminded.pskn.universitycms.repository.university.ScheduleRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -38,7 +46,7 @@ class ScheduleServiceTest {
 
     @Test
      void shouldGetScheduleById() {
-        int groupId = 123;
+        Long groupId = 123L;
         List<Schedule> mockScheduleList = new ArrayList<>();
         mockScheduleList.add(new Schedule());
 
@@ -58,7 +66,7 @@ class ScheduleServiceTest {
 
     @Test
     void shouldGetScheduleByProfessorId() {
-        int professorId = 456;
+        Long professorId = 456L;
         List<Schedule> mockScheduleList = new ArrayList<>();
         mockScheduleList.add(new Schedule());
 
@@ -67,7 +75,7 @@ class ScheduleServiceTest {
         when(scheduleConverter.convertToDTO(any(Schedule.class))).thenAnswer(
             invocation -> {
                 Schedule scheduleEntity = invocation.getArgument(0);
-                return new ScheduleDTO(/* map entity to DTO */);
+                return new ScheduleDTO();
             });
 
         List<ScheduleDTO> scheduleDTOList = scheduleService.getScheduleByProfessorId(professorId);
@@ -85,5 +93,65 @@ class ScheduleServiceTest {
 
         assertEquals(schedules, retrievedSchedules);
         verify(scheduleRepository).findAll();
+    }
+
+    @Test
+    void shouldUpdateSchedule_WithValidData() {
+        ScheduleDTO scheduleDTO = new ScheduleDTO();
+        Schedule scheduleEntity = new Schedule();
+
+        when(scheduleConverter.convertToEntity(scheduleDTO)).thenReturn(scheduleEntity);
+        when(scheduleRepository.save(scheduleEntity)).thenReturn(scheduleEntity);
+
+        scheduleService.updateSchedule(scheduleDTO);
+
+        verify(scheduleConverter).convertToEntity(scheduleDTO);
+        verify(scheduleRepository).save(scheduleEntity);
+    }
+
+    @Test
+    void shouldUpdateSchedule_WithNullInput() {
+        ScheduleDTO scheduleDTO = null;
+
+        assertThrows(ScheduleUpdateException.class, () -> {
+            scheduleService.updateSchedule(scheduleDTO);
+        });
+    }
+
+    @Test
+    void shouldGetAllSchedule_Pageable() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Schedule> scheduleList = new ArrayList<>();
+
+        Page<Schedule> page = new PageImpl<>(scheduleList, pageable, scheduleList.size());
+
+        when(scheduleRepository.findAll(pageable)).thenReturn(page);
+
+        List<ScheduleDTO> scheduleDTOList = scheduleList.stream()
+            .map(scheduleConverter::convertToDTO)
+            .collect(Collectors.toList());
+
+        Page<ScheduleDTO> resultPage = scheduleService.getAllSchedule(pageable);
+
+        assertEquals(page.getTotalElements(), resultPage.getTotalElements());
+        assertEquals(scheduleDTOList.size(), resultPage.getContent().size());
+    }
+
+    @Test
+    void shouldDeleteScheduleById_WithValidId() {
+        Long scheduleId = 1L;
+
+        scheduleService.deleteScheduleById(scheduleId);
+
+        verify(scheduleRepository).deleteById(scheduleId);
+    }
+
+    @Test
+    void shouldDeleteScheduleById_WithNullId() {
+        Long scheduleId = null;
+
+        assertThrows(ScheduleDeleteException.class, () -> {
+            scheduleService.deleteScheduleById(scheduleId);
+        });
     }
 }

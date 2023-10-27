@@ -1,19 +1,21 @@
 package ua.foxminded.pskn.universitycms.repository.user;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import ua.foxminded.pskn.universitycms.model.user.Role;
 import ua.foxminded.pskn.universitycms.model.user.Student;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import ua.foxminded.pskn.universitycms.model.user.User;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -30,20 +32,32 @@ class StudentRepositoryTest {
     private StudentRepository studentRepository;
 
     @Autowired
-    private TestEntityManager entityManager;
+    private UserRepository userRepository;
 
     @Test
     void shouldGetStudentByUserId() {
-        Long userId = 10L;
-        Student student = Student.builder()
-            .groupId(1)
-            .userId(userId)
-            .build();
-        entityManager.persistAndFlush(student);
+        Role role = new Role();
+        role.setRoleId(2);
+        role.setName("student");
 
-        Optional<Student> foundStudent = studentRepository.getStudentByUserId(userId);
+        User user = new User();
+        user.setUsername("testUser");
+        user.setPassword("testPassword");
+        user.setRole(role);
+        user.setFacultyId(1L);
 
-        assertNotNull(foundStudent);
-        assertEquals(userId, foundStudent.equals(userId));
+        user = userRepository.save(user);
+
+        Student student = new Student();
+        student.setUserId(user.getUserId());
+        student.setGroupId(1L);
+        student = studentRepository.save(student);
+
+        Optional<Student> foundStudent = studentRepository.getStudentByUserId(user.getUserId());
+
+        assertTrue(foundStudent.isPresent());
+
+        assertEquals(user.getUserId(), foundStudent.get().getUserId());
     }
+
 }

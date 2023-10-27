@@ -1,29 +1,25 @@
 package ua.foxminded.pskn.universitycms.service.user;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import org.mockito.MockitoAnnotations;
 
 import ua.foxminded.pskn.universitycms.converter.role.RoleConverter;
 import ua.foxminded.pskn.universitycms.dto.RoleDTO;
 import ua.foxminded.pskn.universitycms.model.user.Role;
 import ua.foxminded.pskn.universitycms.repository.user.RoleRepository;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 class RoleServiceTest {
 
@@ -75,8 +71,9 @@ class RoleServiceTest {
 
     @Test
     void shouldFindRoleById() {
-        int roleId = 1;
-        Role mockRole = new Role(roleId, "RoleName");
+        Long roleId = 1L;
+        int newRoleid = 1;
+        Role mockRole = new Role(newRoleid, "RoleName");
         RoleDTO mockRoleDTO = new RoleDTO(mockRole, "RoleName");
 
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(mockRole));

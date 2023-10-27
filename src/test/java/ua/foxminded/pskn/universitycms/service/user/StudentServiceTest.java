@@ -1,5 +1,14 @@
 package ua.foxminded.pskn.universitycms.service.user;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -7,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import ua.foxminded.pskn.universitycms.converter.student.StudentConverter;
-import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.StudentGroupNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.StudentNotFoundException;
 import ua.foxminded.pskn.universitycms.dto.StudentDTO;
@@ -15,13 +23,6 @@ import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
 import ua.foxminded.pskn.universitycms.model.user.Student;
 import ua.foxminded.pskn.universitycms.repository.university.StudentGroupRepository;
 import ua.foxminded.pskn.universitycms.repository.user.StudentRepository;
-
-import java.util.Optional;
-
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 
 class StudentServiceTest {
@@ -54,10 +55,10 @@ class StudentServiceTest {
 
         when(studentConverter.convertToDTO(mockStudent)).thenReturn(mockStudentDTO);
 
-        Optional<StudentDTO> result = studentService.getStudentByUserId(userId);
+        StudentDTO result = studentService.getStudentByUserId(userId);
 
-        assertTrue(result.isPresent());
-        assertEquals(mockStudentDTO, result.get());
+        assertNotNull(result);
+        assertEquals(mockStudentDTO, result);
 
         verify(studentRepository).getStudentByUserId(userId);
 
@@ -88,7 +89,7 @@ class StudentServiceTest {
 
         when(studentRepository.getStudentByUserId(userId)).thenReturn(Optional.empty());
 
-        assertThrows(ProfessorNotFoundException.class, () -> {
+        assertThrows(StudentNotFoundException.class, () -> {
             studentService.getStudentByUserId(userId);
         });
     }

@@ -1,21 +1,19 @@
 package ua.foxminded.pskn.universitycms.service.usercabinet;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import ua.foxminded.pskn.universitycms.dto.StudentDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
-import ua.foxminded.pskn.universitycms.model.user.Student;
-import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.model.usercabinetdata.StudentCabinetData;
 import ua.foxminded.pskn.universitycms.service.university.StudentGroupService;
 import ua.foxminded.pskn.universitycms.service.user.StudentService;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +36,7 @@ public class UserCabinetService {
 
         StudentDTO student = studentService.getStudentByUserId(user.getUserId());
 
-        StudentGroup groupName = studentGroupService.getStudentGroupById((long) student.getGroupId());
+        StudentGroup groupName = studentGroupService.getStudentGroupById(student.getGroupId());
         List<StudentGroup> availableGroups = studentGroupService.getAllStudentGroups();
 
         StudentCabinetData cabinetData = new StudentCabinetData();

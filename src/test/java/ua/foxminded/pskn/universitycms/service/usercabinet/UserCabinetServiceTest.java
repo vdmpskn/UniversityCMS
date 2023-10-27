@@ -1,5 +1,12 @@
 package ua.foxminded.pskn.universitycms.service.usercabinet;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -9,20 +16,10 @@ import org.mockito.MockitoAnnotations;
 import ua.foxminded.pskn.universitycms.dto.StudentDTO;
 import ua.foxminded.pskn.universitycms.dto.UserDTO;
 import ua.foxminded.pskn.universitycms.model.university.StudentGroup;
-import ua.foxminded.pskn.universitycms.model.user.Student;
-import ua.foxminded.pskn.universitycms.model.user.User;
 import ua.foxminded.pskn.universitycms.model.usercabinetdata.StudentCabinetData;
 import ua.foxminded.pskn.universitycms.service.university.StudentGroupService;
 import ua.foxminded.pskn.universitycms.service.user.StudentService;
 import ua.foxminded.pskn.universitycms.service.user.UserService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 class UserCabinetServiceTest {
 
@@ -51,7 +48,7 @@ class UserCabinetServiceTest {
 
         StudentDTO student = new StudentDTO();
         student.setUserId(1L);
-        student.setGroupId(2);
+        student.setGroupId(2L);
 
         StudentGroup studentGroup = new StudentGroup();
         studentGroup.setGroupName("Group 2");
@@ -59,9 +56,9 @@ class UserCabinetServiceTest {
         List<StudentGroup> availableGroups = new ArrayList<>();
         availableGroups.add(studentGroup);
 
-        when(userService.findStudentByUsername("testUser")).thenReturn(Optional.of(user));
+        when(userService.findStudentByUsername("testUser")).thenReturn(user);
 
-        when(studentService.getStudentByUserId(1L)).thenReturn(Optional.of(student));
+        when(studentService.getStudentByUserId(1L)).thenReturn(student);
 
         when(studentGroupService.getStudentGroupById(2L)).thenReturn(studentGroup);
 
@@ -76,27 +73,16 @@ class UserCabinetServiceTest {
     }
 
     @Test
-    void shouldGetStudentCabinetData_UserNotFound() {
-        when(userService.findStudentByUsername("nonexistentUser")).thenReturn(Optional.empty());
+    void shouldGetStudentCabinetData_WithBlankUsername() {
+        String blankUsername = "";
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            userCabinetService.getStudentCabinetData("nonexistentUser");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userCabinetService.getStudentCabinetData(blankUsername);
         });
-    }
 
-    @Test
-    void shouldGetStudentCabinetData_StudentNotFound() {
-        UserDTO user = new UserDTO();
-        user.setUserId(1L);
-        user.setUsername("testUser");
-
-        when(userService.findStudentByUsername("testUser")).thenReturn(Optional.of(user));
-
-        when(studentService.getStudentByUserId(1L)).thenReturn(Optional.empty());
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            userCabinetService.getStudentCabinetData("testUser");
-        });
+        String expectedMessage = "Username can't be blank";
+        String actualMessage = exception.getMessage();
+        assert(actualMessage.contains(expectedMessage));
     }
 }
 

@@ -1,7 +1,7 @@
 package ua.foxminded.pskn.universitycms.dto;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,9 +24,9 @@ public class ScheduleDTO {
 
     private Long courseId;
 
-    private Timestamp startTime;
+    private LocalDateTime startTime;
 
-    private Timestamp endTime;
+    private LocalDateTime endTime;
 
-    private Date date;
+    private LocalDate date;
 }

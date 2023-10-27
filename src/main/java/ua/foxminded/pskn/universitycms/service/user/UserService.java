@@ -1,6 +1,5 @@
 package ua.foxminded.pskn.universitycms.service.user;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -13,6 +12,7 @@ import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ua.foxminded.pskn.universitycms.converter.user.UserConverter;
+import ua.foxminded.pskn.universitycms.customexception.AdminNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.FacultyEditException;
 import ua.foxminded.pskn.universitycms.customexception.ProfessorNotFoundException;
 import ua.foxminded.pskn.universitycms.customexception.RoleNotFoundException;
@@ -44,16 +44,6 @@ public class UserService {
 
     private final RoleService roleService;
 
-    public User getUserById(Long id) {
-        log.debug("Getting user by ID: {}", id);
-        return userRepository.findById(id).orElse(null);
-    }
-
-    public List<User> getAllUsers() {
-        log.debug("Getting all users");
-        return userRepository.findAll();
-    }
-
     @Transactional
     public Page<UserDTO> getAllUsers(Pageable pageable) {
         log.debug("Retrieving all users with page number: {} and page size: {}",
@@ -74,12 +64,9 @@ public class UserService {
         }
         log.debug("Getting admin by ID: {}", userId);
 
-        Optional<User> admin = userRepository.findAdminByUserId(userId);
-
-        if(admin.isEmpty()){
-            throw new StudentNotFoundException("Admin not found!");
-        }
-        return admin.map(userConverter::convertToDTO);
+        return Optional.ofNullable(userRepository.findAdminByUserId(userId))
+            .map(admin -> admin.map(userConverter::convertToDTO))
+            .orElseThrow(() -> new AdminNotFoundException("Admin not found"));
     }
 
 
@@ -132,7 +119,7 @@ public class UserService {
             .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    public User saveStudent(UserDTO userDTO, Long groupId) {
+    public void saveStudent(UserDTO userDTO, Long groupId) {
         User user = userConverter.convertToEntity(userDTO);
         log.info("Saving student: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -144,10 +131,9 @@ public class UserService {
         student.setUserId(savedUser.getUserId());
         student.setGroupId(groupId);
         studentRepository.save(student);
-        return savedUser;
     }
 
-    public User saveProfessor(UserDTO userDTO) {
+    public void saveProfessor(UserDTO userDTO) {
         User user = userConverter.convertToEntity(userDTO);
         log.info("Saving professor: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -155,10 +141,9 @@ public class UserService {
         Professor professor = new Professor();
         professor.setUserId(savedUser.getUserId());
         professorRepository.save(professor);
-        return savedUser;
     }
 
-    public User saveAdmin(UserDTO userDTO) {
+    public void saveAdmin(UserDTO userDTO) {
         User user = userConverter.convertToEntity(userDTO);
         log.info("Saving admin: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -171,7 +156,6 @@ public class UserService {
             .facultyId(savedUser.getFacultyId())
             .build();
         userRepository.save(admin);
-        return savedUser;
     }
 
     public void changeMyName(UserDTO userDTO, String newUsername) {
@@ -291,6 +275,7 @@ public class UserService {
         }
         else {
             log.warn("User with ID {} not found.", userDTO.getUserId());
+            throw new UserUpdateException("User update exception!");
         }
     }
 
@@ -314,13 +299,6 @@ public class UserService {
             throw new RoleNotFoundException("Role not found.");
         }
 
-    }
-
-    public boolean isOwnerOrAdmin(Long userId, Long requestUserId) {
-        Optional<UserDTO> admin = findAdminById(userId);
-
-        return admin.map(user -> user.getUserId().equals(requestUserId) || user.getUserId().equals(userId))
-            .orElse(false);
     }
 
 }
